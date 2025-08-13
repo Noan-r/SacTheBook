@@ -1159,10 +1159,11 @@
             .info-section {
                 order: 1;
                 width: 100%;
-                max-width: 500px;
+                max-width: 400px;
                 margin: 0 auto;
                 height: auto;
-                min-height: 400px;
+                min-height: 300px;
+                padding: 15px;
             }
             
             #myBoard {
@@ -1194,39 +1195,40 @@
             
             .info-section {
                 order: 1;
-                padding: 20px;
-                min-height: 350px;
+                padding: 15px;
+                min-height: 280px;
                 width: 100%;
-                max-width: 450px;
+                max-width: 400px;
                 margin: 0 auto;
             }
             
             .line-selector {
                 flex-direction: column;
-                gap: 10px;
+                gap: 8px;
                 align-items: stretch;
             }
             
             .line-selector label {
                 text-align: center;
                 font-weight: bold;
+                font-size: 14px;
             }
             
             .line-selector select {
                 width: 100%;
-                padding: 12px;
-                font-size: 16px;
+                padding: 10px;
+                font-size: 14px;
             }
             
             .switch-container {
-                margin: 20px 0;
+                margin: 15px 0;
                 justify-content: center;
             }
             
             .switch-label-left,
             .switch-label-right {
-                font-size: 14px;
-                padding: 0 10px;
+                font-size: 13px;
+                padding: 0 8px;
             }
             
             .controls {
@@ -1243,105 +1245,6 @@
                 min-width: 50px;
                 flex: 1;
                 max-width: 70px;
-            }
-            
-            .hint-zone {
-                margin: 15px 0;
-                padding: 15px;
-            }
-            
-            .hint-btn {
-                font-size: 24px;
-                padding: 12px;
-            }
-            
-            .hint-text {
-                font-size: 14px;
-                padding: 10px;
-            }
-            
-            .drill-counter {
-                padding: 15px;
-                margin: 15px 0;
-            }
-            
-            .big-flame {
-                font-size: 24px;
-            }
-            
-            .drill-score {
-                font-size: 16px;
-            }
-            
-            .best-score-footer {
-                padding: 15px;
-            }
-            
-            .best-score-content {
-                gap: 10px;
-            }
-            
-            .best-score-icon {
-                font-size: 20px;
-            }
-            
-            .best-score-text {
-                font-size: 14px;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .header h1 {
-                font-size: 1.5em;
-                padding: 0 8px;
-            }
-            
-            .game-container {
-                flex-direction: column;
-                gap: 12px;
-                padding: 10px;
-            }
-            
-            .board-section {
-                order: 2;
-                width: 100%;
-                max-width: 400px;
-                margin: 0 auto;
-            }
-            
-            .info-section {
-                order: 1;
-                padding: 15px;
-                min-height: 300px;
-                border-radius: 12px;
-                width: 100%;
-                max-width: 400px;
-                margin: 0 auto;
-            }
-            
-            .line-selector select {
-                padding: 10px;
-                font-size: 14px;
-            }
-            
-            .switch-label-left,
-            .switch-label-right {
-                font-size: 12px;
-                padding: 0 8px;
-            }
-            
-            .controls {
-                gap: 6px;
-                margin: 15px 0;
-                flex-wrap: nowrap;
-            }
-            
-            .controls .btn {
-                padding: 8px 10px;
-                font-size: 12px;
-                min-width: 40px;
-                flex: 1;
-                max-width: 60px;
             }
             
             .hint-zone {
@@ -1374,6 +1277,105 @@
             
             .best-score-footer {
                 padding: 12px;
+            }
+            
+            .best-score-content {
+                gap: 6px;
+            }
+            
+            .best-score-icon {
+                font-size: 16px;
+            }
+            
+            .best-score-text {
+                font-size: 12px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.5em;
+                padding: 0 8px;
+            }
+            
+            .game-container {
+                flex-direction: column;
+                gap: 12px;
+                padding: 10px;
+            }
+            
+            .board-section {
+                order: 2;
+                width: 100%;
+                max-width: 400px;
+                margin: 0 auto;
+            }
+            
+            .info-section {
+                order: 1;
+                padding: 12px;
+                min-height: 250px;
+                border-radius: 12px;
+                width: 100%;
+                max-width: 350px;
+                margin: 0 auto;
+            }
+            
+            .line-selector select {
+                padding: 8px;
+                font-size: 13px;
+            }
+            
+            .switch-label-left,
+            .switch-label-right {
+                font-size: 11px;
+                padding: 0 6px;
+            }
+            
+            .controls {
+                gap: 6px;
+                margin: 15px 0;
+                flex-wrap: nowrap;
+            }
+            
+            .controls .btn {
+                padding: 8px 10px;
+                font-size: 12px;
+                min-width: 40px;
+                flex: 1;
+                max-width: 60px;
+            }
+            
+            .hint-zone {
+                margin: 10px 0;
+                padding: 10px;
+            }
+            
+            .hint-btn {
+                font-size: 18px;
+                padding: 8px;
+            }
+            
+            .hint-text {
+                font-size: 12px;
+                padding: 6px;
+            }
+            
+            .drill-counter {
+                padding: 8px;
+                margin: 8px 0;
+            }
+            
+            .big-flame {
+                font-size: 16px;
+            }
+            
+            .drill-score {
+                font-size: 12px;
+            }
+            
+            .best-score-footer {
+                padding: 10px;
             }
             
             .best-score-icon {
@@ -1406,17 +1408,17 @@
             
             .info-section {
                 order: 1;
-                padding: 12px;
-                min-height: 280px;
+                padding: 8px;
+                min-height: 200px;
                 border-radius: 10px;
                 width: 100%;
-                max-width: 350px;
+                max-width: 300px;
                 margin: 0 auto;
             }
             
             .line-selector select {
-                padding: 8px;
-                font-size: 13px;
+                padding: 6px;
+                font-size: 12px;
             }
             
             .controls {
@@ -1434,18 +1436,18 @@
             }
             
             .hint-zone {
-                margin: 10px 0;
-                padding: 10px;
-            }
-            
-            .hint-btn {
-                font-size: 18px;
+                margin: 8px 0;
                 padding: 8px;
             }
             
-            .hint-text {
-                font-size: 12px;
+            .hint-btn {
+                font-size: 16px;
                 padding: 6px;
+            }
+            
+            .hint-text {
+                font-size: 11px;
+                padding: 5px;
             }
             
             .drill-counter {
