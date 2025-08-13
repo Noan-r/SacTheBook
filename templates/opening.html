@@ -98,6 +98,218 @@
         }
         
         /* Style pour les points de highlight des coups légaux */
+        
+        /* Desktop styles */
+        @media (min-width: 1024px) {
+            .header h1 {
+                font-size: 2.5em;
+            }
+            
+            .info-section {
+                min-width: 400px;
+                max-width: 450px;
+                height: 700px;
+                padding: 30px;
+            }
+            
+            .btn, button {
+                padding: 12px 24px;
+                font-size: 1.1em;
+            }
+        }
+
+        /* Tablet styles */
+        @media (max-width: 1023px) and (min-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .info-section {
+                min-width: 300px;
+                max-width: 350px;
+                height: 550px;
+                padding: 20px;
+            }
+            
+            .btn, button {
+                padding: 10px 18px;
+                font-size: 0.95em;
+            }
+        }
+
+        /* Mobile styles */
+        @media (max-width: 767px) {
+            body {
+                padding: 5px;
+                background-size: 120px 120px, 120px 120px, 120px 120px, 120px 120px, 120px 120px, 120px 120px;
+                background-position: 20px 50px, 200px 80px, 360px 30px, 120px 200px, 280px 150px, 440px 100px;
+                height: auto;
+                overflow: auto;
+                flex-direction: column;
+            }
+            
+            .header {
+                padding: 5px 0;
+            }
+            
+            .header h1 {
+                font-size: 1.5em;
+            }
+            
+            .container {
+                flex-direction: column;
+                height: auto;
+                padding: 10px;
+                gap: 15px;
+            }
+            
+            .board-container {
+                order: 1;
+                width: 100%;
+                max-width: 350px;
+                margin: 0 auto;
+            }
+            
+            .info-section {
+                order: 2;
+                min-width: auto;
+                max-width: none;
+                height: auto;
+                min-height: 400px;
+                padding: 15px;
+                border-radius: 10px;
+            }
+            
+            .btn, button {
+                padding: 8px 14px;
+                font-size: 0.9em;
+                margin: 2px;
+            }
+            
+            .game-info {
+                gap: 10px;
+            }
+            
+            .hint-section {
+                margin: 10px 0;
+            }
+            
+            .hint-content {
+                font-size: 0.9em;
+                padding: 10px;
+            }
+            
+            .line-selector {
+                margin: 10px 0;
+            }
+            
+            .line-selector select {
+                font-size: 0.9em;
+                padding: 5px;
+            }
+            
+            .navigation-buttons {
+                gap: 5px;
+                margin: 10px 0;
+            }
+            
+            .drill-counter {
+                padding: 15px;
+                margin: 10px 0;
+            }
+            
+            .drill-counter h3 {
+                font-size: 1.2em;
+                margin-bottom: 15px;
+            }
+            
+            .score {
+                font-size: 0.9em;
+                margin: 8px 0;
+            }
+            
+            .big-flame {
+                font-size: 6em;
+            }
+        }
+
+        /* Small mobile styles */
+        @media (max-width: 480px) {
+            body {
+                padding: 2px;
+            }
+            
+            .header h1 {
+                font-size: 1.3em;
+            }
+            
+            .container {
+                padding: 5px;
+                gap: 10px;
+            }
+            
+            .board-container {
+                max-width: 300px;
+            }
+            
+            .info-section {
+                padding: 10px;
+                min-height: 350px;
+            }
+            
+            .btn, button {
+                padding: 6px 10px;
+                font-size: 0.8em;
+            }
+            
+            .hint-content {
+                font-size: 0.85em;
+                padding: 8px;
+            }
+            
+            .line-selector select {
+                font-size: 0.85em;
+                padding: 4px;
+            }
+            
+            .drill-counter {
+                padding: 10px;
+            }
+            
+            .drill-counter h3 {
+                font-size: 1.1em;
+            }
+            
+            .score {
+                font-size: 0.85em;
+            }
+            
+                    .big-flame {
+            font-size: 5em;
+        }
+        
+        /* Chessboard responsive adjustments */
+        #myBoard {
+            max-width: 100%;
+            height: auto;
+        }
+        
+        @media (max-width: 767px) {
+            #myBoard {
+                max-width: 350px;
+                margin: 0 auto;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            #myBoard {
+                max-width: 300px;
+            }
+        }
         .legal-move-dot {
             position: absolute;
             width: 20px;
