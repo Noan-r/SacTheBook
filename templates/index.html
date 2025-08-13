@@ -6,10 +6,6 @@
     <title>SacTheBook</title>
     <link rel="icon" type="image/png" href="/static/SacTheBook_Icon.png">
     <style>
-        * {
-            box-sizing: border-box;
-        }
-        
         body {
             font-family: 'Montserrat', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: #145334;
@@ -31,6 +27,23 @@
             flex-direction: column;
         }
         
+        /* Mobile background adjustments */
+        @media (max-width: 768px) {
+            body {
+                background-size: 120px 120px, 120px 120px, 120px 120px, 120px 120px, 120px 120px, 120px 120px;
+                background-position: 20px 50px, 200px 80px, 360px 30px, 120px 200px, 300px 150px, 450px 100px;
+                padding: 15px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            body {
+                background-size: 80px 80px, 80px 80px, 80px 80px, 80px 80px, 80px 80px, 80px 80px;
+                background-position: 10px 30px, 150px 50px, 280px 20px, 80px 120px, 220px 90px, 350px 60px;
+                padding: 10px;
+            }
+        }
+        
         .container {
             background: #F8F5EC;
             border: 2px solid #F47C20;
@@ -42,12 +55,42 @@
             width: 100%;
         }
         
+        /* Mobile container adjustments */
+        @media (max-width: 768px) {
+            .container {
+                padding: 25px;
+                border-radius: 15px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px;
+                border-radius: 12px;
+            }
+        }
+        
         h1 {
             color: #4B2E19;
             margin-bottom: 30px;
             font-size: 2.5em;
             font-weight: 700;
             letter-spacing: 1px;
+        }
+        
+        /* Mobile title adjustments */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+                margin-bottom: 25px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.6em;
+                margin-bottom: 20px;
+            }
         }
 
         .category-section {
@@ -69,9 +112,24 @@
             gap: 25px;
         }
         
+        /* Mobile grid adjustments */
+        @media (max-width: 768px) {
+            .openings-grid {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 20px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .openings-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+        }
+        
         .opening-card {
             background: #fff;
-            border: 2px solid #F47C20;
+            border: 2px solid #F8F5EC;
             border-radius: 14px;
             padding: 20px;
             text-decoration: none;
@@ -79,13 +137,29 @@
             transition: all 0.3s ease;
             cursor: pointer;
             box-shadow: 0 2px 8px rgba(75,46,25,0.06);
+            /* Ajout d'une bordure orange fine sur tous les boutons */
+            border: 2px solid #F47C20;
         }
         
+        /* Mobile card adjustments */
+        @media (max-width: 768px) {
+            .opening-card {
+                padding: 18px;
+                border-radius: 12px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .opening-card {
+                padding: 15px;
+                border-radius: 10px;
+            }
+        }
+        /* Style spécial pour les boutons d'ouverture de défense */
         .opening-card.defense {
-            background: #e0e0e0 !important;
+            background: #e0e0e0 !important; /* gris plus foncé */
             color: #888 !important;
         }
-        
         .opening-card.defense:hover {
             background: #d1cfcf !important;
             border-color: #F47C20;
@@ -102,276 +176,135 @@
         .opening-name {
             font-size: 1.3em;
             font-weight: 600;
-            margin-bottom: 10px;
+            color: #4B2E19;
         }
         
-        .opening-description {
-            color: #666;
-            font-size: 0.9em;
-            line-height: 1.4;
+        .no-openings {
+            color: #B23A2B;
+            font-style: italic;
         }
-        
-        .header-section {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-        }
-        
-        .logo-section {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-        
-        .sac-logo {
-            width: 60px;
-            height: 60px;
-            border-radius: 12px;
-            border: 2px solid #F47C20;
-        }
-        
-        .settings-section {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .settings-img {
-            width: 30px;
-            height: 30px;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-        
-        .settings-img:hover {
-            transform: scale(1.1);
-        }
-        
-        .settings-btn {
+        .btn, button {
             background: #F47C20;
-            color: white;
+            color: #F8F5EC;
             border: none;
-            padding: 8px 16px;
-            border-radius: 20px;
+            padding: 10px 22px;
+            border-radius: 25px;
             cursor: pointer;
+            font-size: 1em;
             font-weight: 600;
-            transition: background 0.2s;
+            margin: 0 5px;
+            transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+            box-shadow: 0 2px 8px rgba(244,124,32,0.08);
         }
-        
-        .settings-btn:hover {
+        .btn:hover, button:hover {
             background: #B23A2B;
+            color: #fff;
         }
-
-        /* Desktop styles */
-        @media (min-width: 1024px) {
-            .container {
-                padding: 50px;
-            }
-            
-            h1 {
-                font-size: 3em;
-            }
-            
-            .openings-grid {
-                grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-                gap: 30px;
-            }
-            
-            .opening-card {
-                padding: 25px;
-            }
-            
-            .opening-name {
-                font-size: 1.4em;
-            }
+        code {
+            background: #F8F5EC;
+            color: #B23A2B;
+            border-radius: 4px;
+            padding: 2px 6px;
         }
-
-        /* Tablet styles */
-        @media (max-width: 1023px) and (min-width: 768px) {
-            body {
-                padding: 15px;
-            }
-            
-            .container {
-                padding: 30px;
-            }
-            
-            h1 {
-                font-size: 2.2em;
-            }
-            
-            .openings-grid {
-                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-                gap: 20px;
-            }
-            
-            .header-section {
-                flex-direction: column;
-                gap: 20px;
-            }
-        }
-
-        /* Mobile styles */
-        @media (max-width: 767px) {
-            body {
-                padding: 10px;
-                background-size: 120px 120px, 120px 120px, 120px 120px, 120px 120px, 120px 120px, 120px 120px;
-                background-position: 20px 50px, 200px 80px, 360px 30px, 120px 200px, 280px 150px, 440px 100px;
-            }
-            
-            .container {
-                padding: 20px;
-                margin: 10px;
-                border-radius: 15px;
-            }
-            
-            h1 {
-                font-size: 1.8em;
-                margin-bottom: 20px;
-            }
-            
-            h2 {
-                font-size: 1.3em;
-                margin-bottom: 20px;
-            }
-            
-            .openings-grid {
-                grid-template-columns: 1fr;
-                gap: 15px;
-            }
-            
-            .opening-card {
-                padding: 15px;
-                border-radius: 10px;
-            }
-            
-            .opening-name {
-                font-size: 1.1em;
-                margin-bottom: 8px;
-            }
-            
-            .opening-description {
-                font-size: 0.85em;
-            }
-            
-            .header-section {
-                flex-direction: column;
-                gap: 15px;
-                margin-bottom: 20px;
-            }
-            
-            .logo-section {
-                gap: 10px;
-            }
-            
-            .sac-logo {
-                width: 50px;
-                height: 50px;
-            }
-            
-            .settings-section {
-                gap: 8px;
-            }
-            
-            .settings-img {
-                width: 25px;
-                height: 25px;
-            }
-            
-            .settings-btn {
-                padding: 6px 12px;
-                font-size: 0.9em;
-            }
-            
-            .category-section {
-                margin-bottom: 25px;
-            }
-        }
-
-        /* Small mobile styles */
-        @media (max-width: 480px) {
-            body {
-                padding: 5px;
-            }
-            
-            .container {
-                padding: 15px;
-                margin: 5px;
-            }
-            
-            h1 {
-                font-size: 1.5em;
-            }
-            
-            h2 {
-                font-size: 1.1em;
-            }
-            
-            .opening-card {
-                padding: 12px;
-            }
-            
-            .opening-name {
-                font-size: 1em;
-            }
-            
-            .opening-description {
-                font-size: 0.8em;
-            }
-            
-            .sac-logo {
-                width: 40px;
-                height: 40px;
-            }
-            
-            .settings-img {
-                width: 20px;
-                height: 20px;
-            }
+        .sac-logo {
+            background-color: #145334;
+            width: 70px;
+            display: block;
+            margin: 16px auto 12px auto;
+            border: 2px solid #F47C20;
+            border-radius: 16px;
         }
     </style>
 </head>
 <body>
+    <style>
+        .header-container {
+            position: relative;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        .settings-icon {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            transition: transform 0.3s ease;
+        }
+        .settings-img {
+            width: 48px;
+            height: 48px;
+            object-fit: contain;
+        }
+        .settings-icon:hover {
+            transform: rotate(90deg);
+        }
+    </style>
     <div class="container">
-        <div class="header-section">
-            <div class="logo-section">
-                <img src="/static/SacTheBook_Icon.png" alt="SacTheBook Logo" class="sac-logo">
-                <h1>SacTheBook</h1>
-            </div>
-            <div class="settings-section">
-                <img src="/static/img/button/settings-icon.png" alt="Settings" class="settings-img" onclick="window.location.href='/settings'">
-                <button class="settings-btn" onclick="window.location.href='/settings'">Settings</button>
-            </div>
+        <div class="header-container">
+            <img src="/static/SacTheBook_Icon.png" alt="SacTheBook Logo" class="sac-logo">
+            <h1>SacTheBook</h1>
+            <a href="/openings/settings" class="settings-icon" title="Opening Settings">
+                <img src="/static/img/button/settings-icon.png" alt="Settings" class="settings-img">
+            </a>
         </div>
-
-        {% for category, openings in openings_by_category.items() %}
-        <div class="category-section">
-            <h2>{{ category }}</h2>
-            <div class="openings-grid">
-                {% for opening in openings %}
-                <a href="{{ url_for('opening_page', opening_name=opening.name) }}?from_index=1" class="opening-card {% if 'defense' in opening.name.lower() %}defense{% endif %}">
-                    <div class="opening-name">{{ opening.name.replace('_', ' ').title() }}</div>
-                    <div class="opening-description">
-                        {% if opening.lines %}
-                            {{ opening.lines|length }} variation{% if opening.lines|length > 1 %}s{% endif %} available
-                        {% else %}
-                            No variations available
-                        {% endif %}
+        
+        {% for category, openings_list in openings_by_category.items() %}
+            <div class="category-section">
+                <h2>{{ category }}</h2>
+                {% if openings_list %}
+                    <div class="openings-grid">
+                        {% for opening in openings_list %}
+                        <a href="{{ url_for('opening_page', opening_name=opening.name) }}?from_index=1" class="opening-card{% if category == 'Defense' %} defense{% endif %}">
+                            <div class="opening-name">{{ opening.name.replace('_', ' ') }}</div>
+                        </a>
+                        {% endfor %}
                     </div>
-                </a>
-                {% endfor %}
+                {% else %}
+                    <p class="no-openings">No openings in this category.</p>
+                {% endif %}
             </div>
-        </div>
         {% endfor %}
     </div>
 
+
+
     <script>
         // Check if coming from settings and force refresh
-        if (window.location.search.includes('from_settings')) {
-            window.location.href = window.location.pathname;
+        if (window.location.search.includes('refresh=true')) {
+            // Supprimer le paramètre de l'URL
+            const url = new URL(window.location);
+            url.searchParams.delete('refresh');
+            window.history.replaceState({}, '', url);
+            
+            // Forcer un rechargement complet de la page
+            window.location.reload(true);
         }
+        
+        // Ajouter un timestamp pour éviter le cache
+        document.addEventListener('DOMContentLoaded', function() {
+            const links = document.querySelectorAll('a[href*="/openings/settings"]');
+            links.forEach(link => {
+                link.addEventListener('click', function() {
+                    // Ajouter un paramètre pour indiquer qu'on va vers settings
+                    this.href = this.href + '?from=index';
+                });
+            });
+            
+            // Ajouter un timestamp pour éviter le cache sur les liens d'ouverture
+            const openingLinks = document.querySelectorAll('a[href*="/opening/"]');
+            openingLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    // Ajouter un timestamp pour éviter le cache
+                    const timestamp = Date.now();
+                    const separator = this.href.includes('?') ? '&' : '?';
+                    this.href = this.href + separator + '_t=' + timestamp;
+                });
+            });
+        });
     </script>
 </body>
 </html> 

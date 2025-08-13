@@ -6,10 +6,6 @@
     <title>Opening Settings - SacTheBook</title>
     <link rel="icon" type="image/png" href="/static/SacTheBook_Icon.png">
     <style>
-        * {
-            box-sizing: border-box;
-        }
-        
         body {
             font-family: 'Montserrat', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: #145334;
@@ -19,7 +15,7 @@
                 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cg transform='rotate(45 90 90)'%3E%3Ctext x='90' y='105' font-size='60' text-anchor='middle' fill='rgba(255,255,255,0.06)'%3E♖%3C/text%3E%3C/g%3E%3C/svg%3E"),
                 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cg transform='rotate(-10 90 90)'%3E%3Ctext x='90' y='105' font-size='60' text-anchor='middle' fill='rgba(255,255,255,0.09)'%3E♗%3C/text%3E%3C/g%3E%3C/svg%3E"),
                 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cg transform='rotate(30 90 90)'%3E%3Ctext x='90' y='105' font-size='60' text-anchor='middle' fill='rgba(255,255,255,0.07)'%3E♘%3C/text%3E%3C/g%3E%3C/svg%3E"),
-                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cg transform='rotate(-40 90 90)'%3E%3Ctext x='90' y='105' font-size='60' text-anchor='middle' fill='rgba(255,255,255,0.11)'%3E♙%3C/text%3E%3C/g%3E%3C/svg%3E");
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cg transform='rotate(-40 90 90)'%3E%3Ctext x='105' font-size='60' text-anchor='middle' fill='rgba(255,255,255,0.11)'%3E♙%3C/text%3E%3C/g%3E%3C/svg%3E");
             background-size: 180px 180px, 180px 180px, 180px 180px, 180px 180px, 180px 180px, 180px 180px;
             background-position: 40px 100px, 300px 140px, 540px 60px, 180px 370px, 440px 300px, 670px 200px;
             margin: 0;
@@ -27,6 +23,22 @@
             min-height: 100vh;
         }
         
+        /* Mobile background adjustments */
+        @media (max-width: 768px) {
+            body {
+                background-size: 120px 120px, 120px 120px, 120px 120px, 120px 120px, 120px 120px, 120px 120px;
+                background-position: 20px 50px, 200px 80px, 360px 30px, 120px 200px, 300px 150px, 450px 100px;
+                padding: 15px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            body {
+                background-size: 80px 80px, 80px 80px, 80px 80px, 80px 80px, 80px 80px, 80px 80px;
+                background-position: 10px 30px, 150px 50px, 280px 20px, 80px 120px, 220px 90px, 350px 60px;
+                padding: 10px;
+            }
+        }
         .container {
             background: #F8F5EC;
             border-radius: 20px;
@@ -34,15 +46,44 @@
             padding: 40px;
             max-width: 900px;
             margin: 40px auto;
-            position: relative;
         }
         
+        /* Mobile container adjustments */
+        @media (max-width: 768px) {
+            .container {
+                padding: 25px;
+                margin: 20px auto;
+                border-radius: 15px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px;
+                margin: 15px auto;
+                border-radius: 12px;
+            }
+        }
         h1 {
             color: #F47C20;
             text-align: center;
             margin-bottom: 30px;
         }
         
+        /* Mobile title adjustments */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8em;
+                margin-bottom: 25px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.5em;
+                margin-bottom: 20px;
+            }
+        }
         .btn {
             background: #F47C20;
             color: #F8F5EC;
@@ -57,11 +98,26 @@
             box-shadow: 0 2px 8px rgba(244,124,32,0.08);
         }
         
+        /* Mobile button adjustments */
+        @media (max-width: 768px) {
+            .btn {
+                padding: 8px 18px;
+                font-size: 0.9em;
+                margin: 0 3px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .btn {
+                padding: 7px 15px;
+                font-size: 0.85em;
+                margin: 0 2px;
+            }
+        }
         .btn:hover {
             background: #B23A2B;
             color: #fff;
         }
-        
         .backbtn {
             display: inline-block;
             background: #F47C20;
@@ -81,16 +137,32 @@
             transition: background 0.2s, transform 0.2s;
         }
         
+        /* Mobile back button adjustments */
+        @media (max-width: 768px) {
+            .backbtn {
+                font-size: 1em;
+                padding: 10px 24px 10px 18px;
+                top: 15px;
+                left: 15px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .backbtn {
+                font-size: 0.9em;
+                padding: 8px 20px 8px 15px;
+                top: 10px;
+                left: 10px;
+            }
+        }
         .backbtn:hover {
             background: #B23A2B;
             color: #fff;
             transform: scale(1.06);
         }
-        
         .openings-list {
             margin-bottom: 40px;
         }
-        
         .opening-block {
             background: #fff;
             border-radius: 12px;
@@ -99,407 +171,1006 @@
             box-shadow: 0 2px 8px rgba(75,46,25,0.06);
         }
         
+        /* Mobile opening block adjustments */
+        @media (max-width: 768px) {
+            .opening-block {
+                padding: 15px 20px;
+                margin-bottom: 15px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .opening-block {
+                padding: 12px 16px;
+                margin-bottom: 12px;
+            }
+        }
+        /* Bloc défense grisé */
         .opening-block.defense {
             background: #e0e0e0 !important;
         }
-        
+        /* Bouton edit grisé dans les blocs défense */
         .opening-block.defense .edit-btn {
             background: #d1cfcf !important;
             color: #888 !important;
             border: 1px solid #F47C20;
         }
-        
         .opening-block.defense .edit-btn:hover {
             background: #e0e0e0 !important;
             color: #B23A2B !important;
         }
-        
-        .opening-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-        
-        .opening-name {
+        .opening-title {
             font-size: 1.2em;
             font-weight: 600;
             color: #4B2E19;
         }
-        
-        .opening-actions {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
+        .variation-list {
+            margin-left: 18px;
+            margin-top: 8px;
         }
-        
-        .edit-btn {
-            background: #F47C20;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 0.9em;
-            font-weight: 600;
-            transition: background 0.2s;
-        }
-        
-        .edit-btn:hover {
-            background: #B23A2B;
-        }
-        
-        .opening-details {
-            color: #666;
-            font-size: 0.9em;
-            line-height: 1.4;
-        }
-        
-        .add-opening-section {
-            background: #fff;
-            border-radius: 12px;
-            padding: 20px;
-            margin-top: 30px;
-            box-shadow: 0 2px 8px rgba(75,46,25,0.06);
-        }
-        
-        .form-group {
-            margin-bottom: 15px;
-        }
-        
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: 600;
-            color: #4B2E19;
-        }
-        
-        .form-group input, .form-group textarea, .form-group select {
-            width: 100%;
-            padding: 10px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
+        .variation-item {
             font-size: 1em;
-            transition: border-color 0.2s;
-        }
-        
-        .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
-            outline: none;
-            border-color: #F47C20;
-        }
-        
-        .form-row {
+            color: #145334;
+            margin-bottom: 4px;
             display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+            width: 100%;
         }
-        
-        .form-row .form-group {
+        .var-title {
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        .var-pgn {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
             flex: 1;
-            min-width: 200px;
+            min-width: 0;
         }
-        
-        .header-section {
+        .variation-edit-row {
+            display: flex;
+            align-items: center; /* Changé de flex-start à center */
+            gap: 8px;
+            width: 100%;
+        }
+        .edit-title {
+            min-width: 120px;
+            max-width: 100%;
+            transition: width 0.2s;
+            flex-shrink: 0;
+            height: 32px; /* Hauteur fixe pour l'alignement */
+            box-sizing: border-box;
+        }
+        .edit-pgn {
+            flex: 1;
+            min-width: 120px;
+            max-width: none;
+            resize: none;
+            transition: width 0.2s ease;
+            overflow: hidden;
+            background: #fff;
+            border: 1px solid #F47C20;
+            border-radius: 4px;
+            padding: 4px 6px;
+            height: 32px; /* Hauteur fixe pour l'alignement */
+            box-sizing: border-box;
+        }
+        .edit-btn, .save-btn, .cancel-btn, .delete-btn {
+            flex-shrink: 0;
+            height: 32px; /* Hauteur fixe pour l'alignement */
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 15px;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
+            box-sizing: border-box;
         }
-        
-        .sac-logo {
-            width: 70px;
-            max-width: 18vw;
-            display: inline-block;
-            vertical-align: middle;
+        .form-section {
+            background: #FFF5E6;
+            border-radius: 12px;
+            padding: 24px;
+            margin-top: 30px;
+        }
+        .form-group {
+            margin-bottom: 10px;
+        }
+        label {
+            font-weight: 600;
+            color: #4B2E19;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 4px 6px;
+            border-radius: 4px;
+            border: 1px solid #F47C20;
+            margin-top: 2px;
+            font-size: 0.95em;
+            background: #fff;
+            box-sizing: border-box;
+            resize: none;
+        }
+        input, textarea {
+            min-width: 0;
+            max-width: 100%;
+        }
+        .variation-fields {
+            margin-bottom: 12px;
+            background: #fff;
+            border-radius: 8px;
+            padding: 10px 12px;
+        }
+        .remove-variation-btn {
+            background: #B23A2B;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 4px 10px;
+            margin-left: 10px;
+            cursor: pointer;
+        }
+        .remove-variation-btn:hover {
+            background: #F47C20;
+        }
+        .edit-btn, .save-btn, .cancel-btn, .delete-btn {
+            background: #F8F5EC;
+            color: #B23A2B;
+            border: 1px solid #F47C20;
+            border-radius: 6px;
+            padding: 2px 8px;
+            font-size: 0.9em;
+            margin-left: 4px;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s;
+        }
+        .edit-btn:hover, .save-btn:hover, .cancel-btn:hover, .delete-btn:hover {
+            background: #F47C20;
+            color: #fff;
+        }
+        .add-opening-btn.active {
+            background: #F47C20 !important;
+            color: #fff !important;
+            border-color: #F47C20 !important;
+            transform: translateY(2px) !important;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.2) !important;
+        }
+        .opening-form {
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        .opening-form.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .delete-opening-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #F47C20;
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            transition: background 0.2s;
+        }
+        .delete-opening-btn:hover {
+            background: #B23A2B;
+        }
+        .opening-block {
+            position: relative;
+        }
+        .custom-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .custom-modal.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
             border: 2px solid #F47C20;
-            border-radius: 16px;
-            background: #145334;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
         }
-
-        /* Desktop styles */
-        @media (min-width: 1024px) {
-            .container {
-                padding: 50px;
-                margin: 50px auto;
-            }
-            
-            h1 {
-                font-size: 2.5em;
-            }
-            
-            .opening-block {
-                padding: 25px 30px;
-            }
-            
-            .opening-name {
-                font-size: 1.3em;
-            }
-            
-            .backbtn {
-                font-size: 1.2em;
-                padding: 15px 40px 15px 30px;
-            }
+        .modal-title {
+            color: #145334;
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 15px;
         }
-
-        /* Tablet styles */
-        @media (max-width: 1023px) and (min-width: 768px) {
-            body {
-                padding: 15px;
-            }
-            
-            .container {
-                padding: 30px;
-                margin: 30px auto;
-            }
-            
-            h1 {
-                font-size: 2.2em;
-            }
-            
-            .opening-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 10px;
-            }
-            
-            .opening-actions {
-                width: 100%;
-                justify-content: flex-start;
-            }
-            
-            .form-row {
-                flex-direction: column;
-            }
-            
-            .form-row .form-group {
-                min-width: auto;
-            }
+        .modal-message {
+            color: #333;
+            margin-bottom: 20px;
+            line-height: 1.4;
         }
-
-        /* Mobile styles */
-        @media (max-width: 767px) {
-            body {
-                padding: 10px;
-                background-size: 120px 120px, 120px 120px, 120px 120px, 120px 120px, 120px 120px, 120px 120px;
-                background-position: 20px 50px, 200px 80px, 360px 30px, 120px 200px, 280px 150px, 440px 100px;
-            }
-            
-            .container {
-                padding: 20px;
-                margin: 10px auto;
-                border-radius: 15px;
-            }
-            
-            h1 {
-                font-size: 1.8em;
-                margin-bottom: 20px;
-            }
-            
-            .backbtn {
-                position: relative;
-                top: auto;
-                left: auto;
-                margin-bottom: 20px;
-                font-size: 1em;
-                padding: 10px 20px 10px 15px;
-                display: block;
-                width: fit-content;
-            }
-            
-            .opening-block {
-                padding: 15px;
-                margin-bottom: 15px;
-                border-radius: 10px;
-            }
-            
-            .opening-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 10px;
-            }
-            
-            .opening-name {
-                font-size: 1.1em;
-            }
-            
-            .opening-actions {
-                width: 100%;
-                justify-content: flex-start;
-                gap: 8px;
-            }
-            
-            .edit-btn {
-                padding: 6px 12px;
-                font-size: 0.85em;
-            }
-            
-            .opening-details {
-                font-size: 0.85em;
-            }
-            
-            .add-opening-section {
-                padding: 15px;
-                margin-top: 20px;
-            }
-            
-            .form-group {
-                margin-bottom: 12px;
-            }
-            
-            .form-group label {
-                font-size: 0.95em;
-            }
-            
-            .form-group input, .form-group textarea, .form-group select {
-                padding: 8px;
-                font-size: 0.95em;
-            }
-            
-            .form-row {
-                flex-direction: column;
-                gap: 10px;
-            }
-            
-            .form-row .form-group {
-                min-width: auto;
-            }
-            
-            .header-section {
-                gap: 10px;
-                margin-bottom: 20px;
-            }
-            
-            .sac-logo {
-                width: 50px;
-            }
-            
-            .btn {
-                padding: 8px 16px;
-                font-size: 0.9em;
-                margin: 2px;
-            }
+        .modal-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
         }
-
-        /* Small mobile styles */
-        @media (max-width: 480px) {
-            body {
-                padding: 5px;
-            }
-            
-            .container {
-                padding: 15px;
-                margin: 5px auto;
-            }
-            
-            h1 {
-                font-size: 1.5em;
-            }
-            
-            .opening-block {
-                padding: 12px;
-            }
-            
-            .opening-name {
-                font-size: 1em;
-            }
-            
-            .edit-btn {
-                padding: 5px 10px;
-                font-size: 0.8em;
-            }
-            
-            .opening-details {
-                font-size: 0.8em;
-            }
-            
-            .add-opening-section {
-                padding: 12px;
-            }
-            
-            .form-group input, .form-group textarea, .form-group select {
-                padding: 6px;
-                font-size: 0.9em;
-            }
-            
-            .sac-logo {
-                width: 40px;
-            }
-            
-            .btn {
-                padding: 6px 12px;
-                font-size: 0.85em;
-            }
+        .modal-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background 0.2s;
+        }
+        .modal-btn.confirm {
+            background: #B23A2B;
+            color: white;
+        }
+        .modal-btn.confirm:hover {
+            background: #8B2A1F;
+        }
+        .modal-btn.cancel {
+            background: #F8F5EC;
+            color: #B23A2B;
+            border: 1px solid #F47C20;
+        }
+        .modal-btn.cancel:hover {
+            background: #F47C20;
+            color: white;
         }
     </style>
 </head>
 <body>
+    <div style="width:100%;text-align:center;margin-top:8px;margin-bottom:0;">
+        <img src="/static/SacTheBook_Icon.png" alt="SacTheBook Logo" class="sac-logo" style="width:70px;max-width:18vw;display:inline-block;vertical-align:middle;border:2px solid #F47C20;border-radius:16px;background:#145334;">
+    </div>
+    <a href="/" class="backbtn">← Back</a>
     <div class="container">
-        <a href="/" class="backbtn">← Back</a>
-        
-        <div class="header-section">
-            <img src="/static/SacTheBook_Icon.png" alt="SacTheBook Logo" class="sac-logo" style="width:70px;max-width:18vw;display:inline-block;vertical-align:middle;border:2px solid #F47C20;border-radius:16px;background:#145334;">
-            <h1>Opening Settings</h1>
-        </div>
-
+        <h1>Opening Settings</h1>
         <div class="openings-list">
-            {% for category, openings in openings_by_category.items() %}
-            <h2>{{ category }}</h2>
-            {% for opening in openings %}
-            <div class="opening-block {% if 'defense' in opening.name.lower() %}defense{% endif %}">
-                <div class="opening-header">
-                    <div class="opening-name">{{ opening.name.replace('_', ' ').title() }}</div>
-                    <div class="opening-actions">
-                        <button class="edit-btn" onclick="editOpening('{{ opening.name }}')">Edit</button>
+            <h2>Attacks</h2>
+            {% for opening in openings if opening.category == 'Attack' %}
+                <div class="opening-block" id="opening-{{ opening.name.replace(' ', '_') }}">
+                                            <button type="button" class="delete-opening-btn" title="Delete opening" data-category="Attack" data-name="{{ opening.name }}">✕</button>
+                    <div class="opening-title"><span style="font-size:1.2em; margin-right:6px;">♙</span>{{ opening.name }}</div>
+                    <div class="variation-list">
+                        {% for var in opening.variations %}
+                            <div class="variation-item" data-var-title="{{ var.name }}" data-var-pgn="{{ var.pgn }}">
+                                • <b class="var-title">{{ var.name }}</b> : <code class="var-pgn">{{ var.pgn }}</code>
+                                <button type="button" class="edit-btn" title="Edit">✏️</button>
+                            </div>
+                        {% endfor %}
+                        <div class="add-variation-row"></div>
+                        <button type="button" class="btn add-variation-btn" title="Ajouter une variation" style="margin-top:8px;">➕ Add Variation</button>
                     </div>
                 </div>
-                <div class="opening-details">
-                    {% if opening.lines %}
-                        {{ opening.lines|length }} variation{% if opening.lines|length > 1 %}s{% endif %} available
-                    {% else %}
-                        No variations available
-                    {% endif %}
-                </div>
-            </div>
             {% endfor %}
+            <h2 style="margin-top:40px;">Defenses</h2>
+            {% for opening in openings if opening.category == 'Defense' %}
+                <div class="opening-block defense" id="opening-{{ opening.name.replace(' ', '_') }}">
+                                            <button type="button" class="delete-opening-btn" title="Delete opening" data-category="Defense" data-name="{{ opening.name }}">✕</button>
+                    <div class="opening-title"><span style="font-size:1.2em; margin-right:6px;">♟</span>{{ opening.name }}</div>
+                    <div class="variation-list">
+                        {% for var in opening.variations %}
+                            <div class="variation-item" data-var-title="{{ var.name }}" data-var-pgn="{{ var.pgn }}">
+                                • <b class="var-title">{{ var.name }}</b> : <code class="var-pgn">{{ var.pgn }}</code>
+                                <button type="button" class="edit-btn" title="Edit">✏️</button>
+                            </div>
+                        {% endfor %}
+                        <div class="add-variation-row"></div>
+                        <button type="button" class="btn add-variation-btn" title="Ajouter une variation" style="margin-top:8px;">➕ Add Variation</button>
+                    </div>
+                </div>
             {% endfor %}
         </div>
-
-        <div class="add-opening-section">
-            <h2>Add New Opening</h2>
-            <form method="POST" action="/settings">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="opening_name">Opening Name:</label>
-                        <input type="text" id="opening_name" name="opening_name" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="category">Category:</label>
-                        <select id="category" name="category" required>
-                            <option value="">Select category...</option>
-                            <option value="Open Games">Open Games</option>
-                            <option value="Semi-Open Games">Semi-Open Games</option>
-                            <option value="Closed Games">Closed Games</option>
-                            <option value="Flank Openings">Flank Openings</option>
-                            <option value="Defense">Defense</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="pgn_content">PGN Content:</label>
-                    <textarea id="pgn_content" name="pgn_content" rows="10" placeholder="Enter PGN content here..." required></textarea>
-                </div>
-                <button type="submit" class="btn">Add Opening</button>
-            </form>
+        <div class="form-section" style="text-align:center; margin-top:40px;">
+            <button type="button" class="btn add-opening-btn" data-category="Attack">➕ Add Attack</button>
+            <button type="button" class="btn add-opening-btn" data-category="Defense">➕ Add Defense</button>
+            <div id="new-opening-zone"></div>
         </div>
     </div>
-
+    
+    <!-- Modal de confirmation personnalisé -->
+    <div id="custom-modal" class="custom-modal">
+        <div class="modal-content">
+            <div class="modal-title">Confirmation</div>
+            <div class="modal-message" id="modal-message"></div>
+            <div class="modal-buttons">
+                                    <button type="button" class="modal-btn confirm" id="modal-confirm">Delete</button>
+                                        <button type="button" class="modal-btn cancel" id="modal-cancel">Cancel</button>
+            </div>
+        </div>
+    </div>
+    
     <script>
-        function editOpening(openingName) {
-            // Implement edit functionality
-            alert('Edit functionality for ' + openingName + ' will be implemented soon.');
+        // Fonction d'autoresize pour textarea
+        function autoResizeTextarea(textarea) {
+            textarea.style.height = 'auto';
+            textarea.style.height = (textarea.scrollHeight) + 'px';
         }
+        
+        // Fonction d'auto-adaptation de la largeur pour les inputs PGN
+        function autoAdjustPgnWidth(input) {
+            console.log('=== Auto-adjusting PGN width ===');
+            console.log('Input element:', input);
+            console.log('Input value:', input.value);
+            
+                            // Find parent container (variation-edit-row)
+            const editRow = input.closest('.variation-edit-row');
+            if (!editRow) {
+                console.log('No edit row found');
+                return;
+            }
+            console.log('Edit row found:', editRow);
+            
+            // Calculer l'espace disponible
+            const rowWidth = editRow.offsetWidth;
+            const titleInput = editRow.querySelector('.edit-title');
+            const buttons = editRow.querySelectorAll('.save-btn, .cancel-btn, .delete-btn');
+            
+            console.log('Row width:', rowWidth);
+            console.log('Title input:', titleInput);
+            console.log('Buttons count:', buttons.length);
+            
+            // Largeur des boutons
+            let buttonsWidth = 0;
+            buttons.forEach((btn, index) => {
+                const btnWidth = btn.offsetWidth;
+                buttonsWidth += btnWidth + 8; // 8px pour le gap
+                console.log(`Button ${index} width:`, btnWidth);
+            });
+            
+            // Largeur du titre
+            const titleWidth = titleInput ? titleInput.offsetWidth + 8 : 0; // 8px pour le gap
+            console.log('Title width:', titleWidth);
+            
+            // Espace disponible pour le PGN (utiliser tout l'espace restant)
+            const availableWidth = rowWidth - buttonsWidth - titleWidth - 16; // 16px pour les marges
+            
+            console.log('Row width:', rowWidth, 'Buttons width:', buttonsWidth, 'Title width:', titleWidth, 'Available width:', availableWidth);
+            
+            // Utiliser tout l'espace disponible
+            const newWidth = Math.max(120, availableWidth);
+            
+            console.log('New width:', newWidth);
+            console.log('Setting input width to:', newWidth + 'px');
+            input.style.width = newWidth + 'px';
+            console.log('Input width after setting:', input.offsetWidth);
+            console.log('=== End auto-adjusting ===');
+        }
+        // Appliquer à tous les textarea existants au chargement
+        document.querySelectorAll('textarea').forEach(function(textarea) {
+            textarea.addEventListener('input', function() {
+                autoResizeTextarea(textarea);
+            });
+            autoResizeTextarea(textarea);
+        });
+        // Dynamique ajout/suppression de variations
+        let variationCount = 1;
+        // Suppression de cette ligne qui cause l'erreur car l'élément n'existe pas
+        // document.getElementById('add-variation-btn').onclick = function() {
+        //     const container = document.getElementById('variations-container');
+        //     const div = document.createElement('div');
+        //     div.className = 'variation-fields';
+        //     div.innerHTML = `
+        //         <div class="form-group">
+        //             <label>Variation Title</label>
+        //             <input type="text" name="variation_title_${variationCount}" required>
+        //         </div>
+        //         <div class="form-group">
+        //             <label>PGN</label>
+        //             <textarea name="variation_pgn_${variationCount}" rows="2" required></textarea>
+        //         </div>
+        //         <button type="button" class="remove-variation-btn">Remove</button>
+        //     `;
+        //     div.querySelector('.remove-variation-btn').onclick = function() {
+        //         div.remove();
+        //     };
+        //     // Appliquer l'autoresize au nouveau textarea
+        //     const newTextarea = div.querySelector('textarea');
+        //     if (newTextarea) {
+        //         newTextarea.addEventListener('input', function() {
+        //             autoResizeTextarea(newTextarea);
+        //         });
+        //         autoResizeTextarea(newTextarea);
+        //     }
+        //     container.appendChild(div);
+        //     variationCount++;
+        // };
+        // Délégation d'événement pour le bouton edit (fonctionne même après modification du DOM)
+        document.querySelectorAll('.variation-list').forEach(function(list) {
+            list.addEventListener('click', function(e) {
+                if (e.target.classList.contains('edit-btn')) {
+                    const btn = e.target;
+                    const item = btn.closest('.variation-item');
+                    if (!item) return;
+                    // Calculer et stocker l'index de la variation
+                    const block = item.closest('.opening-block');
+                    const allItems = Array.from(block.querySelectorAll('.variation-item'));
+                    const idx = allItems.indexOf(item);
+                    item.setAttribute('data-variation-index', idx);
+                    // Retirer le préfixe #n si présent pour l'édition
+                    let title = item.querySelector('.var-title').textContent;
+                    let titleNoNum = title.replace(/^#\d+\s*/, '');
+                    const pgn = item.querySelector('.var-pgn').textContent;
+                    item.innerHTML = `
+                        <div class="variation-edit-row">
+                            <input type="text" class="edit-title" value="${titleNoNum}" style="min-width:120px;max-width:100%;">
+                            <span class="edit-title-measure" style="position:absolute;visibility:hidden;white-space:pre;"></span>
+                            <input type="text" class="edit-pgn" value="${pgn}" style="min-width:120px;">
+                            <button type="button" class="save-btn">💾</button>
+                            <button type="button" class="cancel-btn">✖️</button>
+                            <button type="button" class="delete-btn">🗑️</button>
+                        </div>
+                    `;
+                    // Auto-ajustement de la largeur de l'input titre
+                    const editTitle = item.querySelector('.edit-title');
+                    const editPgn = item.querySelector('.edit-pgn');
+                    const measureSpan = item.querySelector('.edit-title-measure');
+                    function adjustInputWidth() {
+                        measureSpan.textContent = editTitle.value || editTitle.placeholder || '';
+                        measureSpan.style.font = window.getComputedStyle(editTitle).font;
+                        editTitle.style.width = Math.max(120, measureSpan.offsetWidth + 20) + 'px';
+                    }
+                    editTitle.addEventListener('input', adjustInputWidth);
+                    adjustInputWidth();
+
+                    // Auto-ajustement de la largeur de l'input PGN
+                    editPgn.addEventListener('input', function() {
+                        autoAdjustPgnWidth(this);
+                    });
+                    autoAdjustPgnWidth(editPgn);
+                    setTimeout(() => autoAdjustPgnWidth(editPgn), 10);
+
+                    // Enter key management to navigate between fields
+                    function handleEnterKey(e) {
+                        if (e.key === 'Enter') {
+                            e.preventDefault();
+                            if (e.target === editTitle) {
+                                // Si on est dans le titre, passer au PGN
+                                editPgn.focus();
+                            } else if (e.target === editPgn) {
+                                // If in PGN, save
+                                const saveBtn = item.querySelector('.save-btn');
+                                if (saveBtn) saveBtn.click();
+                            }
+                        }
+                    }
+                    editTitle.addEventListener('keydown', handleEnterKey);
+                    editPgn.addEventListener('keydown', handleEnterKey);
+                    // Inline button management
+                    item.querySelector('.cancel-btn').onclick = function() {
+                        item.innerHTML = `• <b class="var-title">${title}</b> : <code class="var-pgn">${pgn}</code> <button type="button" class="edit-btn" title="Edit">✏️</button>`;
+                    };
+                    // Sauvegarde AJAX
+                    item.querySelector('.save-btn').onclick = function() {
+                        let newTitle = item.querySelector('.edit-title').value;
+                        const newPgn = item.querySelector('.edit-pgn').value;
+                        // Trouver le nom de l'ouverture et la catégorie
+                        const block = item.closest('.opening-block');
+                        const openingName = block.querySelector('.opening-title').textContent.replace(/^\s*[♙♟]\s*/, '').trim();
+                        // Déterminer la catégorie en regardant si le bloc a la classe 'defense'
+                        const category = block.classList.contains('defense') ? 'Defense' : 'Attack';
+                        // Utiliser l'index stocké dans l'attribut data
+                        const idx = parseInt(item.getAttribute('data-variation-index'));
+                        // Préfixe automatique #N si absent
+                        if (!newTitle.trim().startsWith('#')) {
+                            newTitle = `#${idx+1} ${newTitle.trim()}`;
+                            item.querySelector('.edit-title').value = newTitle;
+                        }
+                        // Affichage d'un message d'erreur si besoin
+                        let errorDiv = item.querySelector('.edit-error');
+                        if (!errorDiv) {
+                            errorDiv = document.createElement('div');
+                            errorDiv.className = 'edit-error';
+                            errorDiv.style.color = '#dc3545';
+                            errorDiv.style.marginTop = '6px';
+                            item.appendChild(errorDiv);
+                        }
+                        errorDiv.textContent = '';
+                        fetch('/openings/settings/edit_variation', {
+                            method: 'POST',
+                            headers: {'Content-Type': 'application/json'},
+                            body: JSON.stringify({
+                                category: category,
+                                opening: openingName,
+                                variation_index: idx,
+                                new_title: newTitle,
+                                new_pgn: newPgn
+                            })
+                        }).then(async r => {
+                            if (r.ok) {
+                                location.reload();
+                            } else {
+                                let msg = 'Error during save';
+                                try {
+                                    const data = await r.json();
+                                    if (data.error) msg = data.error;
+                                } catch {}
+                                // Temporary display in PGN field
+                                const pgnInput = item.querySelector('.edit-pgn');
+                                const oldValue = pgnInput.value;
+                                const oldColor = pgnInput.style.color;
+                                const oldBorder = pgnInput.style.borderColor;
+                                const oldBg = pgnInput.style.background;
+                                pgnInput.value = msg;
+                                pgnInput.disabled = true;
+                                pgnInput.style.color = '#dc3545';
+                                pgnInput.style.borderColor = '#dc3545';
+                                pgnInput.style.background = '#fff0f0';
+                                setTimeout(() => {
+                                    pgnInput.value = oldValue;
+                                    pgnInput.disabled = false;
+                                    pgnInput.style.color = oldColor;
+                                    pgnInput.style.borderColor = oldBorder;
+                                    pgnInput.style.background = oldBg;
+                                    autoAdjustPgnWidth(pgnInput);
+                                    pgnInput.focus();
+                                    pgnInput.setSelectionRange(pgnInput.value.length, pgnInput.value.length);
+                                }, 500);
+                            }
+                        }).catch(err => {
+                            errorDiv.textContent = 'Network error during save';
+                        });
+                    };
+                    // Gestion du bouton de suppression
+                    item.querySelector('.delete-btn').onclick = function() {
+                        // Trouver le nom de l'ouverture et la catégorie
+                        const block = item.closest('.opening-block');
+                        const openingName = block.querySelector('.opening-title').textContent.replace(/^\s*[♙♟]\s*/, '').trim();
+                        const category = block.classList.contains('defense') ? 'Defense' : 'Attack';
+                        const idx = parseInt(item.getAttribute('data-variation-index'));
+                        
+                        fetch('/openings/settings/delete_variation', {
+                            method: 'POST',
+                            headers: {'Content-Type': 'application/json'},
+                            body: JSON.stringify({
+                                category: category,
+                                opening: openingName,
+                                variation_index: idx
+                            })
+                        }).then(async r => {
+                            if (r.ok) {
+                                location.reload();
+                            } else {
+                                let msg = 'Error during deletion';
+                                try {
+                                    const data = await r.json();
+                                    if (data.error) msg = data.error;
+                                } catch {}
+                                alert(msg);
+                            }
+                        }).catch(err => {
+                            alert('Network error during deletion');
+                        });
+                    };
+                }
+            });
+        });
+        // Ajout d'une variation inline (bouton + en bas)
+        document.querySelectorAll('.variation-list').forEach(function(list) {
+            list.addEventListener('click', function(e) {
+                if (e.target.classList.contains('add-variation-btn')) {
+                    const addRow = list.querySelector('.add-variation-row');
+                    if (!addRow) return;
+                    // Si déjà ouvert, ne rien faire
+                    if (addRow.innerHTML.trim() !== '') return;
+                    // Trouver le nom et la catégorie
+                    const block = list.closest('.opening-block');
+                    // Déterminer la catégorie en fonction de la classe du bloc et de l'icône
+                    let category = 'Attack'; // par défaut
+                    if (block.classList.contains('defense')) {
+                        category = 'Defense';
+                    } else {
+                        // Vérifier l'icône comme fallback
+                        const titleElement = block.querySelector('.opening-title');
+                        if (titleElement && titleElement.textContent.includes('♟')) {
+                            category = 'Defense';
+                        }
+                    }
+                    const name = block.querySelector('.opening-title').textContent.replace(/^\s*[♙♟]\s*/, '').trim();
+                    console.log('DEBUG Frontend - Category:', category);
+                    console.log('DEBUG Frontend - Name:', name);
+                    console.log('DEBUG Frontend - Full title text:', block.querySelector('.opening-title').textContent);
+                    console.log('DEBUG Frontend - Block classes:', block.className);
+                    console.log('DEBUG Frontend - Has defense class:', block.classList.contains('defense'));
+                    // Déterminer le numéro de la prochaine variation
+                    const n = list.querySelectorAll('.variation-item').length + 1;
+                    addRow.innerHTML = `
+                        <div class="variation-edit-row" style="margin-top:8px;">
+                                <input type="text" class="edit-title" name="variation_title" placeholder="Variation title" required style="min-width:120px;max-width:100%;">
+                                <span class="edit-title-measure" style="position:absolute;visibility:hidden;white-space:pre;"></span>
+                            <input type="text" class="edit-pgn" name="variation_pgn" placeholder="PGN" required style="min-width:120px;">
+                            <button type="button" class="save-btn">💾</button>
+                                <button type="button" class="cancel-btn">✖️</button>
+                            </div>
+                    `;
+                    // Auto-ajustement titre
+                    const editTitle = addRow.querySelector('.edit-title');
+                    const editPgn = addRow.querySelector('.edit-pgn');
+                    const measureSpan = addRow.querySelector('.edit-title-measure');
+                    function adjustInputWidth() {
+                        measureSpan.textContent = editTitle.value || editTitle.placeholder || '';
+                        measureSpan.style.font = window.getComputedStyle(editTitle).font;
+                        editTitle.style.width = Math.max(120, measureSpan.offsetWidth + 20) + 'px';
+                    }
+                    editTitle.addEventListener('input', adjustInputWidth);
+                    adjustInputWidth();
+                    
+                    // Auto-ajustement de la largeur de l'input PGN
+                    editPgn.addEventListener('input', function() {
+                        autoAdjustPgnWidth(this);
+                    });
+                    // Appliquer immédiatement et après un petit délai pour s'assurer que l'élément est bien créé
+                    autoAdjustPgnWidth(editPgn);
+                    setTimeout(() => autoAdjustPgnWidth(editPgn), 10);
+                    // Cancel
+                    addRow.querySelector('.cancel-btn').onclick = function() {
+                        addRow.innerHTML = '';
+                    };
+                    // Gestion de la touche Entrée pour naviguer entre les champs
+                    function handleEnterKeyAdd(e) {
+                        if (e.key === 'Enter') {
+                            e.preventDefault();
+                            if (e.target === editTitle) {
+                                // Si on est dans le titre, passer au PGN
+                                editPgn.focus();
+                            } else if (e.target === editPgn) {
+                                // Si on est dans le PGN, sauvegarder
+                                const saveBtn = addRow.querySelector('.save-btn');
+                                if (saveBtn) saveBtn.click();
+                            }
+                        }
+                    }
+                    editTitle.addEventListener('keydown', handleEnterKeyAdd);
+                    editPgn.addEventListener('keydown', handleEnterKeyAdd);
+                    // Sauvegarde AJAX pour l'ajout de variation
+                    addRow.querySelector('.save-btn').onclick = function() {
+                        let varTitle = editTitle.value;
+                        const varPgn = editPgn.value;
+                        // Préfixe automatique #n si absent
+                        if (!varTitle.trim().startsWith('#')) {
+                            varTitle = `#${n} ${varTitle.trim()}`;
+                            editTitle.value = varTitle;
+                        }
+                        // Affichage d'un message d'erreur si besoin
+                        let errorDiv = addRow.querySelector('.edit-error');
+                        if (!errorDiv) {
+                            errorDiv = document.createElement('div');
+                            errorDiv.className = 'edit-error';
+                            errorDiv.style.color = '#dc3545';
+                            errorDiv.style.marginTop = '6px';
+                            addRow.appendChild(errorDiv);
+                        }
+                        errorDiv.textContent = '';
+                        const requestData = {
+                            category: category,
+                            name: name,
+                            variation_title: varTitle,
+                            variation_pgn: varPgn
+                        };
+                        console.log('DEBUG Frontend - Sending data:', requestData);
+                        fetch('/openings/settings/add_variation', {
+                            method: 'POST',
+                            headers: {'Content-Type': 'application/json'},
+                            body: JSON.stringify(requestData)
+                        }).then(async r => {
+                            if (r.ok) {
+                                // Attendre un peu avant de recharger pour s'assurer que les données sont synchronisées
+                                setTimeout(() => {
+                                    // Stocker le nom de l'ouverture dans sessionStorage pour le retrouver après rechargement
+                                    sessionStorage.setItem('scrollToOpening', name);
+                                    location.reload();
+                                }, 100);
+                            } else {
+                                let msg = 'Error during save';
+                                try {
+                                    const data = await r.json();
+                                    if (data.error) msg = data.error;
+                                } catch {}
+                                // Temporary display in PGN field
+                                const pgnInput = addRow.querySelector('.edit-pgn');
+                                const oldValue = pgnInput.value;
+                                const oldColor = pgnInput.style.color;
+                                const oldBorder = pgnInput.style.borderColor;
+                                const oldBg = pgnInput.style.background;
+                                pgnInput.value = msg;
+                                pgnInput.disabled = true;
+                                pgnInput.style.color = '#dc3545';
+                                pgnInput.style.borderColor = '#dc3545';
+                                pgnInput.style.background = '#fff0f0';
+                                setTimeout(() => {
+                                    pgnInput.value = oldValue;
+                                    pgnInput.disabled = false;
+                                    pgnInput.style.color = oldColor;
+                                    pgnInput.style.borderColor = oldBorder;
+                                    pgnInput.style.background = oldBg;
+                                    autoAdjustPgnWidth(pgnInput);
+                                    pgnInput.focus();
+                                    pgnInput.setSelectionRange(pgnInput.value.length, pgnInput.value.length);
+                                }, 500);
+                            }
+                        }).catch(err => {
+                            errorDiv.textContent = 'Network error during save';
+                        });
+                    };
+                }
+            });
+        });
+        // Ajout d'une nouvelle ouverture (Attack/Defense)
+        document.querySelectorAll('.add-opening-btn').forEach(function(btn) {
+            btn.onclick = function() {
+                const cat = btn.getAttribute('data-category');
+                const newOpeningZone = document.getElementById('new-opening-zone');
+                
+                // Retirer la classe active de tous les boutons
+                document.querySelectorAll('.add-opening-btn').forEach(b => b.classList.remove('active'));
+                
+                // Si déjà ouvert, vider la zone
+                if (newOpeningZone.innerHTML.trim() !== '') {
+                    newOpeningZone.innerHTML = '';
+                }
+                
+                // Ajouter la classe active au bouton cliqué
+                btn.classList.add('active');
+                
+                // Créer le formulaire inline
+                const isDefense = cat === 'Defense';
+                const defenseClass = isDefense ? 'defense' : '';
+                newOpeningZone.innerHTML = `
+                    <div class="opening-block opening-form ${defenseClass}" style="margin-top: 20px; padding: 20px; border: 2px solid #F47C20; border-radius: 8px; background: #fff; max-width: 400px; margin-left: auto; margin-right: auto;">
+                        <h3 style="margin-top: 0; color: #145334;">Add a new opening</h3>
+                        <div style="margin-bottom: 15px;">
+                            <label style="display: block; margin-bottom: 5px; font-weight: bold; color: #145334;">Opening name:</label>
+                            <input type="text" id="new-opening-name" placeholder="Opening name" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
+                        </div>
+                        <div style="text-align: center; display: flex; justify-content: center; gap: 8px;">
+                            <button type="button" id="save-opening-btn" class="save-btn">💾 Save</button>
+                            <button type="button" id="cancel-opening-btn" class="cancel-btn">✖️ Cancel</button>
+                        </div>
+                    </div>
+                `;
+                
+                // Ajouter la classe show après un petit délai pour déclencher l'animation
+                setTimeout(() => {
+                    const form = newOpeningZone.querySelector('.opening-form');
+                    if (form) form.classList.add('show');
+                }, 10);
+                
+                // Focus sur le champ de nom et faire défiler vers lui
+                const nameInput = document.getElementById('new-opening-name');
+                nameInput.focus();
+                
+                // Faire défiler vers le formulaire avec un petit délai pour s'assurer qu'il est rendu
+                setTimeout(() => {
+                    const form = newOpeningZone.querySelector('.opening-form');
+                    if (form) {
+                        form.scrollIntoView({ 
+                            behavior: 'smooth', 
+                            block: 'center' 
+                        });
+                    }
+                }, 100);
+                
+                // Gestion de la touche Entrée
+                nameInput.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        document.getElementById('save-opening-btn').click();
+                    }
+                });
+                
+                // Bouton Annuler
+                document.getElementById('cancel-opening-btn').onclick = function() {
+                    newOpeningZone.innerHTML = '';
+                    // Retirer la classe active du bouton
+                    btn.classList.remove('active');
+                };
+                
+                // Bouton Sauvegarder
+                document.getElementById('save-opening-btn').onclick = function() {
+                    const openingName = nameInput.value.trim();
+                    if (!openingName) {
+                        // Afficher l'erreur dans le champ
+                        const oldValue = nameInput.value;
+                        const oldColor = nameInput.style.color;
+                        const oldBorder = nameInput.style.borderColor;
+                        const oldBg = nameInput.style.background;
+                        
+                        nameInput.value = 'Please enter an opening name';
+                        nameInput.disabled = true;
+                        nameInput.style.color = '#dc3545';
+                        nameInput.style.borderColor = '#dc3545';
+                        nameInput.style.background = '#fff0f0';
+                        
+                        setTimeout(() => {
+                            nameInput.value = oldValue;
+                            nameInput.disabled = false;
+                            nameInput.style.color = oldColor;
+                            nameInput.style.borderColor = oldBorder;
+                            nameInput.style.background = oldBg;
+                            nameInput.focus();
+                        }, 500);
+                        return;
+                    }
+                    
+                    fetch('/openings/settings/add', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({category: cat, name: openingName})
+                    }).then(async r => {
+                        if (r.ok) {
+                            btn.classList.remove('active');
+                            // Au lieu de recharger, vider le formulaire et rafraîchir la liste
+                            newOpeningZone.innerHTML = '';
+                            // Attendre un peu puis rafraîchir la page pour s'assurer que les données sont synchronisées
+                            setTimeout(() => {
+                                // Stocker le nom de l'ouverture dans sessionStorage pour le retrouver après rechargement
+                                sessionStorage.setItem('scrollToOpening', openingName);
+                                location.reload();
+                            }, 100);
+                        } else {
+                                                            let msg = 'Name already exists or error';
+                            try {
+                                const data = await r.json();
+                                if (data.error) msg = data.error;
+                            } catch {}
+                            
+                            // Afficher l'erreur dans le champ
+                            const oldValue = nameInput.value;
+                            const oldColor = nameInput.style.color;
+                            const oldBorder = nameInput.style.borderColor;
+                            const oldBg = nameInput.style.background;
+                            
+                            nameInput.value = msg;
+                            nameInput.disabled = true;
+                            nameInput.style.color = '#dc3545';
+                            nameInput.style.borderColor = '#dc3545';
+                            nameInput.style.background = '#fff0f0';
+                            
+                            setTimeout(() => {
+                                nameInput.value = oldValue;
+                                nameInput.disabled = false;
+                                nameInput.style.color = oldColor;
+                                nameInput.style.borderColor = oldBorder;
+                                nameInput.style.background = oldBg;
+                                nameInput.focus();
+                            }, 500);
+                        }
+                    });
+                };
+            };
+        });
+        
+        // Fonctions pour le modal personnalisé
+        function showCustomConfirm(message, onConfirm) {
+            const modal = document.getElementById('custom-modal');
+            const modalMessage = document.getElementById('modal-message');
+            const confirmBtn = document.getElementById('modal-confirm');
+            const cancelBtn = document.getElementById('modal-cancel');
+            
+            modalMessage.textContent = message;
+            
+            // Afficher le modal
+            modal.classList.add('show');
+            
+            // Gestion du bouton Confirmer
+            const handleConfirm = () => {
+                modal.classList.remove('show');
+                onConfirm();
+                // Nettoyer les event listeners
+                confirmBtn.removeEventListener('click', handleConfirm);
+                cancelBtn.removeEventListener('click', handleCancel);
+            };
+            
+            // Gestion du bouton Annuler
+            const handleCancel = () => {
+                modal.classList.remove('show');
+                // Nettoyer les event listeners
+                confirmBtn.removeEventListener('click', handleConfirm);
+                cancelBtn.removeEventListener('click', handleCancel);
+            };
+            
+            // Ajouter les event listeners
+            confirmBtn.addEventListener('click', handleConfirm);
+            cancelBtn.addEventListener('click', handleCancel);
+            
+            // Fermer avec Escape
+            const handleEscape = (e) => {
+                if (e.key === 'Escape') {
+                    handleCancel();
+                    document.removeEventListener('keydown', handleEscape);
+                }
+            };
+            document.addEventListener('keydown', handleEscape);
+        }
+        
+        // Gestion de la suppression d'ouvertures
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('delete-opening-btn')) {
+                const btn = e.target;
+                const category = btn.getAttribute('data-category');
+                const name = btn.getAttribute('data-name');
+                
+                showCustomConfirm(
+                    `Are you sure you want to delete the opening "${name}"?\n\nThis action will also delete all its variations.`,
+                    () => {
+                        fetch('/openings/settings/delete_opening', {
+                            method: 'POST',
+                            headers: {'Content-Type': 'application/json'},
+                            body: JSON.stringify({
+                                category: category,
+                                name: name
+                            })
+                        }).then(async r => {
+                            if (r.ok) {
+                                location.reload();
+                            } else {
+                                let msg = 'Erreur lors de la suppression';
+                                try {
+                                    const data = await r.json();
+                                    if (data.error) msg = data.error;
+                                } catch {}
+                                alert(msg);
+                            }
+                        }).catch(err => {
+                            alert('Erreur réseau lors de la suppression');
+                        });
+                    }
+                );
+            }
+        });
+        
+        // Detect if coming from index and modify return link
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('from') === 'index') {
+                const backLink = document.querySelector('.backbtn');
+                if (backLink) {
+                    backLink.href = '/?refresh=true';
+                }
+            }
+            
+            // Vérifier s'il faut faire défiler vers un opening block après rechargement
+            const scrollToOpening = sessionStorage.getItem('scrollToOpening');
+            if (scrollToOpening) {
+                // Nettoyer le sessionStorage
+                sessionStorage.removeItem('scrollToOpening');
+                
+                // Attendre un peu que la page soit complètement chargée
+                setTimeout(() => {
+                    const openingId = 'opening-' + scrollToOpening.replace(/ /g, '_');
+                    const openingElement = document.getElementById(openingId);
+                    if (openingElement) {
+                        openingElement.scrollIntoView({ 
+                            behavior: 'smooth', 
+                            block: 'center' 
+                        });
+                        // Ajouter un effet de surbrillance temporaire
+                        openingElement.style.transition = 'box-shadow 0.3s ease';
+                        openingElement.style.boxShadow = '0 0 20px rgba(244, 124, 32, 0.6)';
+                        setTimeout(() => {
+                            openingElement.style.boxShadow = '';
+                        }, 2000);
+                    }
+                }, 300);
+            }
+        });
     </script>
 </body>
 </html> 
