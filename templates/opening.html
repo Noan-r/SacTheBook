@@ -1504,7 +1504,7 @@
                         align-items: center;
                     " onmouseover="this.style.borderColor='#F47C20'; this.style.transform='scale(1.05)'; this.style.background='#fff5e6'" 
                        onmouseout="this.style.borderColor='#ddd'; this.style.transform='scale(1)'; this.style.background='white'">
-                        <img src="https://chessboardjs.com/img/chesspieces/wikipedia/${colorPrefix}${piece}.png" style="width: 30px; height: 30px;" alt="${piece}">
+                        <img src="/static/img/chesspieces/wikipedia/${colorPrefix}${piece}.png" style="width: 30px; height: 30px;" alt="${piece}">
                     </div>
                 `;
             });
@@ -2532,13 +2532,23 @@
                     // Variables pour la promotion (déplacées au scope global)
         window.pendingPromotion = null;
         
-        // Fonction playSound globale avec fallback
+        // Détection mobile
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        
+        // Fonction playSound globale avec fallback pour mobile
         window.playSound = function(name) {
+            // Désactiver les sons sur mobile pour éviter les problèmes
+            if (isMobile) {
+                console.log('Sound disabled on mobile:', name);
+                return;
+            }
+            
             try {
                 const audio = new Audio('/static/sounds/' + name + '.mp3');
                 audio.onerror = function() {
                     console.log('Sound file not found:', name);
                 };
+                
                 audio.play().catch(function(e) {
                     console.log('Sound play failed:', e);
                 });
@@ -2555,7 +2565,7 @@
                 onDrop: onDrop,
                 onSnapEnd: onSnapEnd,
                 orientation: orientation,
-                pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png',
+                pieceTheme: '/static/img/chesspieces/wikipedia/{piece}.png',
                 showNotation: true,
                 dropOffBoard: 'snapback',
                 sparePieces: false
