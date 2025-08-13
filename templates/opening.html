@@ -1528,6 +1528,7 @@
             
             // Ajouter les événements de clic
             $('.promotion-piece').on('click', function() {
+                playButtonSound();
                 const piece = $(this).data('piece');
                 console.log('Promotion piece clicked:', piece);
                 window.completePromotion(piece);
@@ -2557,6 +2558,54 @@
         document.addEventListener('click', initializeSounds, { once: true });
         document.addEventListener('touchstart', initializeSounds, { once: true });
         
+        // Fonction pour jouer le son de bouton
+        function playButtonSound() {
+            playSound('btn');
+        }
+        
+        // Ajouter le son à tous les boutons
+        document.addEventListener('DOMContentLoaded', function() {
+            // Sélectionner tous les boutons
+            const buttons = document.querySelectorAll('button, .btn');
+            
+            // Ajouter l'événement de clic avec son
+            buttons.forEach(function(button) {
+                button.addEventListener('click', function(e) {
+                    // Éviter de jouer le son si le bouton est désactivé
+                    if (!button.disabled && !button.classList.contains('disabled')) {
+                        playButtonSound();
+                    }
+                });
+            });
+            
+            // Pour les boutons ajoutés dynamiquement (comme dans le menu de promotion)
+            const observer = new MutationObserver(function(mutations) {
+                mutations.forEach(function(mutation) {
+                    mutation.addedNodes.forEach(function(node) {
+                        if (node.nodeType === 1) { // Element node
+                            const newButtons = node.querySelectorAll ? node.querySelectorAll('button, .btn') : [];
+                            if (node.matches && node.matches('button, .btn')) {
+                                newButtons.push(node);
+                            }
+                            
+                            newButtons.forEach(function(button) {
+                                button.addEventListener('click', function(e) {
+                                    if (!button.disabled && !button.classList.contains('disabled')) {
+                                        playButtonSound();
+                                    }
+                                });
+                            });
+                        }
+                    });
+                });
+            });
+            
+            observer.observe(document.body, {
+                childList: true,
+                subtree: true
+            });
+        });
+        
         // Fonction playSound globale avec fallback et gestion mobile
         window.playSound = function(name) {
             try {
@@ -2743,9 +2792,13 @@
             
 
 
-            $('#reset-btn').on('click', resetGame);
+            $('#reset-btn').on('click', function() {
+                playButtonSound();
+                resetGame();
+            });
 
             $('#next-line-btn').on('click', function() {
+                playButtonSound();
                 if (currentLineIndex < lines.length - 1) {
                     currentLineIndex++;
                     $('#line-select').val(currentLineIndex);
@@ -2760,6 +2813,7 @@
 
             // Switch hint : clic sur toute la zone
             $('#hint-zone').on('click', function() {
+                playButtonSound();
                 if (currentLineIndex < lines.length && currentMoveIndex < lines[currentLineIndex].moves.length) {
                     const hintMove = lines[currentLineIndex].moves[currentMoveIndex];
                     toggleHint(hintMove.san);
@@ -2769,6 +2823,7 @@
 
 
             $('#prev-line-btn').on('click', function() {
+                playButtonSound();
                 if (currentLineIndex > 0) {
                     currentLineIndex--;
                     $('#line-select').val(currentLineIndex);
