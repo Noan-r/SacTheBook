@@ -2536,8 +2536,42 @@
                     for (const move of moves) {
                         greySquare(move.to);
                     }
+                } else if (selectedPiece && square !== selectedPiece) {
+                    // Si une pièce est sélectionnée et qu'on clique sur une case différente
+                    // Vérifier si c'est un coup valide
+                    const moves = game.moves({
+                        square: selectedPiece,
+                        verbose: true
+                    });
+                    
+                    const validMove = moves.find(move => move.to === square);
+                    
+                    if (validMove) {
+                        // Jouer le coup automatiquement
+                        const move = game.move({
+                            from: selectedPiece,
+                            to: square,
+                            promotion: validMove.promotion
+                        });
+                        
+                        if (move) {
+                            // Mettre à jour l'affichage
+                            board.position(game.fen());
+                            
+                            // Valider le coup
+                            window.validateUserMove(move);
+                        }
+                        
+                        // Nettoyer la sélection
+                        selectedPiece = null;
+                        removeGreySquares();
+                    } else {
+                        // Si ce n'est pas un coup valide, désélectionner
+                        selectedPiece = null;
+                        removeGreySquares();
+                    }
                 } else {
-                    // Si on clique sur une case vide ou une pièce adverse, désélectionner
+                    // Si on clique sur une case vide ou une pièce adverse sans sélection, désélectionner
                     selectedPiece = null;
                     removeGreySquares();
                 }
