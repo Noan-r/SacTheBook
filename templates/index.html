@@ -242,6 +242,154 @@
         .settings-icon:hover {
             transform: rotate(90deg);
         }
+        
+        /* Responsive design pour tous les écrans */
+        @media (max-width: 1024px) {
+            .container {
+                padding: 20px;
+                max-width: 800px;
+            }
+            
+            .openings-grid {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 20px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            .container {
+                padding: 15px;
+            }
+            h1 {
+                font-size: 1.8em;
+            }
+            .openings-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            .opening-card {
+                padding: 15px;
+            }
+            
+            .header-container {
+                margin-bottom: 15px;
+            }
+            
+            .sac-logo {
+                width: 60px;
+                margin: 12px auto 10px auto;
+            }
+            
+            .settings-icon {
+                width: 40px;
+                height: 40px;
+                top: 3px;
+                right: 3px;
+            }
+            
+            .settings-img {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .category-section h2 {
+                font-size: 1.4em;
+                margin: 15px 0 10px 0;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            body {
+                padding: 8px;
+            }
+            .container {
+                padding: 12px;
+            }
+            h1 {
+                font-size: 1.5em;
+            }
+            .openings-grid {
+                gap: 12px;
+            }
+            .opening-card {
+                padding: 12px;
+                font-size: 14px;
+            }
+            
+            .header-container {
+                margin-bottom: 12px;
+            }
+            
+            .sac-logo {
+                width: 50px;
+                margin: 10px auto 8px auto;
+            }
+            
+            .settings-icon {
+                width: 35px;
+                height: 35px;
+                top: 2px;
+                right: 2px;
+            }
+            
+            .settings-img {
+                width: 35px;
+                height: 35px;
+            }
+            
+            .category-section h2 {
+                font-size: 1.2em;
+                margin: 12px 0 8px 0;
+            }
+        }
+        
+        @media (max-width: 360px) {
+            body {
+                padding: 5px;
+            }
+            .container {
+                padding: 10px;
+            }
+            h1 {
+                font-size: 1.3em;
+            }
+            .openings-grid {
+                gap: 10px;
+            }
+            .opening-card {
+                padding: 10px;
+                font-size: 13px;
+            }
+            
+            .header-container {
+                margin-bottom: 10px;
+            }
+            
+            .sac-logo {
+                width: 45px;
+                margin: 8px auto 6px auto;
+            }
+            
+            .settings-icon {
+                width: 30px;
+                height: 30px;
+                top: 1px;
+                right: 1px;
+            }
+            
+            .settings-img {
+                width: 30px;
+                height: 30px;
+            }
+            
+            .category-section h2 {
+                font-size: 1.1em;
+                margin: 10px 0 6px 0;
+            }
+        }
     </style>
     <div class="container">
         <div class="header-container">

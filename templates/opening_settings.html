@@ -185,6 +185,196 @@
                 margin-bottom: 12px;
             }
         }
+        
+        @media (max-width: 360px) {
+            .opening-block {
+                padding: 10px 14px;
+                margin-bottom: 10px;
+            }
+        }
+        
+        /* Responsive design complet pour tous les écrans */
+        @media (max-width: 1024px) {
+            .container {
+                padding: 20px;
+                max-width: 800px;
+            }
+            
+            h1 {
+                font-size: 2.2em;
+                margin-bottom: 25px;
+            }
+            
+            .opening-block {
+                padding: 20px;
+                margin-bottom: 20px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .container {
+                padding: 15px;
+            }
+            
+            h1 {
+                font-size: 1.8em;
+                margin-bottom: 20px;
+                padding-top: 60px;
+            }
+            
+            .backbtn {
+                font-size: 1em;
+                padding: 10px 24px 10px 18px;
+                top: 15px;
+                left: 15px;
+            }
+            
+            .btn {
+                padding: 8px 18px;
+                font-size: 0.9em;
+                margin: 0 3px;
+            }
+            
+            .opening-block {
+                padding: 15px 20px;
+                margin-bottom: 15px;
+            }
+            
+            .opening-title {
+                font-size: 1.3em;
+                margin-bottom: 12px;
+            }
+            
+            .variation-item {
+                padding: 10px;
+                margin: 8px 0;
+                font-size: 14px;
+            }
+            
+            .add-variation-btn {
+                margin-top: 10px !important;
+                padding: 8px 16px;
+                font-size: 0.9em;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            body {
+                padding: 8px;
+            }
+            
+            .container {
+                padding: 12px;
+            }
+            
+            h1 {
+                font-size: 1.5em;
+                margin-bottom: 15px;
+                padding-top: 50px;
+            }
+            
+            .backbtn {
+                font-size: 0.9em;
+                padding: 8px 20px 8px 15px;
+                top: 10px;
+                left: 10px;
+            }
+            
+            .btn {
+                padding: 7px 15px;
+                font-size: 0.85em;
+                margin: 0 2px;
+            }
+            
+            .opening-block {
+                padding: 12px 16px;
+                margin-bottom: 12px;
+            }
+            
+            .opening-title {
+                font-size: 1.2em;
+                margin-bottom: 10px;
+            }
+            
+            .variation-item {
+                padding: 8px;
+                margin: 6px 0;
+                font-size: 13px;
+            }
+            
+            .add-variation-btn {
+                margin-top: 8px !important;
+                padding: 7px 14px;
+                font-size: 0.85em;
+            }
+            
+            .delete-opening-btn,
+            .edit-btn {
+                padding: 6px 12px;
+                font-size: 0.8em;
+            }
+        }
+        
+        @media (max-width: 360px) {
+            body {
+                padding: 5px;
+            }
+            
+            .container {
+                padding: 10px;
+            }
+            
+            h1 {
+                font-size: 1.3em;
+                margin-bottom: 12px;
+                padding-top: 45px;
+            }
+            
+            .backbtn {
+                font-size: 0.8em;
+                padding: 7px 18px 7px 12px;
+                top: 8px;
+                left: 8px;
+            }
+            
+            .btn {
+                padding: 6px 12px;
+                font-size: 0.8em;
+                margin: 0 1px;
+            }
+            
+            .opening-block {
+                padding: 10px 14px;
+                margin-bottom: 10px;
+            }
+            
+            .opening-title {
+                font-size: 1.1em;
+                margin-bottom: 8px;
+            }
+            
+            .variation-item {
+                padding: 6px;
+                margin: 5px 0;
+                font-size: 12px;
+            }
+            
+            .add-variation-btn {
+                margin-top: 6px !important;
+                padding: 6px 12px;
+                font-size: 0.8em;
+            }
+            
+            .delete-opening-btn,
+            .edit-btn {
+                padding: 5px 10px;
+                font-size: 0.75em;
+            }
+        }
         /* Bloc défense grisé */
         .opening-block.defense {
             background: #e0e0e0 !important;
@@ -432,6 +622,91 @@
         .modal-btn.cancel:hover {
             background: #F47C20;
             color: white;
+        }
+        
+        /* Responsive modal styles */
+        @media (max-width: 768px) {
+            .modal-content {
+                padding: 25px;
+                max-width: 350px;
+                width: 85%;
+                border-radius: 12px;
+            }
+            
+            .modal-title {
+                font-size: 1.1em;
+                margin-bottom: 15px;
+            }
+            
+            .modal-message {
+                font-size: 0.95em;
+                margin-bottom: 20px;
+            }
+            
+            .modal-buttons {
+                gap: 15px;
+            }
+            
+            .modal-btn {
+                padding: 12px 24px;
+                font-size: 0.95em;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .modal-content {
+                padding: 20px;
+                max-width: 300px;
+                width: 80%;
+                border-radius: 10px;
+            }
+            
+            .modal-title {
+                font-size: 1em;
+                margin-bottom: 12px;
+            }
+            
+            .modal-message {
+                font-size: 0.9em;
+                margin-bottom: 18px;
+            }
+            
+            .modal-buttons {
+                gap: 12px;
+            }
+            
+            .modal-btn {
+                padding: 10px 20px;
+                font-size: 0.9em;
+            }
+        }
+        
+        @media (max-width: 360px) {
+            .modal-content {
+                padding: 18px;
+                max-width: 280px;
+                width: 75%;
+                border-radius: 8px;
+            }
+            
+            .modal-title {
+                font-size: 0.95em;
+                margin-bottom: 10px;
+            }
+            
+            .modal-message {
+                font-size: 0.85em;
+                margin-bottom: 15px;
+            }
+            
+            .modal-buttons {
+                gap: 10px;
+            }
+            
+            .modal-btn {
+                padding: 8px 16px;
+                font-size: 0.85em;
+            }
         }
     </style>
 </head>
