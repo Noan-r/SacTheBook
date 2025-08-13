@@ -1,0 +1,2557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SacTheBook - {{ opening_name.replace('_', ' ').title() }}</title>
+    <link rel="icon" type="image/png" href="/static/SacTheBook_Icon.png">
+    <!-- CSS de chessboard.js avec fallback -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.css" onerror="this.onerror=null; this.href='/static/chessboard-1.0.0.min.css';">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Montserrat', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #145334;
+            background-image: 
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cg transform='rotate(15 90 90)'%3E%3Ctext x='90' y='105' font-size='60' text-anchor='middle' fill='rgba(255,255,255,0.1)'%3E♔%3C/text%3E%3C/g%3E%3C/svg%3E"),
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cg transform='rotate(-25 90 90)'%3E%3Ctext x='90' y='105' font-size='60' text-anchor='middle' fill='rgba(255,255,255,0.08)'%3E♕%3C/text%3E%3C/g%3E%3C/svg%3E"),
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cg transform='rotate(45 90 90)'%3E%3Ctext x='90' y='105' font-size='60' text-anchor='middle' fill='rgba(255,255,255,0.06)'%3E♖%3C/text%3E%3C/g%3E%3C/svg%3E"),
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cg transform='rotate(-10 90 90)'%3E%3Ctext x='90' y='105' font-size='60' text-anchor='middle' fill='rgba(255,255,255,0.09)'%3E♗%3C/text%3E%3C/g%3E%3C/svg%3E"),
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cg transform='rotate(30 90 90)'%3E%3Ctext x='90' y='105' font-size='60' text-anchor='middle' fill='rgba(255,255,255,0.07)'%3E♘%3C/text%3E%3C/g%3E%3C/svg%3E"),
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cg transform='rotate(-40 90 90)'%3E%3Ctext x='90' y='105' font-size='60' text-anchor='middle' fill='rgba(255,255,255,0.11)'%3E♙%3C/text%3E%3C/g%3E%3C/svg%3E");
+            background-size: 180px 180px, 180px 180px, 180px 180px, 180px 180px, 180px 180px, 180px 180px;
+            background-position: 40px 100px, 300px 140px, 540px 60px, 180px 370px, 440px 300px, 670px 200px;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .header {
+            text-align: center;
+            padding: 10px 0;
+            flex-shrink: 0;
+        }
+        
+        .header h1 {
+            color: #F47C20;
+            margin: 0;
+            font-size: 2em;
+            font-weight: 700;
+        }
+        
+        .container, .info-section {
+            background: #F8F5EC;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(32,81,58,0.18);
+        }
+        
+        .info-section {
+            padding: 25px;
+            min-width: 350px;
+            max-width: 420px;
+            height: 600px;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            border: 2px solid #F47C20;
+            border-radius: 15px;
+            box-sizing: border-box;
+            overflow: hidden; /* Empêche tout débordement */
+        }
+        
+        /* Calibrage de la taille pour le mode Drill */
+        .info-section.drill-mode {
+            justify-content: flex-start;
+        }
+        
+        .info-section.drill-mode .drill-counter {
+            flex: 0 0 220px; /* Hauteur intermédiaire entre 180px et 300px */
+            display: block;
+            margin: 20px 0;
+            min-height: 220px; /* Hauteur ajustée pour un bon équilibre */
+        }
+        
+        .info-section.drill-mode .drill-counter h3 {
+            margin-bottom: 20px;
+        }
+        
+        .info-section.drill-mode .drill-counter .score {
+            margin: 15px 0;
+        }
+        
+        /* Ajustement pour le mode Learn */
+        .info-section:not(.drill-mode) {
+            justify-content: space-between;
+        }
+        
+        .info-section:not(.drill-mode) .game-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        
+        /* Style pour les points de highlight des coups légaux */
+        .legal-move-dot {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: rgba(128, 128, 128, 0.5);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 10;
+        }
+        
+
+
+        .controls {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 15px;
+            flex-wrap: nowrap;
+            justify-content: center;
+        }
+
+        .btn, button {
+            background: #F47C20;
+            color: #F8F5EC;
+            border: none;
+            padding: 11px 12px;
+            border-radius: 18px;
+            cursor: pointer;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin: 0;
+            transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+            box-shadow: 0 2px 8px rgba(244,124,32,0.08);
+            flex: 1;
+            min-width: 0;
+        }
+
+        .btn:hover, button:hover {
+            background: #B23A2B;
+            color: #fff;
+        }
+        
+        .btn.disabled, button.disabled {
+            background: #ccc;
+            color: #666;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+        
+        .btn.disabled:hover, button.disabled:hover {
+            background: #ccc;
+            color: #666;
+        }
+
+        .line-selector select {
+            width: 100%;
+            padding: 8px;
+            border: 2px solid #F47C20;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-bottom: 12px;
+            background: #fff;
+            color: #F47C20;
+        }
+
+
+
+        .celebrate {
+            animation: celebrate-bg 1s ease-in-out;
+        }
+        @keyframes celebrate-bg {
+            0% { box-shadow: 0 0 0 0 #28a745; }
+            50% { box-shadow: 0 0 40px 16px #28a745; }
+            100% { box-shadow: 0 0 0 0 #28a745; }
+        }
+        .error-anim {
+            animation: error-bg 0.6s;
+        }
+        @keyframes error-bg {
+            0% { box-shadow: 0 0 0 0 #dc3545; }
+            50% { box-shadow: 0 0 40px 16px #dc3545; }
+            100% { box-shadow: 0 0 0 0 #dc3545; }
+        }
+        
+        .pawn-indicator {
+            text-align: center;
+            margin-bottom: 15px;
+            padding: 10px;
+        }
+
+        /* Switch button styles */
+        .switch-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+            padding: 15px;
+            background: #fff;
+            border-radius: 10px;
+            border: 1px solid #F47C20;
+            gap: 15px;
+        }
+
+        .switch-label {
+            font-weight: 600;
+            color: #4B2E19;
+            font-size: 0.9em;
+        }
+
+        .switch-labels {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .switch-label-left {
+            font-weight: 600;
+            color: #4B2E19;
+            font-size: 0.9em;
+        }
+
+        .switch-label-right {
+            font-weight: 600;
+            color: #4B2E19;
+            font-size: 0.9em;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .3s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #F47C20;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        /* Style pour le mode Drill */
+        .info-section.drill-mode {
+            background: #ffe6e6 !important;
+            border: 2px solid #ff9999;
+        }
+        
+        /* Styles pour les éléments en mode Drill */
+        .info-section.drill-mode .game-info {
+            background: #ffe6e6;
+        }
+        
+        .info-section.drill-mode .pawn-indicator {
+            background: #ffe6e6;
+        }
+        
+        .info-section.drill-mode .line-selector {
+            background: #ffe6e6;
+        }
+        
+        .info-section.drill-mode .line-selector select {
+            background: #ffe6e6;
+            border-color: #ff9999;
+            color: #B23A2B;
+        }
+        
+        .info-section.drill-mode .line-selector label {
+            color: #B23A2B;
+        }
+        
+        .info-section.drill-mode .switch-container {
+            background: #ffe6e6;
+            border-color: #ff9999;
+        }
+        
+        .info-section.drill-mode .switch-label-left,
+        .info-section.drill-mode .switch-label-right {
+            color: #B23A2B;
+        }
+        
+
+        
+
+        
+        /* Masquer les boutons en mode Drill */
+        .info-section.drill-mode .controls {
+            display: none;
+        }
+        
+        /* Style pour le compteur Drill - Zone ajustée */
+        .drill-counter {
+            display: none;
+            text-align: center;
+            padding: 22px;
+            background: #ffe6e6;
+            border: 2px solid #ff9999;
+            border-radius: 15px;
+            margin: 20px 0;
+            flex: 0 0 220px; /* Hauteur intermédiaire */
+            position: relative;
+            min-height: 220px;
+        }
+        
+        /* Style pour la zone Hint */
+        .hint-zone {
+            display: none;
+            text-align: center;
+            padding: 25px;
+            background: #FFF5E6;
+            border: 2px solid #F47C20;
+            border-radius: 15px;
+            margin: 20px 0;
+            position: relative;
+            min-height: 200px;
+            cursor: pointer; /* Toute la zone est cliquable */
+            transition: all 0.3s ease;
+            user-select: none;
+        }
+        
+        .hint-zone.show {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .hint-zone:hover {
+            background: #FFF0E0;
+            border-color: #B23A2B;
+            transform: scale(1.02);
+        }
+        
+        .hint-zone .hint-btn {
+            font-size: 4.5em;
+            padding: 0;
+            background: transparent;
+            color: #F47C20;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 120px;
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: none;
+            outline: none;
+            pointer-events: none; /* Le clic sera géré par la zone parent */
+        }
+        
+        .hint-zone:hover .hint-btn {
+            color: #B23A2B;
+            transform: scale(1.1);
+        }
+        
+        /* Animation de disparition de l'ampoule */
+        .hint-zone .hint-btn.fade-out {
+            animation: fadeOut 0.2s ease-out forwards;
+        }
+        
+        @keyframes fadeOut {
+            0% { opacity: 1; transform: scale(1); }
+            100% { opacity: 0; transform: scale(0.3); }
+        }
+        
+        /* Style pour l'affichage de l'indice */
+        .hint-zone .hint-text {
+            visibility: hidden;
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #B23A2B;
+            text-align: center;
+            animation: fadeIn 0.2s ease-in;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        
+        .hint-zone .hint-text.show {
+            visibility: visible;
+        }
+        
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+            100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+        
+        /* Animation de réapparition de l'ampoule */
+        .hint-zone .hint-btn.fade-in {
+            animation: fadeInBulb 0.2s ease-in forwards;
+        }
+        
+        @keyframes fadeInBulb {
+            0% { opacity: 0; transform: scale(0.3); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        
+        .drill-counter.show {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .drill-counter h3 {
+            color: #B23A2B;
+            margin: 0 0 15px 0;
+            font-size: 1.4em;
+            font-weight: bold;
+        }
+        
+        .drill-counter .score-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .drill-counter .score {
+            font-size: 3.8em; /* Ajusté pour la taille intermédiaire */
+            font-weight: bold;
+            color: #B23A2B;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            position: relative;
+            z-index: 2;
+            transform: translateY(25px); /* Décalage intermédiaire */
+        }
+        
+        /* Flamme adaptée à la zone intermédiaire */
+        .big-flame {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 8.4em; /* Encore réduite de 9.1em */
+            opacity: 0.6;
+            z-index: 1;
+            pointer-events: none;
+        }
+        
+        /* Best Score Footer - Parfaitement contenu dans l'info-section */
+        .best-score-footer {
+            display: none;
+            width: calc(100% - 0px); /* S'adapte au container */
+            background: #E8E0D1;
+            border-top: 1px solid #D4A574;
+            margin-top: auto;
+            border-radius: 6px;
+            margin-bottom: 0;
+            margin-left: 0;
+            margin-right: 0;
+            box-sizing: border-box;
+        }
+        
+        .best-score-footer.show {
+            display: block;
+        }
+        
+        .best-score-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 15px;
+            box-sizing: border-box;
+        }
+        
+        .best-score-icon {
+            font-size: 1.2em;
+            margin-right: 8px;
+            opacity: 0.7;
+        }
+        
+        .best-score-text {
+            font-size: 0.95em;
+            font-weight: 500;
+            color: #8B6F47;
+            opacity: 0.8;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .pawn {
+            font-size: 2.5em;
+            font-weight: bold;
+            display: inline-block;
+            transition: transform 0.3s ease;
+        }
+        
+        .white-pawn {
+            color: #4B2E19;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        
+        .black-pawn {
+            color: #4B2E19;
+            text-shadow: 2px 2px 4px rgba(255,255,255,0.8);
+        }
+        
+        .pawn:hover {
+            transform: scale(1.1);
+        }
+        
+        .game-container {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+            padding: 0 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        
+        .board-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex: 3;
+            min-width: 0;
+        }
+        
+        #myBoard {
+            width: min(75vh, 75vw);
+            height: min(75vh, 75vw);
+            max-width: 700px;
+            max-height: 700px;
+            min-width: 350px;
+            min-height: 350px;
+            margin: 0 auto;
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(75,46,25,0.10);
+            display: block;
+        }
+        
+        .backbtn {
+            display: inline-block;
+            background: #F47C20;
+            color: #fff;
+            font-weight: 700;
+            font-size: 1em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 10px 24px 10px 18px;
+            border-radius: 25px;
+            box-shadow: 0 2px 8px rgba(244,124,32,0.10);
+            border: none;
+            text-decoration: none;
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            transition: background 0.2s, transform 0.2s;
+            z-index: 100;
+        }
+        .backbtn:hover {
+            background: #B23A2B;
+            color: #fff;
+            transform: scale(1.06);
+        }
+        
+        .sac-logo {
+            background-color: #145334;
+            width: 80px;
+            display: block;
+            margin: 20px auto 12px auto;
+            border: 2px solid #F47C20;
+            border-radius: 16px;
+        }
+        
+        .game-info h3 {
+            margin: 0 0 15px 0;
+            color: #145334;
+            font-size: 1.2em;
+        }
+        
+        .line-selector label {
+            display: block;
+            margin-bottom: 5px;
+            color: #145334;
+            font-weight: 600;
+            font-size: 0.9em;
+        }
+        
+        @media (max-width: 1200px) {
+            .game-container {
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
+                padding: 0 15px;
+            }
+            #myBoard {
+                width: min(85vh, 85vw);
+                height: min(85vh, 85vw);
+                max-width: 600px;
+                max-height: 600px;
+            }
+            .info-section {
+                max-width: 450px;
+                width: 100%;
+                height: 600px;
+            }
+            .header h1 {
+                font-size: 1.6em;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.4em;
+            }
+            .backbtn {
+                padding: 8px 18px 8px 14px;
+                font-size: 0.9em;
+                top: 10px;
+                left: 10px;
+            }
+            .sac-logo {
+                width: 70px;
+                margin: 15px auto 8px auto;
+            }
+            .game-container {
+                padding: 0 10px;
+                gap: 8px;
+            }
+            #myBoard {
+                width: min(95vh, 95vw);
+                height: min(95vh, 95vw);
+                max-width: 450px;
+                max-height: 450px;
+                min-width: 280px;
+                min-height: 280px;
+            }
+            .info-section {
+                padding: 15px;
+                max-width: 350px;
+            }
+            .controls {
+                gap: 4px;
+            }
+            .btn, button {
+                padding: 9px 8px;
+                font-size: 0.75em;
+            }
+            /* Best score responsive */
+            .best-score-content {
+                padding: 8px 12px;
+            }
+            .best-score-text {
+                font-size: 0.85em;
+            }
+            .best-score-icon {
+                font-size: 1.1em;
+                margin-right: 6px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.2em;
+            }
+            #myBoard {
+                width: min(95vh, 95vw);
+                height: min(95vh, 95vw);
+                max-width: 350px;
+                max-height: 350px;
+                min-width: 200px;
+                min-height: 200px;
+            }
+            .info-section {
+                padding: 12px;
+                max-width: 300px;
+            }
+            .controls {
+                gap: 3px;
+            }
+            .btn, button {
+                padding: 8px 6px;
+                font-size: 0.7em;
+            }
+            /* Best score pour très petits écrans */
+            .best-score-content {
+                padding: 6px 10px;
+            }
+            .best-score-text {
+                font-size: 0.8em;
+            }
+            .best-score-icon {
+                font-size: 1.0em;
+                margin-right: 5px;
+            }
+        }
+        
+        /* Styles pour les pièces d'échecs avec outline orange très léger */
+        #myBoard img {
+            filter: drop-shadow(0 0 1px #F47C20);
+        }
+        
+        /* Style spécifique pour les pièces blanches */
+        #myBoard .square-55d63 img[src*="w"] {
+            filter: drop-shadow(0 0 1px #F47C20);
+        }
+        
+        /* Style spécifique pour les pièces noires */
+        #myBoard .square-55d63 img[src*="b"] {
+            filter: drop-shadow(0 0 1px #F47C20);
+        }
+        
+        /* Styles pour les cases mises en surbrillance (quand on prend une pièce) */
+        #myBoard .highlight1-32417,
+        #myBoard .highlight2-9c5d2 {
+            box-shadow: inset 0 0 3px 3px #F47C20 !important;
+        }
+        
+        /* Style pour le hashtag d'échec et mat */
+        .checkmate-hashtag {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            font-size: 64px;
+            font-weight: bold;
+            color: #B23A2B;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+            z-index: 1000;
+            pointer-events: none;
+        }
+        
+        /* Styles pour le dialogue de promotion */
+        #promotion-dialog {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        
+        .promotion-piece {
+            transition: all 0.2s ease-in-out;
+        }
+        
+        .promotion-piece:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(244, 124, 32, 0.3);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+            to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <img src="/static/SacTheBook_Icon.png" alt="SacTheBook Logo" class="sac-logo">
+    <a href="/" class="backbtn">← Back</a>
+    
+    <div class="header">
+        <h1>{{ opening_name.replace('_', ' ').title() }}</h1>
+    </div>
+    
+    <div class="game-container">
+        <div class="board-section">
+            <div id="myBoard"></div>
+        </div>
+        
+        <div class="info-section">
+            <div class="game-info">
+                <div class="pawn-indicator">
+                    {% if orientation == 'white' %}
+                        <span class="pawn white-pawn">♙</span>
+                    {% else %}
+                        <span class="pawn black-pawn">♟</span>
+                    {% endif %}
+                </div>
+                
+                <div class="line-selector">
+                    <label for="line-select">Opening line:</label>
+                    <select id="line-select">
+                        {% for i in range(lines|length) %}
+                        <option value="{{ i }}">{{ lines[i].name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="switch-container">
+                    <span class="switch-label-left">Learn</span>
+                    <label class="switch">
+                        <input type="checkbox" id="auto-play-switch">
+                        <span class="slider"></span>
+                    </label>
+                    <span class="switch-label-right">Drill</span>
+                </div>
+                
+
+                
+
+                
+                <!-- Compteur Drill (masqué par défaut) -->
+                <div class="drill-counter" id="drill-counter">
+                    <h3>Drill Mode</h3>
+                    <div class="score-container">
+                        <div class="big-flame">🔥</div>
+                        <div class="score" id="drill-score">0</div>
+                    </div>
+                </div>
+                
+                <!-- Zone Hint (visible en mode Learn) - Switch mode -->
+                <div class="hint-zone" id="hint-zone" title="Click to toggle hint">
+                    <div class="hint-btn" id="hint-btn">💡</div>
+                    <div class="hint-text" id="hint-text"></div>
+                </div>
+                
+                <div class="controls">                   
+                    <button class="btn" id="prev-line-btn">⏮</button>
+                    <button class="btn" id="reset-btn">⟲</button>
+                    <button class="btn" id="next-line-btn">⏭</button>
+                </div>
+
+            </div>
+            
+            <!-- Best Score Section - Pied de l'info-section (toute la largeur) -->
+            <div class="best-score-footer" id="best-score-footer">
+                <div class="best-score-content">
+                    <div class="best-score-icon">🏆</div>
+                    <div class="best-score-text" id="drill-best-score">BEST SCORE: 0</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts avec fallbacks -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <script>
+        // === VARIABLES GLOBALES ===
+        var board = null;
+        var game = new Chess();
+        var lines = [];
+        var currentLineIndex = 0;
+        var currentMoveIndex = 0;
+        var isLineComplete = false;
+        var premoveMode = false;
+        var premoveSource = null;
+        var autoPlayEnabled = false;
+        var drillMode = false;
+        var pendingPreMove = null;
+        var premoveHighlightSquares = [];
+        var premoveWindowOpen = false;
+        
+        // Nouveau système de drill mode (variables globales)
+        var drillSuccessiveOpenings = 0;
+        var drillOpeningDeck = [];
+        var drillCurrentOpeningComplete = false;
+        var drillBestScore = 0; // Best score (longest streak)
+        
+        // Autres variables globales
+        var COMPUTER_MOVE_DELAY = 500;
+        var orientation = null; // Sera initialisé depuis le serveur
+        var openingName = null; // Sera initialisé depuis le serveur
+        
+        // Variables pour le highlight des coups légaux
+        var highlightStyles = null;
+        var whiteSquareGrey = '#a9a9a9';
+        var blackSquareGrey = '#696969';
+        
+        // Fonctions globales critiques
+        function setupLine() {
+            console.log('setupLine called - orientation:', orientation, 'currentLineIndex:', currentLineIndex);
+            isLineComplete = false;
+            game.reset();
+            currentMoveIndex = 0;
+            clearPreMove();
+            premoveWindowOpen = false;
+            // Supprime le hashtag d'échec et mat
+            removeCheckmateHashtag();
+            // Fermer le dialogue de promotion s'il est ouvert
+            if (typeof window.hidePromotionDialog === 'function') {
+                window.hidePromotionDialog();
+            }
+            
+            if (orientation === 'black') {
+                if (lines[currentLineIndex] && lines[currentLineIndex].moves.length > 0) {
+                    const move = lines[currentLineIndex].moves[currentMoveIndex];
+                    game.move(move.san);
+                    currentMoveIndex++;
+                }
+            } else if (orientation === null) {
+                console.warn('orientation not yet initialized, skipping black setup');
+            }
+            board.position(game.fen());
+            // S'assurer que le drag-and-drop est activé pour le nouveau jeu
+            board.draggable = true;
+            updateStatus();
+            
+            // Réinitialise l'état de l'indice pour la nouvelle ligne
+            resetHintToDefault();
+            
+            // Met à jour l'indice si il est affiché
+            updateHintContent();
+            
+            // Met à jour le statut en mode Drill
+            if (drillMode) {
+                updateDrillStatus();
+            }
+        }
+        
+        function removeCheckmateHashtag() {
+            $('.checkmate-hashtag').remove();
+        }
+        
+        function updateDrillStatus() {
+            // Fonction legacy - remplacée par updateDrillDisplay()
+            updateDrillDisplay();
+        }
+        
+        function removePreMoveHighlight() {
+            for (const sq of premoveHighlightSquares) {
+                $('#myBoard .square-' + sq).css('box-shadow', '');
+            }
+            premoveHighlightSquares = [];
+        }
+
+            function clearPreMove() {
+                pendingPreMove = null;
+                removePreMoveHighlight();
+                // Nettoyer aussi la sélection de pièce
+                selectedPiece = null;
+                removeGreySquares();
+            }
+        
+        function updateStatus() {
+            // Fonction vide maintenant que le status est supprimé
+        }
+        
+        // Fonctions pour le highlight des coups légaux
+        function removeGreySquares() {
+            // Supprimer tous les points de highlight
+            $('.legal-move-dot').remove();
+        }
+        
+        function greySquare(square) {
+            // Créer un point gris semi-transparent
+            const dot = $('<div class="legal-move-dot"></div>');
+            
+            // Ajouter le point à la case
+            $(`#myBoard .square-${square}`).append(dot);
+        }
+        
+        // Fonction pour détecter si un coup est une promotion
+        window.isPromotion = function(source, target) {
+            const piece = game.get(source);
+            
+            // Vérifier si c'est un pion
+            if (!piece || piece.type !== 'p') {
+                return false;
+            }
+            
+            // Vérifier les conditions de promotion selon la couleur
+            if (piece.color === 'w') {
+                // Pion blanc : doit partir de la 7ème rangée et aller à la 8ème
+                if (source.charAt(1) === '7' && target.charAt(1) === '8') {
+                    // Vérifier si le coup est légal en utilisant moves() avec verbose
+                    const tempGame = new Chess(game.fen());
+                    const moves = tempGame.moves({ square: source, verbose: true });
+                    
+                    // Chercher un coup vers la case cible avec promotion
+                    for (const move of moves) {
+                        if (move.to === target && move.flags.includes('p')) {
+                            return true;
+                        }
+                    }
+                }
+            } else if (piece.color === 'b') {
+                // Pion noir : doit partir de la 2ème rangée et aller à la 1ère
+                if (source.charAt(1) === '2' && target.charAt(1) === '1') {
+                    // Vérifier si le coup est légal en utilisant moves() avec verbose
+                    const tempGame = new Chess(game.fen());
+                    const moves = tempGame.moves({ square: source, verbose: true });
+                    
+                    // Chercher un coup vers la case cible avec promotion
+                    for (const move of moves) {
+                        if (move.to === target && move.flags.includes('p')) {
+                            return true;
+                        }
+                    }
+                }
+            }
+            
+            return false;
+        }
+        
+        // Fonctions de persistance pour la ligne courante
+        function saveCurrentLine() {
+            if (typeof openingName !== 'undefined' && openingName && typeof currentLineIndex !== 'undefined') {
+                const key = 'currentLine_' + openingName;
+                localStorage.setItem(key, currentLineIndex.toString());
+                console.log('Current line saved:', currentLineIndex, 'for opening:', openingName);
+            }
+        }
+        
+        function loadCurrentLine() {
+            // Check if coming from index
+            const urlParams = new URLSearchParams(window.location.search);
+            const fromIndex = urlParams.get('from_index');
+            
+            if (fromIndex === '1') {
+                console.log('Coming from index, starting at line 0');
+                // Nettoyer l'URL pour les futures actualisations
+                const url = new URL(window.location);
+                url.searchParams.delete('from_index');
+                window.history.replaceState({}, '', url);
+                return 0;
+            }
+            
+            // Cas normal : actualisation classique, charger la ligne sauvegardée
+            if (typeof openingName !== 'undefined' && openingName) {
+                const key = 'currentLine_' + openingName;
+                const saved = localStorage.getItem(key);
+                if (saved !== null) {
+                    const lineIndex = parseInt(saved, 10);
+                    if (!isNaN(lineIndex) && lineIndex >= 0) {
+                        console.log('Restored line:', lineIndex, 'for opening:', openingName);
+                        return lineIndex;
+                    }
+                }
+            }
+            console.log('No saved line found, using default 0');
+            return 0;
+        }
+        
+        function forceStopDrag() {
+            // Force l'arrêt de tout drag en cours en désactivant puis réactivant le drag
+            const wasDraggable = board.draggable;
+            board.draggable = false;
+            // Forcer la mise à jour de la position
+            board.position(game.fen());
+            // Réactiver le drag seulement s'il était activé
+            if (wasDraggable) {
+                setTimeout(function() {
+                    board.draggable = true;
+                }, 5);
+            }
+        }
+        
+        // Fonctions de promotion (déplacées au scope global)
+        window.showPromotionDialog = function(from, to, color) {
+            console.log('showPromotionDialog called with:', { from, to, color });
+            window.pendingPromotion = { from: from, to: to, color: color };
+            
+            // Créer une position temporaire pour afficher le pion sur la dernière rangée
+            const tempGame = new Chess(game.fen());
+            tempGame.remove(from);
+            tempGame.put({ type: 'p', color: color }, to);
+            
+            // Mettre à jour l'affichage avec le pion sur la dernière rangée
+            board.position(tempGame.fen());
+            
+            // Créer un dialogue simple avec seulement les icônes
+            const colorPrefix = color === 'w' ? 'w' : 'b';
+            
+            // Calculer la position de la pièce promue (case d'arrivée - dernière rangée)
+            const boardRect = document.getElementById('myBoard').getBoundingClientRect();
+            const squareSize = boardRect.width / 8;
+            const file = to.charCodeAt(0) - 'a'.charCodeAt(0);
+            const rank = 8 - parseInt(to[1]);
+            
+            // Ajuster la position selon l'orientation de l'échiquier
+            let adjustedFile = file;
+            let adjustedRank = rank;
+            
+            if (orientation === 'black') {
+                // En mode noir, inverser les coordonnées
+                adjustedFile = 7 - file;
+                adjustedRank = 7 - rank;
+            }
+            
+            // Position du centre de la pièce promue (sur la dernière rangée)
+            const pieceCenterX = boardRect.left + (adjustedFile + 0.5) * squareSize;
+            const pieceCenterY = boardRect.top + (adjustedRank + 0.5) * squareSize;
+            
+            // Calculer les dimensions exactes du menu
+            const pieceSize = 30; // Taille de l'icône de pièce
+            const piecePadding = 6; // Padding de chaque bouton
+            const pieceBorder = 1; // Bordure de chaque bouton
+            const pieceGap = 4; // Espace entre les pièces
+            const menuPadding = 8; // Padding du menu
+            
+            // Dimensions réelles du menu
+            const menuWidth = pieceSize + (piecePadding * 2) + (pieceBorder * 2) + (menuPadding * 2);
+            const pieceHeight = pieceSize + (piecePadding * 2) + (pieceBorder * 2);
+            
+            // Positionner le menu pour que le centre du bouton de la dame soit exactement au centre de la case
+            // Le bouton de la dame est le premier, donc son centre est à (menuPadding + piecePadding + pieceBorder + pieceSize/2) du haut du menu
+            const dameCenterOffset = menuPadding + piecePadding + pieceBorder + (pieceSize / 2);
+            
+            const left = pieceCenterX - (menuWidth / 2); // Centrer horizontalement le menu
+            const top = pieceCenterY - dameCenterOffset; // Centrer verticalement le bouton de la dame
+            
+            // Créer le HTML du dialogue avec la position calculée
+            let dialogHTML = `
+                <div id="promotion-dialog" style="
+                    position: fixed;
+                    top: ${top}px;
+                    left: ${left}px;
+                    background: #F8F5EC;
+                    border: 2px solid #F47C20;
+                    border-radius: 8px;
+                    padding: 8px;
+                    z-index: 99999;
+                    box-shadow: 0 4px 16px rgba(32,81,58,0.2);
+                    display: flex;
+                    flex-direction: column;
+                    gap: 4px;
+                ">
+            `;
+            
+            // Ordre spécifique : dame, tour, fou, cavalier (seulement les icônes)
+            const orderedPieces = ['q', 'r', 'b', 'n'];
+            orderedPieces.forEach(piece => {
+                dialogHTML += `
+                    <div class="promotion-piece" data-piece="${piece}" style="
+                        cursor: pointer;
+                        padding: 6px;
+                        border: 1px solid #ddd;
+                        border-radius: 4px;
+                        transition: all 0.2s;
+                        background: white;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                    " onmouseover="this.style.borderColor='#F47C20'; this.style.transform='scale(1.05)'; this.style.background='#fff5e6'" 
+                       onmouseout="this.style.borderColor='#ddd'; this.style.transform='scale(1)'; this.style.background='white'">
+                        <img src="https://chessboardjs.com/img/chesspieces/wikipedia/${colorPrefix}${piece}.png" style="width: 30px; height: 30px;" alt="${piece}">
+                    </div>
+                `;
+            });
+            
+            dialogHTML += `</div>`;
+            
+            // Ajouter le dialogue au body avec la position déjà calculée
+            $('body').append(dialogHTML);
+            console.log('Promotion dialog added to body at position:', { top, left });
+            
+            // Test temporaire : vérifier que le dialogue est visible
+            setTimeout(() => {
+                const dialog = $('#promotion-dialog');
+                if (dialog.length > 0) {
+                    console.log('Dialog is in DOM, visibility:', dialog.is(':visible'), 'display:', dialog.css('display'));
+                    console.log('Dialog position:', dialog.offset(), 'dimensions:', dialog.width(), 'x', dialog.height());
+                } else {
+                    console.log('Dialog not found in DOM');
+                }
+            }, 100);
+            
+            // Ajouter les événements de clic
+            $('.promotion-piece').on('click', function() {
+                const piece = $(this).data('piece');
+                console.log('Promotion piece clicked:', piece);
+                window.completePromotion(piece);
+            });
+            
+            // Fermer le dialogue si on clique en dehors (avec délai pour éviter les conflits)
+            setTimeout(() => {
+                $(document).on('click.promotion', function(e) {
+                    if (!$(e.target).closest('#promotion-dialog').length) {
+                        window.hidePromotionDialog();
+                    }
+                });
+            }, 100);
+        }
+        
+        window.completePromotion = function(piece) {
+            console.log('completePromotion called with piece:', piece, 'pendingPromotion:', window.pendingPromotion);
+            if (!window.pendingPromotion) return;
+            
+            console.log('Completing promotion with piece:', piece);
+            
+            // Jouer le coup réel dans le jeu principal
+            const move = game.move({
+                from: window.pendingPromotion.from,
+                to: window.pendingPromotion.to,
+                promotion: piece
+            });
+            
+            if (move === null) {
+                console.log('Promotion move invalid');
+                window.pendingPromotion = null;
+                window.hidePromotionDialog();
+                return;
+            }
+            
+            console.log('Promotion move successful:', move);
+            window.pendingPromotion = null;
+            window.hidePromotionDialog();
+            
+            // Mettre à jour l'affichage avec la vraie pièce
+            board.position(game.fen());
+            window.playSound('move');
+            
+            // Vérifie l'échec et mat
+            if (window.checkForCheckmate()) {
+                return;
+            }
+            
+            // Valider le coup
+            window.validateUserMove(move);
+        }
+        
+        window.hidePromotionDialog = function() {
+            // Ne pas fermer le dialogue si une promotion est en cours
+            if (window.pendingPromotion) {
+                console.log('Promotion in progress, not hiding dialog');
+                return;
+            }
+            
+            const dialog = $('#promotion-dialog');
+            if (dialog.length > 0) {
+                dialog.remove();
+                console.log('Promotion dialog removed from DOM');
+            } else {
+                console.log('No promotion dialog found to remove');
+            }
+            $(document).off('click.promotion');
+            window.pendingPromotion = null;
+            console.log('Promotion dialog hidden');
+        }
+        
+        function resetGame() {
+            // Fermer le dialogue de promotion s'il est ouvert
+            if (typeof window.hidePromotionDialog === 'function') {
+                window.hidePromotionDialog();
+            }
+            setupLine();
+        }
+        
+        // Fonction pour réinitialiser l'état de l'indice au début d'une ligne
+        function resetHintToDefault() {
+            const $hintBtn = $('#hint-btn');
+            const $hintTextDiv = $('#hint-text');
+            
+            // Toujours remettre l'ampoule au début d'une nouvelle ligne
+            if ($hintTextDiv.hasClass('show')) {
+                $hintTextDiv.removeClass('show');
+                $hintBtn.removeClass('fade-out').addClass('fade-in').css('visibility', 'visible');
+                setTimeout(function() {
+                    $hintBtn.removeClass('fade-in');
+                }, 200);
+            }
+        }
+        
+        // Fonction switch pour basculer entre ampoule et indice
+        function toggleHint(hintText) {
+            const $hintBtn = $('#hint-btn');
+            const $hintTextDiv = $('#hint-text');
+            
+            if ($hintTextDiv.hasClass('show')) {
+                // L'indice est affiché, revenir à l'ampoule
+                $hintTextDiv.removeClass('show');
+                setTimeout(function() {
+                    $hintBtn.removeClass('fade-out').addClass('fade-in').css('visibility', 'visible');
+                    setTimeout(function() {
+                        $hintBtn.removeClass('fade-in');
+                    }, 200);
+                }, 100);
+            } else {
+                // L'ampoule est affichée, montrer l'indice
+                $hintBtn.addClass('fade-out');
+                setTimeout(function() {
+                    $hintBtn.css('visibility', 'hidden');
+                    $hintTextDiv.text(hintText).addClass('show');
+                }, 200);
+            }
+        }
+        
+        // Fonction pour mettre à jour l'indice sans changer l'état d'affichage
+                    window.updateHintContent = function() {
+            const $hintBtn = $('#hint-btn');
+            const $hintTextDiv = $('#hint-text');
+            
+            if ($hintTextDiv.hasClass('show')) {
+                // L'indice est affiché, mettre à jour son contenu
+                if (currentLineIndex < lines.length && currentMoveIndex < lines[currentLineIndex].moves.length) {
+                    const hintMove = lines[currentLineIndex].moves[currentMoveIndex];
+                    $hintTextDiv.text(hintMove.san);
+                } else {
+                    // Fin de ligne, faire réapparaître l'ampoule
+                    $hintTextDiv.removeClass('show');
+                    $hintBtn.removeClass('fade-out').addClass('fade-in').css('visibility', 'visible');
+                    setTimeout(function() {
+                        $hintBtn.removeClass('fade-in');
+                    }, 200);
+                }
+            }
+        }
+        
+        // === NOUVEAU SYSTÈME DE DRILL MODE AMÉLIORÉ ===
+        
+        // Initialise le deck d'ouvertures avec toutes les lignes disponibles
+        function initializeDrillDeck() {
+            console.log('Initializing drill deck...');
+            console.log('drillSuccessiveOpenings before init:', typeof drillSuccessiveOpenings, drillSuccessiveOpenings);
+            console.log('drillOpeningDeck before init:', typeof drillOpeningDeck, drillOpeningDeck);
+            console.log('lines available:', lines ? lines.length : 'undefined');
+            
+            drillOpeningDeck = [];
+            for (let i = 0; i < lines.length; i++) {
+                drillOpeningDeck.push(i);
+            }
+            shuffleDrillDeckImproved();
+            console.log('Drill deck initialized:', drillOpeningDeck);
+            console.log('drillSuccessiveOpenings after init:', typeof drillSuccessiveOpenings, drillSuccessiveOpenings);
+        }
+        
+        // Mélange amélioré du deck d'ouvertures avec ordre différent à chaque fois
+        function shuffleDrillDeckImproved() {
+            console.log('Shuffling drill deck with improved randomness...');
+            
+            // Créer un générateur de nombres pseudo-aléatoires basé sur le timestamp
+            const seed = Date.now() + Math.random() * 1000000;
+            let randomSeed = seed;
+            
+            function seededRandom() {
+                randomSeed = (randomSeed * 9301 + 49297) % 233280;
+                return randomSeed / 233280;
+            }
+            
+            // Mélange Fisher-Yates avec seed personnalisé
+            for (let i = drillOpeningDeck.length - 1; i > 0; i--) {
+                const j = Math.floor(seededRandom() * (i + 1));
+                [drillOpeningDeck[i], drillOpeningDeck[j]] = [drillOpeningDeck[j], drillOpeningDeck[i]];
+            }
+            
+            // Ajouter une rotation aléatoire supplémentaire pour plus de variété
+            const rotationOffset = Math.floor(Math.random() * drillOpeningDeck.length);
+            drillOpeningDeck = [...drillOpeningDeck.slice(rotationOffset), ...drillOpeningDeck.slice(0, rotationOffset)];
+            
+            console.log('Deck shuffled with seed:', seed, 'Final order:', drillOpeningDeck);
+        }
+        
+        // Démarre le mode drill avec une ouverture vraiment aléatoire
+        function startRandomOpening() {
+            console.log('Starting drill mode with random opening...');
+            
+            // Vérification que toutes les variables nécessaires sont initialisées
+            if (!lines || lines.length === 0) {
+                console.error('Lines not ready for drill mode');
+                return;
+            }
+            
+            if (orientation === null) {
+                console.error('Orientation not ready for drill mode');
+                return;
+            }
+            
+            // Choisir une ouverture complètement aléatoire pour commencer
+            const randomStart = Math.floor(Math.random() * lines.length);
+            
+            // Retirer cette ouverture du deck pour éviter la répétition immédiate
+            const indexInDeck = drillOpeningDeck.indexOf(randomStart);
+            if (indexInDeck > -1) {
+                drillOpeningDeck.splice(indexInDeck, 1);
+            }
+            
+            console.log('Starting with random opening:', randomStart, 'Removed from deck. Remaining:', drillOpeningDeck.length);
+            
+            currentLineIndex = randomStart;
+            $('#line-select').val(currentLineIndex);
+            saveCurrentLine(); // Sauvegarder la ligne courante
+            drillCurrentOpeningComplete = false;
+            resetGame();
+            updateNavigationButtons();
+            updateDrillDisplay();
+            updateHintContent(); // Actualise l'indice pour la nouvelle ouverture
+        }
+        
+        // Sélectionne la prochaine ouverture du deck avec garantie d'équité
+        function selectNextDrillOpening() {
+            console.log('Selecting next drill opening...');
+            console.log('Current state - orientation:', orientation, 'lines.length:', lines ? lines.length : 'undefined');
+            
+            // Vérification que toutes les variables nécessaires sont initialisées
+            if (!lines || lines.length === 0) {
+                console.error('Lines not ready for drill mode');
+                return;
+            }
+            
+            if (orientation === null) {
+                console.error('Orientation not ready for drill mode');
+                return;
+            }
+            
+            // Si le deck est vide, le réinitialiser et mélanger avec un nouvel ordre
+            if (drillOpeningDeck.length === 0) {
+                console.log('Deck empty, reinitializing with fresh shuffle...');
+                initializeDrillDeck();
+                
+                // Message informatif pour le développeur
+                console.log('All openings completed! Starting new cycle with randomized order.');
+            }
+            
+            // Prendre la première ouverture du deck
+            const nextOpening = drillOpeningDeck.shift();
+            console.log('Selected opening:', nextOpening, 'Remaining in deck:', drillOpeningDeck.length);
+            console.log('Opening progress: ' + (lines.length - drillOpeningDeck.length) + '/' + lines.length + ' in current cycle');
+            
+            currentLineIndex = nextOpening;
+            $('#line-select').val(currentLineIndex);
+            saveCurrentLine(); // Sauvegarder la ligne courante
+            drillCurrentOpeningComplete = false;
+            resetGame();
+            updateNavigationButtons();
+            updateDrillDisplay();
+            updateHintContent(); // Actualise l'indice pour la nouvelle ouverture
+        }
+        
+        // Met à jour l'affichage du compteur de drill
+        function updateDrillDisplay() {
+            console.log('updateDrillDisplay called');
+            console.log('drillMode:', drillMode);
+            console.log('drillSuccessiveOpenings:', drillSuccessiveOpenings, 'drillBestScore:', drillBestScore);
+            
+            if (drillMode) {
+                if (typeof drillSuccessiveOpenings !== 'undefined' && typeof drillBestScore !== 'undefined') {
+                    $('#drill-score').text(drillSuccessiveOpenings);
+                    $('#drill-best-score').text('BEST SCORE: ' + drillBestScore);
+                    $('#best-score-footer').addClass('show');
+                    console.log('Display updated successfully - Successive:', drillSuccessiveOpenings, 'Best:', drillBestScore);
+                } else {
+                    console.error('Drill variables undefined in updateDrillDisplay!');
+                    $('#drill-score').text('0');
+                    $('#drill-best-score').text('BEST SCORE: 0');
+                    $('#best-score-footer').addClass('show');
+                }
+            } else {
+                // Mode Learn - masquer la section best score
+                $('#best-score-footer').removeClass('show');
+            }
+        }
+        
+        // Gère le succès d'une ouverture complète
+        function handleDrillOpeningSuccess() {
+            console.log('handleDrillOpeningSuccess called');
+            console.log('drillSuccessiveOpenings type and value:', typeof drillSuccessiveOpenings, drillSuccessiveOpenings);
+            console.log('drillCurrentOpeningComplete type and value:', typeof drillCurrentOpeningComplete, drillCurrentOpeningComplete);
+            
+            drillCurrentOpeningComplete = true;
+            drillSuccessiveOpenings++;
+            
+            // Mettre à jour le best score si nécessaire
+            if (drillSuccessiveOpenings > drillBestScore) {
+                drillBestScore = drillSuccessiveOpenings;
+                console.log('NEW BEST SCORE!', drillBestScore);
+                saveBestScore(); // Sauvegarder le nouveau record
+            }
+            
+            console.log('After increment - drillSuccessiveOpenings:', drillSuccessiveOpenings, 'Best:', drillBestScore);
+            updateDrillDisplay();
+            
+            // Pause très courte en mode drill pour un rythme très rapide
+            setTimeout(function() {
+                selectNextDrillOpening();
+            }, 600); // Réduit à 600ms pour drill (50% de 1200ms)
+        }
+        
+        // Handles error in an opening (counter reset)
+                    window.handleDrillOpeningError = function() {
+            console.log('Drill error - resetting counter');
+            drillSuccessiveOpenings = 0;
+            drillCurrentOpeningComplete = false;
+            console.log('Counter reset - Successive:', drillSuccessiveOpenings);
+            updateDrillDisplay();
+            // Reste sur la même ouverture pour retenter
+            resetGame();
+        }
+        
+        // Sauvegarde le best score dans le JSON de l'ouverture
+        function saveBestScore() {
+            console.log('Saving best score:', drillBestScore, 'for opening:', openingName);
+            
+            if (!openingName) {
+                console.error('Cannot save best score: openingName not defined');
+                return;
+            }
+            
+            // Appel AJAX pour sauvegarder le best score
+            fetch('/save_best_score', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    opening_name: openingName,
+                    best_score: drillBestScore
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    console.log('Best score saved successfully');
+                } else {
+                    console.error('Failed to save best score:', data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error saving best score:', error);
+            });
+        }
+        
+        // Charge le best score depuis le JSON de l'ouverture
+        function loadBestScore() {
+            console.log('Loading best score for opening:', openingName);
+            
+            if (!openingName) {
+                console.error('Cannot load best score: openingName not defined');
+                return;
+            }
+            
+            // Appel AJAX pour charger le best score
+            fetch('/get_best_score?opening_name=' + encodeURIComponent(openingName))
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    drillBestScore = data.best_score || 0;
+                    console.log('Best score loaded:', drillBestScore);
+                    // Mettre à jour l'affichage seulement si on est en mode drill
+                    if (drillMode) {
+                        updateDrillDisplay();
+                    }
+                } else {
+                    console.error('Failed to load best score:', data.error);
+                    drillBestScore = 0;
+                }
+            })
+            .catch(error => {
+                console.error('Error loading best score:', error);
+                drillBestScore = 0;
+            });
+        }
+        
+        $(document).ready(function() {
+            // --- SIMPLIFICATION SONS ---
+            // playSound est maintenant global (window.playSound)
+            window.playMoveSound = function() { window.playSound('move'); }
+            window.playCaptureSound = function() { window.playSound('capture'); }
+            window.playWinSound = function() { window.playSound('win'); }
+            window.playCheckSound = function() { window.playSound('move-check'); }
+            window.playGameEndSound = function() { window.playSound('game-end'); }
+            
+            // --- FONCTIONS POUR ÉCHEC ET MAT ---
+            window.checkForCheckmate = function() {
+                console.log('Checking for checkmate...');
+                console.log('Game state:', game.fen());
+                console.log('Is checkmate:', game.in_checkmate());
+                console.log('Is check:', game.in_check());
+                console.log('Is game over:', game.game_over());
+                
+                if (game.in_checkmate()) {
+                    console.log('CHECKMATE DETECTED!');
+                    // Joue les sons d'échec et de fin de partie
+                    window.playCheckSound();
+                    setTimeout(function() {
+                        window.playGameEndSound();
+                    }, 300);
+                    
+                    // Ajoute le hashtag sur la case du roi
+                    window.addCheckmateHashtag();
+                    
+                    // Gère l'enchaînement selon le mode
+                    if (drillMode) {
+                        // Mode Drill : transition rapide après checkmate
+                        setTimeout(function() {
+                            window.showLineComplete();
+                        }, 400); // Réduit à 400ms pour drill (50% de 800ms)
+                    } else {
+                        // Mode Learn : délai normal pour apprécier le checkmate
+                        $('#status').text('Checkmate! Line complete!');
+                        setTimeout(function() {
+                            window.showLineComplete();
+                        }, 1200); // Légèrement plus long pour learn
+                    }
+                    
+                    return true;
+                }
+                return false;
+            }
+            
+            window.addCheckmateHashtag = function() {
+                // Trouve la position du roi
+                var kingSquare = null;
+                
+                // En cas d'échec et mat, le roi en échec est celui qui vient de jouer (qui a le tour)
+                var kingColor = game.turn();
+                
+                console.log('Looking for king of color:', kingColor);
+                console.log('Current turn:', game.turn());
+                console.log('Board state:', game.board());
+                
+                // Parcours du plateau 8x8
+                for (var rank = 0; rank < 8; rank++) {
+                    for (var file = 0; file < 8; file++) {
+                        var piece = game.board()[rank][file];
+                        var square = String.fromCharCode('a'.charCodeAt(0) + file) + (8 - rank);
+                        console.log('Square', square, ':', piece);
+                        if (piece && piece.type === 'k' && piece.color === kingColor) {
+                            kingSquare = square;
+                            console.log('Found king at square:', square);
+                            break;
+                        }
+                    }
+                    if (kingSquare) break;
+                }
+                
+                console.log('King square found:', kingSquare);
+                
+                if (kingSquare) {
+                    // Supprime l'ancien hashtag s'il existe
+                    $('.checkmate-hashtag').remove();
+                    
+                    // Ajoute le nouveau hashtag
+                    var hashtag = $('<div class="checkmate-hashtag">#</div>');
+                    
+                    // Try several selectors to find the square
+                    var targetSquare = $('#myBoard .square-' + kingSquare);
+                    if (targetSquare.length === 0) {
+                        targetSquare = $('#myBoard [data-square="' + kingSquare + '"]');
+                    }
+                    if (targetSquare.length === 0) {
+                        targetSquare = $('#myBoard div[data-square="' + kingSquare + '"]');
+                    }
+                    
+                    console.log('Target square element:', targetSquare);
+                    console.log('Hashtag element:', hashtag);
+                    
+                    if (targetSquare.length > 0) {
+                        targetSquare.append(hashtag);
+                        console.log('Hashtag added successfully');
+                    } else {
+                        console.log('Target square not found, trying alternative method');
+                        // Essaie d'ajouter directement au board
+                        $('#myBoard').append(hashtag);
+                        hashtag.css({
+                            'position': 'absolute',
+                            'left': (kingSquare.charCodeAt(0) - 'a'.charCodeAt(0)) * 12.5 + '%',
+                            'top': (8 - parseInt(kingSquare[1])) * 12.5 + '%'
+                        });
+                    }
+                } else {
+                    console.log('No king found');
+                }
+            }
+            
+
+            
+            // --- FONCTIONS POUR LE MODE DRILL ---
+            
+            // Anciennes fonctions supprimées - remplacées par le nouveau système
+
+            // --- PARAMÈTRE DE DÉLAI DU BOT ---
+            // Variable déjà déclarée globalement
+
+            // --- PREMOVE SYSTEM ---
+            // Variables déjà déclarées globalement
+
+
+
+            function setPreMove(from, to) {
+                console.log('setPreMove called:', from, to, 'premoveWindowOpen:', premoveWindowOpen, 'drillMode:', drillMode);
+                if (!premoveWindowOpen) {
+                    console.log('Premove window not open, canceling premove');
+                    return;
+                }
+                
+                // Nettoyer la sélection de pièce lors d'un premove
+                selectedPiece = null;
+                removeGreySquares();
+                
+                var piece = game.get(from);
+                if (!piece) {
+                    console.log('No piece at', from);
+                    removePreMoveHighlight();
+                    return;
+                }
+                var isValid = isMoveAdaptedToPiece(piece, from, to);
+                if (!isValid) {
+                    console.log('Move not adapted to piece');
+                    removePreMoveHighlight();
+                    return;
+                }
+                console.log('Premove set successfully:', from, to);
+                pendingPreMove = {from: from, to: to};
+                highlightPreMove(from, to);
+            }
+
+            // Vérifie si le déplacement est adapté au type de pièce (pas la légalité complète)
+            function isMoveAdaptedToPiece(piece, from, to) {
+                var fileFrom = from.charCodeAt(0) - 'a'.charCodeAt(0);
+                var rankFrom = parseInt(from[1], 10) - 1;
+                var fileTo = to.charCodeAt(0) - 'a'.charCodeAt(0);
+                var rankTo = parseInt(to[1], 10) - 1;
+                var df = fileTo - fileFrom;
+                var dr = rankTo - rankFrom;
+                var absDf = Math.abs(df);
+                var absDr = Math.abs(dr);
+                switch (piece.type) {
+                    case 'n': // Cavalier
+                        return (absDf === 2 && absDr === 1) || (absDf === 1 && absDr === 2);
+                    case 'b': // Fou
+                        return absDf === absDr && absDf !== 0;
+                    case 'r': // Tour
+                        return (df === 0 && dr !== 0) || (dr === 0 && df !== 0);
+                    case 'q': // Dame
+                        return (absDf === absDr && absDf !== 0) || (df === 0 && dr !== 0) || (dr === 0 && df !== 0);
+                    case 'k': // Roi
+                        // Roque (2 cases sur la même rangée)
+                        if (absDf === 2 && dr === 0) return true;
+                        // Déplacement normal du roi
+                        return absDf <= 1 && absDr <= 1 && (absDf + absDr > 0);
+                    case 'p': // Pion
+                        // Sens du pion selon la couleur
+                        var dir = (piece.color === 'w') ? 1 : -1;
+                        // Avance d'une case
+                        if (df === 0 && dr === dir) return true;
+                        // Avance de deux cases depuis la rangée de départ
+                        if (df === 0 && dr === 2 * dir && ((piece.color === 'w' && rankFrom === 1) || (piece.color === 'b' && rankFrom === 6))) return true;
+                        // Prise en diagonale
+                        if (absDf === 1 && dr === dir) return true;
+                        // Promotion (avance sur la dernière rangée)
+                        if (df === 0 && dr === dir && ((piece.color === 'w' && rankTo === 7) || (piece.color === 'b' && rankTo === 0))) return true;
+                        return false;
+                    default:
+                        return false;
+                }
+            }
+
+            function highlightPreMove(from, to) {
+                removePreMoveHighlight();
+                premoveHighlightSquares = [from, to];
+                for (const sq of premoveHighlightSquares) {
+                    $('#myBoard .square-' + sq).css('box-shadow', 'inset 0 0 16px 6px #4B90FF');
+                }
+            }
+
+
+            console.log('Document ready');
+            
+            // Initialisation du highlight des coups légaux (plus nécessaire avec les points)
+            
+            // Initialisation des données depuis le serveur
+            openingName = '{{ opening_name }}'; // Assignation à la variable globale
+            lines = JSON.parse('{{ lines|tojson|safe }}'); // Assignation à la variable globale
+            orientation = '{{ orientation }}'; // Assignation à la variable globale
+            currentLineIndex = 0; // Initialisation de la variable globale
+
+            console.log('Variables initialisées:', {
+                openingName: openingName,
+                lines: lines,
+                orientation: orientation
+            });
+
+            // Check that data is valid
+            if (!lines || lines.length === 0) {
+                    console.error('Error: No opening line available');
+                return;
+            }
+
+            // Initialisation de l'affichage après que lines soit définie
+            initializeDisplay();
+            
+            // Met à jour les boutons de navigation après l'initialisation
+            updateNavigationButtons();
+            
+            console.log('All variables initialized - ready for drill mode if needed');
+            
+            // Charger le best score pour cette ouverture APRÈS l'initialisation de l'affichage
+            loadBestScore();
+
+            // Learn/Drill switch management
+            $('#auto-play-switch').on('change', function() {
+                drillMode = this.checked;
+                autoPlayEnabled = this.checked;
+                console.log('Mode:', drillMode ? 'Drill' : 'Learn');
+                
+                if (drillMode) {
+                    // Nouveau mode Drill
+                    console.log('Switching to NEW Drill mode');
+                    drillSuccessiveOpenings = 0;
+                    drillCurrentOpeningComplete = false;
+                    $('.info-section').addClass('drill-mode');
+                    $('#drill-counter').addClass('show');
+                    $('#hint-zone').removeClass('show');
+                    // Mettre à jour l'affichage du score immédiatement (même si best score = 0)
+                    updateDrillDisplay();
+                    // Initialiser le nouveau système de drill avec départ aléatoire
+                    initializeDrillDeck();
+                    startRandomOpening();
+                } else {
+                    // Mode Learn
+                    $('.info-section').removeClass('drill-mode');
+                    $('#drill-counter').removeClass('show');
+                    $('#hint-zone').addClass('show');
+                    // S'assurer que le best score est masqué
+                    updateDrillDisplay();
+                    // Réinitialise le jeu pour le mode Learn
+                    resetGame();
+                }
+                
+                // Met à jour l'affichage après le changement de mode
+                updateNavigationButtons();
+            });
+
+            // Event handling functions
+            function onDragStart(source, piece) {
+                console.log('Drag start:', source, piece, 'drillMode:', drillMode);
+                
+                // Empêcher le drag avec le clic droit
+                if (event && event.button === 2) {
+                    return false;
+                }
+                
+                if (game.game_over()) {
+                    return false;
+                }
+                
+                // PREMOVE: Si ce n'est pas le tour du joueur, activer le mode pre-move
+                if ((orientation === 'black' && game.turn() === 'w') || (orientation === 'white' && game.turn() === 'b')) {
+                    console.log('Activating premove mode - orientation:', orientation, 'turn:', game.turn());
+                    premoveMode = true;
+                    premoveSource = source;
+                    return true; // Permettre le drag pour sélectionner la pièce
+                }
+                
+                            // Gestion de la sélection lors du drag (seulement si pas en mode premove)
+            if (!premoveMode && !window.pendingPromotion) {
+                selectedPiece = source;
+                removeGreySquares();
+                
+                // Obtenir la liste des coups possibles pour cette pièce
+                const moves = game.moves({
+                    square: source,
+                    verbose: true
+                });
+                
+                // Highlight les cases de destination possibles
+                for (const move of moves) {
+                    greySquare(move.to);
+                }
+            }
+                
+                premoveMode = false;
+                premoveSource = null;
+                return true;
+            }
+
+            function onDrop(source, target) {
+                console.log('Drop:', source, target);
+                
+                // Supprimer le highlight des coups légaux
+                removeGreySquares();
+                
+                // PREMOVE: Si ce n'est pas le tour du joueur, stocker le pre-move
+                if ((orientation === 'black' && game.turn() === 'w') || (orientation === 'white' && game.turn() === 'b')) {
+                    setPreMove(source, target);
+                    return 'snapback';
+                }
+                
+                // Empêcher complètement les drops sur la même case
+                if (source === target) {
+                    console.log('Drop on same square - preventing drop');
+                    // Maintenir la sélection si c'est la même pièce
+                    if (selectedPiece === source) {
+                        // Re-sélectionner la pièce pour maintenir les highlights
+                        const piece = game.get(source);
+                        if (piece && piece.color === (orientation === 'white' ? 'w' : 'b')) {
+                            const moves = game.moves({
+                                square: source,
+                                verbose: true
+                            });
+                            for (const move of moves) {
+                                greySquare(move.to);
+                            }
+                        }
+                    }
+                    return 'snapback';
+                }
+                
+                // Vérifier si c'est une promotion
+                let isPromotion = false;
+                if (window.isPromotion(source, target)) {
+                    isPromotion = true;
+                }
+                
+                // Si c'est une promotion, gérer proprement
+                if (isPromotion) {
+                    const piece = game.get(source);
+                    console.log('Promotion detected! Piece:', piece, 'from:', source, 'to:', target);
+                    
+                    // Stocker les informations de promotion
+                    window.pendingPromotion = {
+                    from: source,
+                    to: target,
+                        color: piece.color
+                    };
+                    
+                    // Afficher le dialogue de promotion directement
+                    window.showPromotionDialog(source, target, piece.color);
+                    return; // Ne pas valider immédiatement
+                }
+                
+                // Pour les coups normaux (non-promotion)
+                const move = game.move({
+                    from: source,
+                    to: target
+                });
+
+                if (move === null) {
+                    console.log('Move invalid');
+                    // Désélectionner si le coup est invalide
+                    selectedPiece = null;
+                    return 'snapback';
+                }
+                
+                console.log('Move made:', move);
+                window.validateUserMove(move);
+            }
+
+            function onSnapEnd() {
+                board.position(game.fen());
+            }
+
+            window.validateUserMove = function(move) {
+                console.log('validateUserMove called - isLineComplete:', isLineComplete, 'drillMode:', drillMode);
+                console.log('Move to validate:', move);
+                
+                // Vérifier si c'est un coup "nul" (même case vers même case)
+                if (move.from === move.to) {
+                    console.log('Null move detected - ignoring');
+                    return;
+                }
+                
+                window.playSound('move');
+                
+                // Met à jour l'indice si il est affiché
+                window.updateHintContent();
+                
+                // Vérifie l'échec et mat
+                if (window.checkForCheckmate()) {
+                    return; // La fonction checkForCheckmate gère déjà l'enchaînement
+                }
+                
+                if (isLineComplete) {
+                    console.log('Line is complete, ignoring move');
+                    return;
+                }
+                if (currentLineIndex >= lines.length || currentMoveIndex >= lines[currentLineIndex].moves.length) {
+                    window.showLineComplete();
+                    return;
+                }
+
+                const expectedMove = lines[currentLineIndex].moves[currentMoveIndex];
+                console.log('Expected move:', expectedMove);
+                console.log('Comparing move.san:', move.san, 'with expectedMove.san:', expectedMove.san);
+                
+                if (move.san === expectedMove.san) {
+                    // Coup correct
+                    console.log('Move is correct!');
+                    
+                    // Désélectionner la pièce après un coup valide
+                    selectedPiece = null;
+                    
+                        currentMoveIndex++;
+                    premoveWindowOpen = true; // Ouvre la fenêtre de pre-move (pour tous les modes)
+                        // Bloque l'échiquier pour empêcher d'autres coups directs
+                        board.draggable = false;
+                    
+                        setTimeout(function() {
+                        window.playComputerMove();
+                        }, COMPUTER_MOVE_DELAY);
+                } else {
+                    // Coup incorrect
+                    console.log('Move is incorrect!');
+                    
+                    // Désélectionner la pièce après un coup incorrect
+                    selectedPiece = null;
+                    
+                    window.playSound('incorrect');
+                    $('#myBoard').addClass('error-anim');
+                    setTimeout(function() {
+                        $('#myBoard').removeClass('error-anim');
+                    }, 600);
+                    game.undo();
+                    // Force stop any ongoing drag before error handling
+                    forceStopDrag();
+                    
+                    if (drillMode) {
+                        window.handleDrillOpeningError();
+                    }
+                }
+            }
+
+            window.showLineComplete = function() {
+                isLineComplete = true;
+                
+                // Faire réapparaître l'ampoule quand une ligne est terminée
+                const $hintBtn = $('#hint-btn');
+                const $hintTextDiv = $('#hint-text');
+                if ($hintTextDiv.hasClass('show')) {
+                    $hintTextDiv.removeClass('show');
+                    $hintBtn.removeClass('fade-out').addClass('fade-in').css('visibility', 'visible');
+                    setTimeout(function() {
+                        $hintBtn.removeClass('fade-in');
+                    }, 200);
+                }
+                
+                if (drillMode) {
+                    // Mode Drill : célébration plus rapide pour un rythme soutenu
+                $('#myBoard').addClass('celebrate');
+                    window.playWinSound();
+                    confetti({
+                        particleCount: 80,
+                        spread: 70,
+                        origin: { y: 0.6 }
+                    });
+                    setTimeout(function() {
+                        $('#myBoard').removeClass('celebrate');
+                        handleDrillOpeningSuccess();
+                    }, 500); // Réduit à 500ms pour drill (50% de 1000ms)
+                } else {
+                    // Mode Learn : délai normal pour bien savourer le succès
+                    $('#myBoard').addClass('celebrate');
+                window.playWinSound();
+                confetti({
+                    particleCount: 80,
+                    spread: 70,
+                    origin: { y: 0.6 }
+                });
+                setTimeout(function() {
+                    $('#myBoard').removeClass('celebrate');
+                    goToNextLineOrRestart();
+                }, 1500); // Reste à 1500ms pour learn
+                }
+            }
+
+            // This function advances to the next line if available, or shows a message if there is no next line
+            function goToNextLineOrRestart() {
+                if (currentLineIndex < lines.length - 1) {
+                    currentLineIndex++;
+                    $('#line-select').val(currentLineIndex);
+                    saveCurrentLine(); // Sauvegarder la ligne courante
+                    resetGame();
+                    updateNavigationButtons();
+                } else {
+                    // Toutes les lignes terminées
+                }
+            }
+
+            // This function returns to the previous line if available, or shows a message if there is no previous line
+            function getPreviousLine() {
+                if (currentLineIndex > 0) {
+                    currentLineIndex--;
+                    saveCurrentLine(); // Sauvegarder la ligne courante
+                    updateNavigationButtons();
+                    return lines[currentLineIndex];
+                }
+                $('#status').text('Already at the first line.');
+            }
+
+            window.playComputerMove = function() {
+                if (isLineComplete) return;
+                if (currentLineIndex >= lines.length || currentMoveIndex >= lines[currentLineIndex].moves.length) {
+                    window.showLineComplete();
+                    return;
+                }
+                const move = lines[currentLineIndex].moves[currentMoveIndex];
+                game.move(move.san);
+                board.position(game.fen());
+                currentMoveIndex++;
+                window.playSound('move');
+                
+                // Met à jour l'indice si il est affiché
+                window.updateHintContent();
+                
+                console.log('Computer move played, checking premove. pendingPreMove:', pendingPreMove, 'drillMode:', drillMode);
+                
+                // Vérifie l'échec et mat
+                if (window.checkForCheckmate()) {
+                    return; // La fonction checkForCheckmate gère déjà l'enchaînement
+                }
+                
+                // Ferme la fenêtre de pre-move
+                premoveWindowOpen = false;
+                // Réactive le drag & drop pour le joueur
+                board.draggable = true;
+                // Exécute le pre-move instantanément si il existe
+                if (pendingPreMove) {
+                    console.log('Executing pending premove:', pendingPreMove);
+                    setTimeout(function() {
+                        tryPlayPreMoveInstant();
+                    }, 50);
+                }
+            }
+
+            function tryPlayPreMoveInstant() {
+                if (!pendingPreMove) return;
+                // Check if it's the player's turn
+                if ((orientation === 'white' && game.turn() !== 'w') || (orientation === 'black' && game.turn() !== 'b')) {
+                    return;
+                }
+                
+                // Vérifier si c'est une promotion en utilisant la nouvelle fonction
+                if (window.isPromotion(pendingPreMove.from, pendingPreMove.to)) {
+                    const piece = game.get(pendingPreMove.from);
+                    console.log('Promotion detected in pre-move! Piece:', piece, 'from:', pendingPreMove.from, 'to:', pendingPreMove.to);
+                    
+                    // Stocker les informations de promotion
+                    window.pendingPromotion = {
+                    from: pendingPreMove.from,
+                    to: pendingPreMove.to,
+                        color: piece.color
+                    };
+                    
+                    // Afficher le dialogue de promotion
+                    window.showPromotionDialog(pendingPreMove.from, pendingPreMove.to, piece.color);
+                    clearPreMove(); // Nettoyer le premove
+                    return;
+                }
+                
+                // Check if the pre-move is legal
+                var move = game.move({
+                    from: pendingPreMove.from,
+                    to: pendingPreMove.to
+                });
+                if (move === null) {
+                    clearPreMove();
+                    board.position(game.fen());
+                    return;
+                }
+                window.playSound('move');
+                clearPreMove();
+                board.position(game.fen());
+                
+                // Vérifie l'échec et mat
+                if (window.checkForCheckmate()) {
+                    return; // La fonction checkForCheckmate gère déjà l'enchaînement
+                }
+                
+                // Attendre que l'animation soit visible avant de valider le coup et d'enchaîner
+                setTimeout(function() {
+                    window.validateUserMove(move);
+                }, 350);
+            }
+
+
+
+
+
+
+
+                    // Variables pour la promotion (déplacées au scope global)
+        window.pendingPromotion = null;
+        
+        // Fonction playSound globale avec fallback
+        window.playSound = function(name) {
+            try {
+                const audio = new Audio('/static/sounds/' + name + '.mp3');
+                audio.onerror = function() {
+                    console.log('Sound file not found:', name);
+                };
+                audio.play().catch(function(e) {
+                    console.log('Sound play failed:', e);
+                });
+            } catch (e) {
+                console.log('Sound initialization failed:', e);
+            }
+        }
+
+            // Configuration de l'échiquier avec thème de pièces alternatif
+            var config = {
+                draggable: true,
+                position: 'start',
+                onDragStart: onDragStart,
+                onDrop: onDrop,
+                onSnapEnd: onSnapEnd,
+                orientation: orientation,
+                pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png',
+                showNotation: true,
+                dropOffBoard: 'snapback',
+                sparePieces: false
+            };
+
+            console.log('Creating board with config:', config);
+            
+            try {
+                board = Chessboard('myBoard', config);
+                
+                if (board) {
+                    console.log('Board created successfully');
+                    setupLine();
+                    $(window).resize(board.resize);
+                } else {
+                    console.error('Failed to create board');
+                }
+            } catch (error) {
+                console.error('Error creating board:', error);
+            }
+            
+            // Variables pour la sélection de pièce
+            var selectedPiece = null;
+            
+            // Variables pour détecter les clics simples vs drags
+            var isDragging = false;
+            var dragStartSquare = null;
+            
+            // Détecter le début du drag
+            $('#myBoard').on('mousedown', '.square-55d63', function(e) {
+                // Ignorer le clic droit
+                if (e.button === 2) {
+                    return;
+                }
+                
+                const square = $(this).attr('data-square');
+                if (square) {
+                    isDragging = false;
+                    dragStartSquare = square;
+                }
+            });
+            
+            // Détecter le mouvement (drag)
+            $('#myBoard').on('mousemove', '.square-55d63', function(e) {
+                if (dragStartSquare) {
+                    isDragging = true;
+                }
+            });
+            
+            // Gérer les clics simples (sans drag)
+            $('#myBoard').on('click', '.square-55d63', function(e) {
+                // Ignorer le clic droit
+                if (e.button === 2) {
+                    return;
+                }
+                
+                // Ne traiter que les clics simples (pas de drag)
+                if (isDragging) {
+                    return;
+                }
+                
+                const square = $(this).attr('data-square');
+                if (!square) return;
+                
+                // Ne pas gérer la sélection si ce n'est pas le tour du joueur
+                if ((orientation === 'black' && game.turn() === 'w') || (orientation === 'white' && game.turn() === 'b')) {
+                    return;
+                }
+                
+                // Ne pas gérer la sélection si une promotion est en cours
+                if (window.pendingPromotion) {
+                    return;
+                }
+                
+                // Ne pas gérer la sélection si on est en mode premove
+                if (premoveMode) {
+                    return;
+                }
+                
+                const piece = game.get(square);
+                
+                // Si on clique sur une pièce de notre couleur
+                if (piece && piece.color === (orientation === 'white' ? 'w' : 'b')) {
+                    // Si c'est la même pièce déjà sélectionnée, désélectionner
+                    if (selectedPiece === square) {
+                        selectedPiece = null;
+                        removeGreySquares();
+                        return;
+                    }
+                    
+                    // Sélectionner la nouvelle pièce
+                    selectedPiece = square;
+                    removeGreySquares();
+                    
+                    // Obtenir la liste des coups possibles pour cette pièce
+                    const moves = game.moves({
+                        square: square,
+                        verbose: true
+                    });
+                    
+                    // Highlight les cases de destination possibles
+                    for (const move of moves) {
+                        greySquare(move.to);
+                    }
+                } else {
+                    // Si on clique sur une case vide ou une pièce adverse, désélectionner
+                    selectedPiece = null;
+                    removeGreySquares();
+                }
+            });
+            
+            // Supprimer la sélection et les highlights au clic droit
+            $('#myBoard').on('contextmenu', function(e) {
+                e.preventDefault();
+                selectedPiece = null;
+                removeGreySquares();
+                clearPreMove();
+                premoveSource = null;
+                return false;
+            });
+
+            // PREMOVE: Clic sur case pour préparer un pre-move (pour les utilisateurs qui préfèrent cliquer)
+            $('#myBoard').on('click', '.square-55d63', function() {
+                var square = $(this).attr('data-square');
+                if (!square) return;
+                // On ne peut préparer un pre-move que pendant la fenêtre de pre-move
+                if (premoveWindowOpen) {
+                    if (!premoveSource) {
+                        premoveSource = square;
+                        highlightPreMove(square, square);
+                    } else {
+                        setPreMove(premoveSource, square);
+                        premoveSource = null;
+                    }
+                }
+            });
+
+            // Suppression du bouton d'annulation de pre-move
+            // Add right-click handler to cancel pre-move
+            $('#myBoard').on('contextmenu', function(e) {
+                e.preventDefault();
+                clearPreMove();
+                premoveSource = null;
+                return false;
+            });
+
+            // Event listeners
+            $('#line-select').on('change', function() {
+                currentLineIndex = parseInt($(this).val());
+                saveCurrentLine(); // Sauvegarder la ligne courante
+                resetGame();
+                updateNavigationButtons();
+            });
+            
+
+
+            $('#reset-btn').on('click', resetGame);
+
+            $('#next-line-btn').on('click', function() {
+                if (currentLineIndex < lines.length - 1) {
+                    currentLineIndex++;
+                    $('#line-select').val(currentLineIndex);
+                    saveCurrentLine(); // Sauvegarder la ligne courante
+                    resetGame();
+                    updateNavigationButtons();
+                    updateHintContent(); // Actualise l'indice pour la nouvelle ligne
+                } else {
+                    // Dernière ligne atteinte
+                }
+            });
+
+            // Switch hint : clic sur toute la zone
+            $('#hint-zone').on('click', function() {
+                if (currentLineIndex < lines.length && currentMoveIndex < lines[currentLineIndex].moves.length) {
+                    const hintMove = lines[currentLineIndex].moves[currentMoveIndex];
+                    toggleHint(hintMove.san);
+                }
+            });
+            
+
+
+            $('#prev-line-btn').on('click', function() {
+                if (currentLineIndex > 0) {
+                    currentLineIndex--;
+                    $('#line-select').val(currentLineIndex);
+                    saveCurrentLine(); // Sauvegarder la ligne courante
+                    resetGame();
+                    updateNavigationButtons();
+                    updateHintContent(); // Actualise l'indice pour la nouvelle ligne
+                } else {
+                    // Déjà à la première ligne
+                }
+            });
+
+            console.log('Initialization complete');
+            
+            // Initialiser le compteur Drill si on est en mode Drill au démarrage
+            if (drillMode) {
+                updateDrillStatus();
+            }
+        });
+        
+        // Variables globales pour les fonctions de navigation
+        var currentLineIndex = 0;
+        var lines = null;
+        
+        // Fonction pour initialiser l'affichage correct
+        function initializeDisplay() {
+            console.log('initializeDisplay called');
+            
+            // Charger la ligne sauvegardée ou utiliser 0 par défaut
+            const savedLineIndex = loadCurrentLine();
+            
+            // Check that the index is valid relative to the number of available lines
+            if (typeof lines !== 'undefined' && lines && savedLineIndex < lines.length) {
+                currentLineIndex = savedLineIndex;
+                console.log('Using saved line index:', currentLineIndex);
+            } else {
+                currentLineIndex = 0;
+                console.log('Using default line index 0 (saved index was invalid or no lines available)');
+            }
+            
+            // Synchroniser le sélecteur de ligne avec currentLineIndex
+            $('#line-select').val(currentLineIndex);
+            console.log('Line selector synchronized to:', currentLineIndex);
+            
+            // Sauvegarder la ligne courante (au cas où elle a été restaurée)
+            saveCurrentLine();
+            
+            // S'assurer que l'indice est dans l'état par défaut (ampoule) au démarrage
+            const $hintBtn = $('#hint-btn');
+            const $hintTextDiv = $('#hint-text');
+            $hintTextDiv.removeClass('show');
+            $hintBtn.removeClass('fade-out fade-in').css('visibility', 'visible');
+            
+            // Vérifie l'état du switch au chargement
+            const isDrillMode = $('#auto-play-switch').is(':checked');
+            drillMode = isDrillMode; // S'assurer que la variable globale est synchronisée
+            
+            if (isDrillMode) {
+                // Mode Drill au démarrage
+                console.log('Initializing in Drill mode');
+                $('.info-section').addClass('drill-mode');
+                $('#drill-counter').addClass('show');
+                $('#hint-zone').removeClass('show');
+                // Mettre à jour l'affichage du score immédiatement (même si best score = 0)
+                updateDrillDisplay();
+            } else {
+                // Mode Learn au démarrage
+                console.log('Initializing in Learn mode');
+                $('.info-section').removeClass('drill-mode');
+                $('#drill-counter').removeClass('show');
+                $('#hint-zone').addClass('show');
+                // S'assurer que le best score est masqué dès le démarrage
+                updateDrillDisplay();
+            }
+            
+            // Initialise la navigation
+            initializeNavigation();
+        }
+            
+            // Anciennes fonctions de drill supprimées - remplacées par le nouveau système
+        // Bloque le menu contextuel sur toute la page
+        $(document).on('contextmenu', function(e) {
+            e.preventDefault();
+            return false;
+        });
+        
+        // Fonction pour initialiser la navigation
+        function initializeNavigation() {
+            // Met à jour l'état des boutons de navigation seulement si lines est définie
+            if (typeof lines !== 'undefined' && lines !== null) {
+                updateNavigationButtons();
+            }
+        }
+        
+        // Fonction pour mettre à jour l'état des boutons de navigation
+        function updateNavigationButtons() {
+            console.log('updateNavigationButtons called');
+            
+            // Vérification de sécurité
+            if (typeof currentLineIndex === 'undefined' || currentLineIndex === null) {
+                console.log('currentLineIndex is undefined, setting to 0');
+                currentLineIndex = 0;
+            }
+            
+            // Vérification de sécurité pour lines
+            if (typeof lines === 'undefined' || lines === null) {
+                console.log('lines is undefined, cannot update navigation buttons');
+                return;
+            }
+            
+            const $prevBtn = $('#prev-line-btn');
+            const $nextBtn = $('#next-line-btn');
+            
+            console.log('Found buttons - prev:', $prevBtn.length, 'next:', $nextBtn.length);
+            console.log('Current state - currentLineIndex:', currentLineIndex, 'lines.length:', lines.length);
+            
+            // Bouton précédent - désactivé seulement si on est à la première ligne (index 0)
+            if (currentLineIndex > 0) {
+                $prevBtn.prop('disabled', false).removeClass('disabled');
+                console.log('Prev button ENABLED');
+            } else {
+                $prevBtn.prop('disabled', true).addClass('disabled');
+                console.log('Prev button DISABLED');
+            }
+            
+            // Bouton suivant - désactivé seulement si on est à la dernière ligne
+            if (currentLineIndex < lines.length - 1) {
+                $nextBtn.prop('disabled', false).removeClass('disabled');
+                console.log('Next button ENABLED');
+            } else {
+                $nextBtn.prop('disabled', true).addClass('disabled');
+                console.log('Next button DISABLED');
+            }
+            
+            console.log('Navigation buttons updated - currentLineIndex:', currentLineIndex, 'lines.length:', lines.length);
+        }
+        
+        // Fonction simple pour diagnostiquer l'état du jeu
+        function debugGameState() {
+            console.log('=== GAME STATE DEBUG ===');
+            console.log('isLineComplete:', isLineComplete);
+            console.log('drillMode:', drillMode);
+            console.log('currentLineIndex:', currentLineIndex);
+            console.log('currentMoveIndex:', currentMoveIndex);
+            console.log('drillSuccessiveOpenings:', drillSuccessiveOpenings);
+            console.log('drillBestScore:', drillBestScore);
+            console.log('drillCurrentOpeningComplete:', drillCurrentOpeningComplete);
+            console.log('drillOpeningDeck length:', drillOpeningDeck.length);
+            console.log('========================');
+        }
+    </script>
+</body>
+</html>

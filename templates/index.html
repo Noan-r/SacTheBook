@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SacTheBook</title>
+    <link rel="icon" type="image/png" href="/static/SacTheBook_Icon.png">
+    <style>
+        body {
+            font-family: 'Montserrat', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #145334;
+            background-image: 
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cg transform='rotate(15 90 90)'%3E%3Ctext x='90' y='105' font-size='60' text-anchor='middle' fill='rgba(255,255,255,0.1)'%3E♔%3C/text%3E%3C/g%3E%3C/svg%3E"),
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cg transform='rotate(-25 90 90)'%3E%3Ctext x='90' y='105' font-size='60' text-anchor='middle' fill='rgba(255,255,255,0.08)'%3E♕%3C/text%3E%3C/g%3E%3C/svg%3E"),
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cg transform='rotate(45 90 90)'%3E%3Ctext x='90' y='105' font-size='60' text-anchor='middle' fill='rgba(255,255,255,0.06)'%3E♖%3C/text%3E%3C/g%3E%3C/svg%3E"),
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cg transform='rotate(-10 90 90)'%3E%3Ctext x='90' y='105' font-size='60' text-anchor='middle' fill='rgba(255,255,255,0.09)'%3E♗%3C/text%3E%3C/g%3E%3C/svg%3E"),
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cg transform='rotate(30 90 90)'%3E%3Ctext x='90' y='105' font-size='60' text-anchor='middle' fill='rgba(255,255,255,0.07)'%3E♘%3C/text%3E%3C/g%3E%3C/svg%3E"),
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cg transform='rotate(-40 90 90)'%3E%3Ctext x='90' y='105' font-size='60' text-anchor='middle' fill='rgba(255,255,255,0.11)'%3E♙%3C/text%3E%3C/g%3E%3C/svg%3E");
+            background-size: 180px 180px, 180px 180px, 180px 180px, 180px 180px, 180px 180px, 180px 180px;
+            background-position: 40px 100px, 300px 140px, 540px 60px, 180px 370px, 440px 300px, 670px 200px;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        
+        .container {
+            background: #F8F5EC;
+            border: 2px solid #F47C20;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 8px 32px rgba(32,81,58,0.18);
+            text-align: center;
+            max-width: 1000px;
+            width: 100%;
+        }
+        
+        h1 {
+            color: #4B2E19;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .category-section {
+            margin-bottom: 40px;
+        }
+
+        h2 {
+            color: #4B2E19;
+            border-bottom: 2px solid #F47C20;
+            display: inline-block;
+            padding-bottom: 5px;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+        
+        .openings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+        
+        .opening-card {
+            background: #fff;
+            border: 2px solid #F8F5EC;
+            border-radius: 14px;
+            padding: 20px;
+            text-decoration: none;
+            color: #4B2E19;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(75,46,25,0.06);
+            /* Ajout d'une bordure orange fine sur tous les boutons */
+            border: 2px solid #F47C20;
+        }
+        /* Style spécial pour les boutons d'ouverture de défense */
+        .opening-card.defense {
+            background: #e0e0e0 !important; /* gris plus foncé */
+            color: #888 !important;
+        }
+        .opening-card.defense:hover {
+            background: #d1cfcf !important;
+            border-color: #F47C20;
+            color: #4B2E19 !important;
+        }
+        
+        .opening-card:hover {
+            border-color: #F47C20;
+            background: #FFF5E6;
+            transform: translateY(-5px) scale(1.03);
+            box-shadow: 0 8px 24px rgba(244,124,32,0.13);
+        }
+        
+        .opening-name {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #4B2E19;
+        }
+        
+        .no-openings {
+            color: #B23A2B;
+            font-style: italic;
+        }
+        .btn, button {
+            background: #F47C20;
+            color: #F8F5EC;
+            border: none;
+            padding: 10px 22px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            margin: 0 5px;
+            transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+            box-shadow: 0 2px 8px rgba(244,124,32,0.08);
+        }
+        .btn:hover, button:hover {
+            background: #B23A2B;
+            color: #fff;
+        }
+        code {
+            background: #F8F5EC;
+            color: #B23A2B;
+            border-radius: 4px;
+            padding: 2px 6px;
+        }
+        .sac-logo {
+            background-color: #145334;
+            width: 70px;
+            display: block;
+            margin: 16px auto 12px auto;
+            border: 2px solid #F47C20;
+            border-radius: 16px;
+        }
+    </style>
+</head>
+<body>
+    <style>
+        .header-container {
+            position: relative;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        .settings-icon {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            transition: transform 0.3s ease;
+        }
+        .settings-img {
+            width: 48px;
+            height: 48px;
+            object-fit: contain;
+        }
+        .settings-icon:hover {
+            transform: rotate(90deg);
+        }
+    </style>
+    <div class="container">
+        <div class="header-container">
+            <img src="/static/SacTheBook_Icon.png" alt="SacTheBook Logo" class="sac-logo">
+            <h1>SacTheBook</h1>
+            <a href="/openings/settings" class="settings-icon" title="Opening Settings">
+                <img src="/static/img/button/settings-icon.png" alt="Settings" class="settings-img">
+            </a>
+        </div>
+        
+        {% for category, openings_list in openings_by_category.items() %}
+            <div class="category-section">
+                <h2>{{ category }}</h2>
+                {% if openings_list %}
+                    <div class="openings-grid">
+                        {% for opening in openings_list %}
+                        <a href="{{ url_for('opening_page', opening_name=opening.name) }}?from_index=1" class="opening-card{% if category == 'Defense' %} defense{% endif %}">
+                            <div class="opening-name">{{ opening.name.replace('_', ' ') }}</div>
+                        </a>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="no-openings">No openings in this category.</p>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+
+
+
+    <script>
+        // Check if coming from settings and force refresh
+        if (window.location.search.includes('refresh=true')) {
+            // Supprimer le paramètre de l'URL
+            const url = new URL(window.location);
+            url.searchParams.delete('refresh');
+            window.history.replaceState({}, '', url);
+            
+            // Forcer un rechargement complet de la page
+            window.location.reload(true);
+        }
+        
+        // Ajouter un timestamp pour éviter le cache
+        document.addEventListener('DOMContentLoaded', function() {
+            const links = document.querySelectorAll('a[href*="/openings/settings"]');
+            links.forEach(link => {
+                link.addEventListener('click', function() {
+                    // Ajouter un paramètre pour indiquer qu'on va vers settings
+                    this.href = this.href + '?from=index';
+                });
+            });
+            
+            // Ajouter un timestamp pour éviter le cache sur les liens d'ouverture
+            const openingLinks = document.querySelectorAll('a[href*="/opening/"]');
+            openingLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    // Ajouter un timestamp pour éviter le cache
+                    const timestamp = Date.now();
+                    const separator = this.href.includes('?') ? '&' : '?';
+                    this.href = this.href + separator + '_t=' + timestamp;
+                });
+            });
+        });
+    </script>
+</body>
+</html> 
