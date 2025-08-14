@@ -1,10 +1,11 @@
-from flask import Flask, render_template, request, jsonify, redirect, url_for, make_response
+from flask import Flask, render_template, request, jsonify, redirect, url_for, make_response, send_from_directory
 import chess
 import chess.pgn
 from io import StringIO
 import config
 import json
 import re
+import os
 
 app = Flask(__name__, static_folder='static', static_url_path='/static')
 app.secret_key = 'chess_openings_secret_key'
@@ -1007,8 +1008,20 @@ def get_best_score():
 # Route explicite pour servir les fichiers statiques (pour Render)
 @app.route('/static/<path:filename>')
 def static_files(filename):
-    """Serve static files explicitly"""
-    return app.send_static_file(filename)
+    """Serve static files explicitly with better error handling"""
+    try:
+        # Vérifier si le fichier existe
+        static_folder = app.static_folder
+        file_path = os.path.join(static_folder, filename)
+        
+        if os.path.exists(file_path):
+            return send_from_directory(static_folder, filename)
+        else:
+            print(f"Static file not found: {filename}")
+            return f"File not found: {filename}", 404
+    except Exception as e:
+        print(f"Error serving static file {filename}: {e}")
+        return f"Error serving file: {filename}", 500
 
 # Route de test pour vérifier les pièces d'échecs
 @app.route('/test_pieces')
@@ -1017,18 +1030,62 @@ def test_pieces():
     pieces = ['wp', 'wr', 'wn', 'wb', 'wq', 'wk', 'bp', 'br', 'bn', 'bb', 'bq', 'bk']
     results = {}
     
+    # Informations sur le dossier static
+    static_folder = app.static_folder
+    pieces_folder = os.path.join(static_folder, 'img', 'chesspieces', 'wikipedia')
+    
+    # Vérifier si le dossier existe
+    folder_exists = os.path.exists(pieces_folder)
+    
     for piece in pieces:
         try:
-            # Essayer d'accéder au fichier
-            app.send_static_file(f'img/chesspieces/wikipedia/{piece}.png')
-            results[piece] = 'OK'
+            file_path = os.path.join(pieces_folder, f'{piece}.png')
+            if os.path.exists(file_path):
+                file_size = os.path.getsize(file_path)
+                results[piece] = f'OK ({file_size} bytes)'
+            else:
+                results[piece] = f'File not found: {file_path}'
         except Exception as e:
             results[piece] = f'Error: {str(e)}'
     
     return jsonify({
         'message': 'Chess pieces test',
+        'static_folder': static_folder,
+        'pieces_folder': pieces_folder,
+        'folder_exists': folder_exists,
         'results': results
     })
+
+# Route pour lister les fichiers statiques
+@app.route('/list_static')
+def list_static():
+    """List all static files for debugging"""
+    try:
+        static_folder = app.static_folder
+        files_list = []
+        
+        for root, dirs, files in os.walk(static_folder):
+            for file in files:
+                rel_path = os.path.relpath(os.path.join(root, file), static_folder)
+                full_path = os.path.join(root, file)
+                file_size = os.path.getsize(full_path)
+                files_list.append({
+                    'path': rel_path,
+                    'size': file_size,
+                    'full_path': full_path
+                })
+        
+        return jsonify({
+            'message': 'Static files list',
+            'static_folder': static_folder,
+            'total_files': len(files_list),
+            'files': files_list
+        })
+    except Exception as e:
+        return jsonify({
+            'error': str(e),
+            'static_folder': app.static_folder
+        })
 
 if __name__ == '__main__':
     app.run(host=config.HOST, port=config.PORT, debug=config.DEBUG) 
