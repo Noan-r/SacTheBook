@@ -85,18 +85,21 @@
             box-shadow: 0 8px 32px rgba(32,81,58,0.18);
         }
         
-        .info-section {
-            padding: 25px;
+        .header-section {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             width: 100%;
-            max-width: 700px;
-            min-height: 600px;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .bottom-section {
             display: flex;
             flex-direction: column;
             align-items: center;
-            border: 2px solid #F47C20;
-            border-radius: 15px;
-            box-sizing: border-box;
-            overflow: hidden; /* Empêche tout débordement */
+            gap: 15px;
+            width: 100%;
         }
         
         /* Mobile info-section adjustments */
@@ -774,27 +777,42 @@
         
         .game-container {
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
-            gap: 20px;
             flex: 1;
             padding: 0 20px;
-            max-width: 800px;
-            margin: 0 auto;
             width: 100%;
+        }
+
+        .unified-section {
+            background: #F8F5EC;
+            border: 2px solid #F47C20;
+            border-radius: 20px;
+            padding: 25px;
+            max-width: 800px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            box-shadow: 0 8px 32px rgba(32,81,58,0.18);
         }
         
         /* Ajustements pour tous les écrans */
         @media (max-width: 768px) {
             .game-container {
-                gap: 15px;
                 padding: 0 10px;
             }
             
-            .info-section {
+            .unified-section {
                 max-width: 600px;
                 padding: 20px;
+                gap: 15px;
+            }
+
+            .header-section {
+                flex-direction: column;
+                gap: 10px;
             }
             
             #myBoard {
@@ -809,13 +827,17 @@
         
         @media (max-width: 480px) {
             .game-container {
-                gap: 10px;
                 padding: 0 8px;
             }
             
-            .info-section {
+            .unified-section {
                 max-width: 450px;
                 padding: 15px;
+                gap: 10px;
+            }
+
+            .header-section {
+                gap: 8px;
             }
             
             #myBoard {
@@ -833,7 +855,7 @@
             align-items: center;
             justify-content: center;
             width: 100%;
-            margin: 20px 0;
+            margin: 10px 0;
         }
         
         #myBoard {
@@ -1524,12 +1546,9 @@
     </div>
     
     <div class="game-container">
-        <div class="board-section">
-            <div id="myBoard"></div>
-        </div>
-        
-        <div class="info-section">
-            <div class="game-info">
+        <div class="unified-section">
+            <!-- En-tête avec pion, titre et boutons -->
+            <div class="header-section">
                 <div class="pawn-indicator">
                     {% if orientation == 'white' %}
                         <span class="pawn white-pawn">♙</span>
@@ -1547,6 +1566,20 @@
                     </select>
                 </div>
 
+                <div class="controls">                   
+                    <button class="btn" id="prev-line-btn">⏮</button>
+                    <button class="btn" id="reset-btn">⟲</button>
+                    <button class="btn" id="next-line-btn">⏭</button>
+                </div>
+            </div>
+
+            <!-- Échiquier centré -->
+            <div class="board-section">
+                <div id="myBoard"></div>
+            </div>
+
+            <!-- Section inférieure avec switch, drill et hint -->
+            <div class="bottom-section">
                 <div class="switch-container">
                     <span class="switch-label-left">Learn</span>
                     <label class="switch">
@@ -1555,11 +1588,7 @@
                     </label>
                     <span class="switch-label-right">Drill</span>
                 </div>
-                
 
-                
-
-                
                 <!-- Compteur Drill (masqué par défaut) -->
                 <div class="drill-counter" id="drill-counter">
                     <h3>Drill Mode</h3>
@@ -1574,16 +1603,9 @@
                     <div class="hint-btn" id="hint-btn">💡</div>
                     <div class="hint-text" id="hint-text"></div>
                 </div>
-                
-                <div class="controls">                   
-                    <button class="btn" id="prev-line-btn">⏮</button>
-                    <button class="btn" id="reset-btn">⟲</button>
-                    <button class="btn" id="next-line-btn">⏭</button>
-                </div>
-
             </div>
-            
-            <!-- Best Score Section - Pied de l'info-section (toute la largeur) -->
+
+            <!-- Best Score Section -->
             <div class="best-score-footer" id="best-score-footer">
                 <div class="best-score-content">
                     <div class="best-score-icon">🏆</div>
