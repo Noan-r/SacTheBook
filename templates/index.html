@@ -422,34 +422,76 @@
 
     <script>
         // === FONCTIONS AUDIO GLOBALES ===
-        // Fonction playSound globale simplifiée et robuste
+        // Fonction playSound globale avec fallback et gestion mobile
         window.playSound = function(name) {
-            console.log('playSound called with:', name);
-            
-            // Créer un nouvel audio
-            const audio = new Audio('/static/sounds/' + name + '.mp3');
-            
-            // Gestionnaire d'erreur simple
-            audio.onerror = function(e) {
-                console.log('Audio error for', name, ':', e);
-            };
-            
-            // Essayer de jouer
-            audio.play().then(function() {
-                console.log('Sound played successfully:', name);
-            }).catch(function(e) {
-                console.log('Sound play failed:', name, e);
-            });
+            try {
+                console.log('Attempting to play sound:', name);
+                
+                // Créer un nouvel audio à chaque fois pour permettre les clics multiples
+                const audio = new Audio('/static/sounds/' + name + '.mp3');
+                
+                // Ajouter des gestionnaires d'événements pour le debug
+                audio.onloadstart = function() {
+                    console.log('Audio loading started:', name);
+                };
+                
+                audio.oncanplay = function() {
+                    console.log('Audio can play:', name);
+                };
+                
+                audio.onerror = function(e) {
+                    console.log('Sound file error:', name, e);
+                };
+                
+                // Réinitialiser l'audio pour permettre la lecture multiple
+                audio.currentTime = 0;
+                
+                // Gestion spéciale pour mobile
+                const playPromise = audio.play();
+                if (playPromise !== undefined) {
+                    playPromise.then(function() {
+                        console.log('Sound played successfully:', name);
+                    }).catch(function(e) {
+                        console.log('Sound play failed (mobile restriction):', name, e);
+                        // Sur mobile, on ignore silencieusement les erreurs d'autoplay
+                    });
+                }
+            } catch (e) {
+                console.log('Sound initialization failed:', name, e);
+            }
         };
 
-        // Fonction pour jouer le son de bouton
+        // Fonction pour jouer le son de bouton avec micro délai
+        let lastButtonSoundTime = 0;
         function playButtonSound() {
-            console.log('playButtonSound called');
-            playSound('btn');
+            const now = Date.now();
+            // Micro délai de 50ms pour éviter les sons en double
+            if (now - lastButtonSoundTime > 50) {
+                console.log('Playing button sound - calling playSound("btn")'); // Debug
+                playSound('btn');
+                lastButtonSoundTime = now;
+            } else {
+                console.log('Button sound skipped due to timing (50ms delay)');
+            }
         }
 
-        // Initialisation simple des sons
-        console.log('Sound system ready');
+        // Initialiser les sons au premier clic
+        function initializeSounds() {
+            try {
+                // Créer un audio silencieux pour "débloquer" l'audio sur mobile
+                const audio = new Audio('/static/sounds/btn.mp3');
+                audio.volume = 0;
+                audio.play().catch(function(e) {
+                    console.log('Sound initialization failed');
+                });
+            } catch (e) {
+                console.log('Sound initialization error:', e);
+            }
+        }
+
+        // Initialiser les sons au premier clic
+        document.addEventListener('click', initializeSounds, { once: true });
+        document.addEventListener('touchstart', initializeSounds, { once: true });
 
         // Check if coming from settings and force refresh
         if (window.location.search.includes('refresh=true')) {
