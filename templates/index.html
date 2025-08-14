@@ -424,10 +424,14 @@
         // Fonction playSound globale avec fallback et gestion mobile
         window.playSound = function(name) {
             try {
+                // Créer un nouvel audio à chaque fois pour permettre les clics multiples
                 const audio = new Audio('/static/sounds/' + name + '.mp3');
                 audio.onerror = function() {
                     console.log('Sound file not found:', name);
                 };
+                
+                // Réinitialiser l'audio pour permettre la lecture multiple
+                audio.currentTime = 0;
                 
                 // Gestion spéciale pour mobile
                 const playPromise = audio.play();
@@ -478,8 +482,8 @@
         
         // Ajouter un timestamp pour éviter le cache
         document.addEventListener('DOMContentLoaded', function() {
-            // Ajouter le son à tous les boutons et liens
-            const buttons = document.querySelectorAll('button, .btn, a');
+            // Ajouter le son à tous les boutons, liens et éléments cliquables
+            const buttons = document.querySelectorAll('button, .btn, a, input[type="button"], input[type="submit"], .settings-icon, .opening-card');
             buttons.forEach(function(button) {
                 button.addEventListener('click', function(e) {
                     // Éviter de jouer le son si le bouton est désactivé
@@ -494,8 +498,8 @@
                 mutations.forEach(function(mutation) {
                     mutation.addedNodes.forEach(function(node) {
                         if (node.nodeType === 1) { // Element node
-                            const newButtons = node.querySelectorAll ? node.querySelectorAll('button, .btn, a') : [];
-                            if (node.matches && node.matches('button, .btn, a')) {
+                            const newButtons = node.querySelectorAll ? node.querySelectorAll('button, .btn, a, input[type="button"], input[type="submit"], .settings-icon, .opening-card') : [];
+                            if (node.matches && node.matches('button, .btn, a, input[type="button"], input[type="submit"], .settings-icon, .opening-card')) {
                                 newButtons.push(node);
                             }
                             

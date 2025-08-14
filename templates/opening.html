@@ -2933,10 +2933,10 @@
             playSound('btn');
         }
         
-        // Ajouter le son à tous les boutons
+        // Ajouter le son à tous les boutons et éléments cliquables
         document.addEventListener('DOMContentLoaded', function() {
-            // Sélectionner tous les boutons
-            const buttons = document.querySelectorAll('button, .btn');
+            // Sélectionner tous les boutons et éléments cliquables
+            const buttons = document.querySelectorAll('button, .btn, input[type="button"], input[type="submit"], .promotion-piece, .hint-btn, .backbtn');
             
             // Ajouter l'événement de clic avec son
             buttons.forEach(function(button) {
@@ -2953,8 +2953,8 @@
                 mutations.forEach(function(mutation) {
                     mutation.addedNodes.forEach(function(node) {
                         if (node.nodeType === 1) { // Element node
-                            const newButtons = node.querySelectorAll ? node.querySelectorAll('button, .btn') : [];
-                            if (node.matches && node.matches('button, .btn')) {
+                            const newButtons = node.querySelectorAll ? node.querySelectorAll('button, .btn, input[type="button"], input[type="submit"], .promotion-piece, .hint-btn, .backbtn') : [];
+                            if (node.matches && node.matches('button, .btn, input[type="button"], input[type="submit"], .promotion-piece, .hint-btn, .backbtn')) {
                                 newButtons.push(node);
                             }
                             
@@ -2979,10 +2979,14 @@
         // Fonction playSound globale avec fallback et gestion mobile
         window.playSound = function(name) {
             try {
+                // Créer un nouvel audio à chaque fois pour permettre les clics multiples
                 const audio = new Audio('/static/sounds/' + name + '.mp3');
                 audio.onerror = function() {
                     console.log('Sound file not found:', name);
                 };
+                
+                // Réinitialiser l'audio pour permettre la lecture multiple
+                audio.currentTime = 0;
                 
                 // Gestion spéciale pour mobile
                 const playPromise = audio.play();
@@ -2995,7 +2999,7 @@
             } catch (e) {
                 console.log('Sound initialization failed:', e);
             }
-            }
+        }
 
             // Configuration de l'échiquier avec thème de pièces alternatif
             var config = {
