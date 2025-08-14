@@ -1365,11 +1365,12 @@
             confirmBtn.addEventListener('click', handleConfirm);
             cancelBtn.addEventListener('click', handleCancel);
             
-            // Fermer avec Escape
+            // Fermer avec Escape (gestion spécifique pour le modal)
             const handleEscape = (e) => {
                 if (e.key === 'Escape') {
                     handleCancel();
                     document.removeEventListener('keydown', handleEscape);
+                    e.stopPropagation(); // Empêcher la propagation vers handleEscapeKey global
                 }
             };
             document.addEventListener('keydown', handleEscape);
@@ -1432,6 +1433,47 @@
             }
         };
 
+        // Fonction globale pour gérer la touche Escape sur les boutons d'annulation
+        function handleEscapeKey(e) {
+            if (e.key === 'Escape') {
+                // Chercher les boutons d'annulation visibles
+                const cancelButtons = document.querySelectorAll('.cancel-btn:not([style*="display: none"]), #modal-cancel:not([style*="display: none"]), #cancel-opening-btn:not([style*="display: none"])');
+                
+                // Si on trouve un bouton d'annulation visible, le cliquer
+                if (cancelButtons.length > 0) {
+                    // Prendre le premier bouton d'annulation visible
+                    const cancelBtn = cancelButtons[0];
+                    cancelBtn.click();
+                    e.preventDefault();
+                    return;
+                }
+                
+                // Si aucun bouton d'annulation visible, vérifier s'il y a des zones d'édition actives
+                const editRows = document.querySelectorAll('.variation-item:has(.edit-title), .variation-item:has(.edit-pgn)');
+                if (editRows.length > 0) {
+                    // Annuler l'édition en cours
+                    const editRow = editRows[0];
+                    const cancelBtn = editRow.querySelector('.cancel-btn');
+                    if (cancelBtn) {
+                        cancelBtn.click();
+                        e.preventDefault();
+                        return;
+                    }
+                }
+                
+                // Vérifier s'il y a une zone d'ajout d'ouverture active
+                const newOpeningZones = document.querySelectorAll('.new-opening-zone:not(:empty)');
+                if (newOpeningZones.length > 0) {
+                    const cancelBtn = document.getElementById('cancel-opening-btn');
+                    if (cancelBtn) {
+                        cancelBtn.click();
+                        e.preventDefault();
+                        return;
+                    }
+                }
+            }
+        }
+
         // Fonction pour jouer le son de bouton
         function playButtonSound() {
             playSound('btn');
@@ -1457,6 +1499,9 @@
 
         // Detect if coming from index and modify return link
         document.addEventListener('DOMContentLoaded', function() {
+            // Ajouter l'event listener pour la touche Escape
+            document.addEventListener('keydown', handleEscapeKey);
+
             // Ajouter le son à tous les boutons et liens
             const buttons = document.querySelectorAll('button, .btn, a');
             buttons.forEach(function(button) {
