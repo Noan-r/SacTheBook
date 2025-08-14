@@ -1673,7 +1673,7 @@
                 });
             }
 
-            // Event listener global pour capturer tous les clics sur les éléments interactifs
+            // Event listener global pour capturer tous les clics sur les éléments interactifs AVANT les autres handlers
             document.addEventListener('click', function(e) {
                 const target = e.target;
                 console.log('Settings global click detected on:', target.tagName, target.className, target.href || target.textContent);
@@ -1682,10 +1682,11 @@
                 if (target.matches('button, .btn, a, input[type="button"], input[type="submit"], .backbtn, .edit-btn, .save-btn, .cancel-btn, .delete-btn, .add-variation-btn, .add-opening-btn, .delete-opening-btn, .modal-btn, .switch, .switch input[type="checkbox"], .switch-label-left, .switch-label-right, .slider') ||
                     target.closest('button, .btn, a, .backbtn, .edit-btn, .save-btn, .cancel-btn, .delete-btn, .add-variation-btn, .add-opening-btn, .delete-opening-btn, .modal-btn, .switch')) {
                     
-                    console.log('Settings interactive element clicked, playing sound');
+                    console.log('Settings interactive element clicked, playing sound BEFORE function execution');
+                    // Jouer le son immédiatement, avant toute autre fonction
                     playButtonSound();
                 }
-            });
+            }, true); // true = capture phase (avant les autres event listeners)
 
             const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.get('from') === 'index') {

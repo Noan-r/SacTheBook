@@ -3053,31 +3053,9 @@
                 subtree: true
             });
 
-            // Ajouter le son spécifiquement au switch Learn/Drill
-            const switchElement = document.getElementById('auto-play-switch');
-            if (switchElement) {
-                switchElement.addEventListener('change', function() {
-                    playButtonSound();
-                });
-            }
+            // Les sons sont maintenant gérés par l'event listener global en phase de capture
 
-            // Ajouter le son aux labels du switch
-            const switchLabels = document.querySelectorAll('.switch-label-left, .switch-label-right');
-            switchLabels.forEach(function(label) {
-                label.addEventListener('click', function() {
-                    playButtonSound();
-                });
-            });
-
-            // Ajouter le son au slider du switch
-            const switchSlider = document.querySelector('.slider');
-            if (switchSlider) {
-                switchSlider.addEventListener('click', function() {
-                    playButtonSound();
-                });
-            }
-
-            // Event listener global pour capturer tous les clics sur les éléments interactifs
+            // Event listener global pour capturer tous les clics sur les éléments interactifs AVANT les autres handlers
             document.addEventListener('click', function(e) {
                 const target = e.target;
                 console.log('Opening global click detected on:', target.tagName, target.className, target.href || target.textContent);
@@ -3086,10 +3064,11 @@
                 if (target.matches('button, .btn, a, input[type="button"], input[type="submit"], .settings-icon, .opening-card, .settings-img, .backbtn, .switch-label-left, .switch-label-right, .slider, .hint-btn, .promotion-piece') ||
                     target.closest('button, .btn, a, .settings-icon, .opening-card, .backbtn, .hint-btn, .promotion-piece')) {
                     
-                    console.log('Opening interactive element clicked, playing sound');
+                    console.log('Opening interactive element clicked, playing sound BEFORE function execution');
+                    // Jouer le son immédiatement, avant toute autre fonction
                     playButtonSound();
                 }
-            });
+            }, true); // true = capture phase (avant les autres event listeners)
         });
         
 
@@ -3260,12 +3239,10 @@
 
 
             $('#reset-btn').on('click', function() {
-                playButtonSound();
                 resetGame();
             });
 
             $('#next-line-btn').on('click', function() {
-                playButtonSound();
                 if (currentLineIndex < lines.length - 1) {
                     currentLineIndex++;
                     $('#line-select').val(currentLineIndex);
@@ -3280,7 +3257,6 @@
 
             // Switch hint : clic sur toute la zone
             $('#hint-zone').on('click', function() {
-                playButtonSound();
                 if (currentLineIndex < lines.length && currentMoveIndex < lines[currentLineIndex].moves.length) {
                     const hintMove = lines[currentLineIndex].moves[currentMoveIndex];
                     toggleHint(hintMove.san);
@@ -3290,7 +3266,6 @@
 
 
             $('#prev-line-btn').on('click', function() {
-                playButtonSound();
                 if (currentLineIndex > 0) {
                     currentLineIndex--;
                     $('#line-select').val(currentLineIndex);

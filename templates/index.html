@@ -579,7 +579,7 @@
                 subtree: true
             });
 
-            // Event listener global pour capturer tous les clics sur les éléments interactifs
+            // Event listener global pour capturer tous les clics sur les éléments interactifs AVANT les autres handlers
             document.addEventListener('click', function(e) {
                 const target = e.target;
                 console.log('Global click detected on:', target.tagName, target.className, target.href || target.textContent);
@@ -588,10 +588,11 @@
                 if (target.matches('button, .btn, a, input[type="button"], input[type="submit"], .settings-icon, .opening-card, .settings-img') ||
                     target.closest('button, .btn, a, .settings-icon, .opening-card')) {
                     
-                    console.log('Interactive element clicked, playing sound');
+                    console.log('Interactive element clicked, playing sound BEFORE function execution');
+                    // Jouer le son immédiatement, avant toute autre fonction
                     playButtonSound();
                 }
-            });
+            }, true); // true = capture phase (avant les autres event listeners)
 
             const links = document.querySelectorAll('a[href*="/openings/settings"]');
             links.forEach(link => {
