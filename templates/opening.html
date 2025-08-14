@@ -793,6 +793,45 @@
                 padding: 0 10px;
                 justify-content: flex-start;
             }
+            
+            /* Réorganiser les éléments dans l'info-section */
+            .info-section {
+                order: 1;
+            }
+            
+            .board-section {
+                order: 2;
+            }
+            
+            /* Insérer l'échiquier après le titre de la ligne */
+            .line-selector {
+                order: 1;
+            }
+            
+            .board-section {
+                order: 2;
+                margin: 15px 0;
+            }
+            
+            .switch-container {
+                order: 3;
+            }
+            
+            .drill-counter {
+                order: 4;
+            }
+            
+            .hint-zone {
+                order: 5;
+            }
+            
+            .controls {
+                order: 6;
+            }
+            
+            .best-score-footer {
+                order: 7;
+            }
         }
         
         @media (max-width: 480px) {
@@ -801,6 +840,40 @@
                 gap: 10px;
                 padding: 0 8px;
                 justify-content: flex-start;
+            }
+            
+            /* Même réorganisation pour les petits écrans */
+            .info-section {
+                order: 1;
+            }
+            
+            .board-section {
+                order: 2;
+                margin: 10px 0;
+            }
+            
+            .line-selector {
+                order: 1;
+            }
+            
+            .switch-container {
+                order: 3;
+            }
+            
+            .drill-counter {
+                order: 4;
+            }
+            
+            .hint-zone {
+                order: 5;
+            }
+            
+            .controls {
+                order: 6;
+            }
+            
+            .best-score-footer {
+                order: 7;
             }
         }
         
