@@ -792,20 +792,33 @@
                 gap: 15px;
                 padding: 0 10px;
                 justify-content: flex-start;
+                align-items: center;
             }
             
-            /* Réorganiser les éléments dans l'info-section */
+            /* Centrer l'info-section et y intégrer l'échiquier */
             .info-section {
                 order: 1;
+                width: 100%;
+                max-width: 500px;
+                margin: 0 auto;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
             }
             
             .board-section {
                 order: 2;
+                margin: 15px 0;
+                width: 100%;
+                display: flex;
+                justify-content: center;
             }
             
-            /* Insérer l'échiquier après le titre de la ligne */
+            /* Réorganiser les éléments dans l'info-section */
             .line-selector {
                 order: 1;
+                width: 100%;
+                text-align: center;
             }
             
             .board-section {
@@ -815,22 +828,33 @@
             
             .switch-container {
                 order: 3;
+                width: 100%;
+                display: flex;
+                justify-content: center;
             }
             
             .drill-counter {
                 order: 4;
+                width: 100%;
             }
             
             .hint-zone {
                 order: 5;
+                width: 100%;
+                display: flex;
+                justify-content: center;
             }
             
             .controls {
                 order: 6;
+                width: 100%;
+                display: flex;
+                justify-content: center;
             }
             
             .best-score-footer {
                 order: 7;
+                width: 100%;
             }
         }
         
@@ -840,40 +864,63 @@
                 gap: 10px;
                 padding: 0 8px;
                 justify-content: flex-start;
+                align-items: center;
             }
             
-            /* Même réorganisation pour les petits écrans */
+            /* Centrer l'info-section et y intégrer l'échiquier pour petits écrans */
             .info-section {
                 order: 1;
+                width: 100%;
+                max-width: 400px;
+                margin: 0 auto;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
             }
             
             .board-section {
                 order: 2;
                 margin: 10px 0;
+                width: 100%;
+                display: flex;
+                justify-content: center;
             }
             
             .line-selector {
                 order: 1;
+                width: 100%;
+                text-align: center;
             }
             
             .switch-container {
                 order: 3;
+                width: 100%;
+                display: flex;
+                justify-content: center;
             }
             
             .drill-counter {
                 order: 4;
+                width: 100%;
             }
             
             .hint-zone {
                 order: 5;
+                width: 100%;
+                display: flex;
+                justify-content: center;
             }
             
             .controls {
                 order: 6;
+                width: 100%;
+                display: flex;
+                justify-content: center;
             }
             
             .best-score-footer {
                 order: 7;
+                width: 100%;
             }
         }
         
