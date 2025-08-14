@@ -1580,6 +1580,30 @@
                 }
             });
 
+            // Ajouter le son au bouton back spécifiquement
+            const backButton = document.querySelector('.backbtn');
+            if (backButton) {
+                backButton.addEventListener('click', function() {
+                    playButtonSound();
+                });
+            }
+
+            // Event listener global pour capturer tous les clics sur les éléments interactifs
+            document.addEventListener('click', function(e) {
+                const target = e.target;
+                
+                // Vérifier si c'est un élément qui devrait avoir du son
+                if (target.matches('button, .btn, a, input[type="button"], input[type="submit"], .backbtn, .edit-btn, .save-btn, .cancel-btn, .delete-btn, .add-variation-btn, .add-opening-btn, .delete-opening-btn, .modal-btn') ||
+                    target.closest('button, .btn, a, .backbtn, .edit-btn, .save-btn, .cancel-btn, .delete-btn, .add-variation-btn, .add-opening-btn, .delete-opening-btn, .modal-btn')) {
+                    
+                    // Éviter les doublons avec les event listeners existants
+                    if (!target.hasAttribute('data-sound-added')) {
+                        target.setAttribute('data-sound-added', 'true');
+                        playButtonSound();
+                    }
+                }
+            });
+
             const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.get('from') === 'index') {
                 const backLink = document.querySelector('.backbtn');

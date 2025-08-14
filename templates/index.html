@@ -489,11 +489,19 @@
         // Ajouter un timestamp pour éviter le cache
         document.addEventListener('DOMContentLoaded', function() {
             // Ajouter le son à tous les boutons, liens et éléments cliquables
-            const buttons = document.querySelectorAll('button, .btn, a, input[type="button"], input[type="submit"], .settings-icon, .opening-card, .settings-img');
-            buttons.forEach(function(button) {
-                button.addEventListener('click', function(e) {
-                    // Éviter de jouer le son si le bouton est désactivé
-                    if (!button.disabled && !button.classList.contains('disabled')) {
+            const buttons = document.querySelectorAll('button, .btn, input[type="button"], input[type="submit"]');
+            
+            // Ajouter le son aux liens et éléments spécifiques
+            const clickableLinks = document.querySelectorAll('a, .settings-icon, .opening-card');
+            const images = document.querySelectorAll('.settings-img');
+            
+            // Combiner tous les éléments
+            const allElements = [...buttons, ...clickableLinks, ...images];
+            
+            allElements.forEach(function(element) {
+                element.addEventListener('click', function(e) {
+                    // Éviter de jouer le son si l'élément est désactivé
+                    if (!element.disabled && !element.classList.contains('disabled')) {
                         playButtonSound();
                     }
                 });
@@ -504,14 +512,25 @@
                 mutations.forEach(function(mutation) {
                     mutation.addedNodes.forEach(function(node) {
                         if (node.nodeType === 1) { // Element node
-                            const newButtons = node.querySelectorAll ? node.querySelectorAll('button, .btn, a, input[type="button"], input[type="submit"], .settings-icon, .opening-card, .settings-img') : [];
-                            if (node.matches && node.matches('button, .btn, a, input[type="button"], input[type="submit"], .settings-icon, .opening-card, .settings-img')) {
+                            const newButtons = node.querySelectorAll ? node.querySelectorAll('button, .btn, input[type="button"], input[type="submit"]') : [];
+                            const newLinks = node.querySelectorAll ? node.querySelectorAll('a, .settings-icon, .opening-card') : [];
+                            const newImages = node.querySelectorAll ? node.querySelectorAll('.settings-img') : [];
+                            
+                            if (node.matches && node.matches('button, .btn, input[type="button"], input[type="submit"]')) {
                                 newButtons.push(node);
                             }
+                            if (node.matches && node.matches('a, .settings-icon, .opening-card')) {
+                                newLinks.push(node);
+                            }
+                            if (node.matches && node.matches('.settings-img')) {
+                                newImages.push(node);
+                            }
                             
-                            newButtons.forEach(function(button) {
-                                button.addEventListener('click', function(e) {
-                                    if (!button.disabled && !button.classList.contains('disabled')) {
+                            const allNewElements = [...newButtons, ...newLinks, ...newImages];
+                            
+                            allNewElements.forEach(function(element) {
+                                element.addEventListener('click', function(e) {
+                                    if (!element.disabled && !element.classList.contains('disabled')) {
                                         playButtonSound();
                                     }
                                 });
@@ -524,6 +543,22 @@
             observer.observe(document.body, {
                 childList: true,
                 subtree: true
+            });
+
+            // Event listener global pour capturer tous les clics sur les éléments interactifs
+            document.addEventListener('click', function(e) {
+                const target = e.target;
+                
+                // Vérifier si c'est un élément qui devrait avoir du son
+                if (target.matches('button, .btn, a, input[type="button"], input[type="submit"], .settings-icon, .opening-card, .settings-img') ||
+                    target.closest('button, .btn, a, .settings-icon, .opening-card')) {
+                    
+                    // Éviter les doublons avec les event listeners existants
+                    if (!target.hasAttribute('data-sound-added')) {
+                        target.setAttribute('data-sound-added', 'true');
+                        playButtonSound();
+                    }
+                }
             });
 
             const links = document.querySelectorAll('a[href*="/openings/settings"]');

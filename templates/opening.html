@@ -2979,6 +2979,38 @@
                     playButtonSound();
                 });
             }
+
+            // Ajouter le son aux labels du switch
+            const switchLabels = document.querySelectorAll('.switch-label-left, .switch-label-right');
+            switchLabels.forEach(function(label) {
+                label.addEventListener('click', function() {
+                    playButtonSound();
+                });
+            });
+
+            // Ajouter le son au slider du switch
+            const switchSlider = document.querySelector('.slider');
+            if (switchSlider) {
+                switchSlider.addEventListener('click', function() {
+                    playButtonSound();
+                });
+            }
+
+            // Event listener global pour capturer tous les clics sur les éléments interactifs
+            document.addEventListener('click', function(e) {
+                const target = e.target;
+                
+                // Vérifier si c'est un élément qui devrait avoir du son
+                if (target.matches('button, .btn, a, input[type="button"], input[type="submit"], .settings-icon, .opening-card, .settings-img, .backbtn, .switch-label-left, .switch-label-right, .slider, .hint-btn, .promotion-piece') ||
+                    target.closest('button, .btn, a, .settings-icon, .opening-card, .backbtn, .hint-btn, .promotion-piece')) {
+                    
+                    // Éviter les doublons avec les event listeners existants
+                    if (!target.hasAttribute('data-sound-added')) {
+                        target.setAttribute('data-sound-added', 'true');
+                        playButtonSound();
+                    }
+                }
+            });
         });
         
         // Fonction playSound globale avec fallback et gestion mobile
