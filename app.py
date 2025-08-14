@@ -8,6 +8,9 @@ import re
 import os
 
 app = Flask(__name__, static_folder='static', static_url_path='/static')
+
+# Configuration pour servir les fichiers statiques de manière plus robuste
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 app.secret_key = 'chess_openings_secret_key'
 
 class OpeningTrainer:
@@ -1023,6 +1026,26 @@ def static_files(filename):
         print(f"Error serving static file {filename}: {e}")
         return f"Error serving file: {filename}", 500
 
+# Route spécifique pour les pièces d'échecs
+@app.route('/chess_pieces/<piece>')
+def chess_piece(piece):
+    """Serve chess pieces with proper headers"""
+    try:
+        piece_path = os.path.join(app.static_folder, 'img', 'chesspieces', 'wikipedia', f'{piece}.png')
+        if os.path.exists(piece_path):
+            response = send_from_directory(
+                os.path.join(app.static_folder, 'img', 'chesspieces', 'wikipedia'),
+                f'{piece}.png'
+            )
+            response.headers['Cache-Control'] = 'public, max-age=31536000'
+            response.headers['Access-Control-Allow-Origin'] = '*'
+            return response
+        else:
+            return f"Chess piece not found: {piece}", 404
+    except Exception as e:
+        print(f"Error serving chess piece {piece}: {e}")
+        return f"Error serving chess piece: {piece}", 500
+
 # Route de test pour vérifier les pièces d'échecs
 @app.route('/test_pieces')
 def test_pieces():
@@ -1053,6 +1076,29 @@ def test_pieces():
         'static_folder': static_folder,
         'pieces_folder': pieces_folder,
         'folder_exists': folder_exists,
+        'results': results
+    })
+
+# Route de test pour la nouvelle route des pièces
+@app.route('/test_chess_pieces')
+def test_chess_pieces():
+    """Test the new chess pieces route"""
+    pieces = ['wp', 'wr', 'wn', 'wb', 'wq', 'wk', 'bp', 'br', 'bn', 'bb', 'bq', 'bk']
+    results = {}
+    
+    for piece in pieces:
+        try:
+            piece_path = os.path.join(app.static_folder, 'img', 'chesspieces', 'wikipedia', f'{piece}.png')
+            if os.path.exists(piece_path):
+                file_size = os.path.getsize(piece_path)
+                results[piece] = f'OK ({file_size} bytes) - Path: {piece_path}'
+            else:
+                results[piece] = f'File not found: {piece_path}'
+        except Exception as e:
+            results[piece] = f'Error: {str(e)}'
+    
+    return jsonify({
+        'message': 'New chess pieces route test',
         'results': results
     })
 
