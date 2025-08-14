@@ -2928,10 +2928,7 @@
         document.addEventListener('click', initializeSounds, { once: true });
         document.addEventListener('touchstart', initializeSounds, { once: true });
         
-        // Fonction pour jouer le son de bouton
-        function playButtonSound() {
-            playSound('btn');
-        }
+
         
         // Ajouter le son à tous les boutons et éléments cliquables
         document.addEventListener('DOMContentLoaded', function() {
@@ -3006,6 +3003,17 @@
                 }
             } catch (e) {
                 console.log('Sound initialization failed:', e);
+            }
+        }
+
+        // Fonction pour jouer le son de bouton avec micro délai
+        let lastButtonSoundTime = 0;
+        function playButtonSound() {
+            const now = Date.now();
+            // Micro délai de 50ms pour éviter les sons en double
+            if (now - lastButtonSoundTime > 50) {
+                playSound('btn');
+                lastButtonSoundTime = now;
             }
         }
 

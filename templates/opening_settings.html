@@ -1021,7 +1021,10 @@
                             })
                         }).then(async r => {
                             if (r.ok) {
-                                location.reload();
+                                // Supprimer l'élément du DOM
+                                item.remove();
+                                // Actualiser les hashtags des variations restantes
+                                updateVariationHashtags();
                             } else {
                                 let msg = 'Error during deletion';
                                 try {
@@ -1478,9 +1481,35 @@
             }
         }
 
-        // Fonction pour jouer le son de bouton
+        // Fonction pour actualiser les hashtags des variations après suppression
+        function updateVariationHashtags() {
+            document.querySelectorAll('.variation-list').forEach(function(list) {
+                const variations = list.querySelectorAll('.variation-item');
+                variations.forEach(function(variation, index) {
+                    // Mettre à jour l'index de la variation
+                    variation.setAttribute('data-variation-index', index);
+                    
+                    // Mettre à jour le hashtag dans le titre affiché
+                    const titleElement = variation.querySelector('.var-title');
+                    if (titleElement) {
+                        const currentText = titleElement.textContent;
+                        // Remplacer le hashtag existant par le nouveau
+                        const newText = currentText.replace(/^#\d+\s*/, `#${index + 1} `);
+                        titleElement.textContent = newText;
+                    }
+                });
+            });
+        }
+
+        // Fonction pour jouer le son de bouton avec micro délai
+        let lastButtonSoundTime = 0;
         function playButtonSound() {
-            playSound('btn');
+            const now = Date.now();
+            // Micro délai de 50ms pour éviter les sons en double
+            if (now - lastButtonSoundTime > 50) {
+                playSound('btn');
+                lastButtonSoundTime = now;
+            }
         }
 
         // Initialiser les sons au premier clic

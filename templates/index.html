@@ -446,9 +446,15 @@
             }
         };
 
-        // Fonction pour jouer le son de bouton
+        // Fonction pour jouer le son de bouton avec micro délai
+        let lastButtonSoundTime = 0;
         function playButtonSound() {
-            playSound('btn');
+            const now = Date.now();
+            // Micro délai de 50ms pour éviter les sons en double
+            if (now - lastButtonSoundTime > 50) {
+                playSound('btn');
+                lastButtonSoundTime = now;
+            }
         }
 
         // Initialiser les sons au premier clic
