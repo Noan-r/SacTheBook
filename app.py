@@ -1004,5 +1004,31 @@ def get_best_score():
         print(f"Error loading best score: {e}")
         return jsonify({'success': False, 'error': str(e)})
 
+# Route explicite pour servir les fichiers statiques (pour Render)
+@app.route('/static/<path:filename>')
+def static_files(filename):
+    """Serve static files explicitly"""
+    return app.send_static_file(filename)
+
+# Route de test pour vérifier les pièces d'échecs
+@app.route('/test_pieces')
+def test_pieces():
+    """Test route to check if chess pieces are accessible"""
+    pieces = ['wp', 'wr', 'wn', 'wb', 'wq', 'wk', 'bp', 'br', 'bn', 'bb', 'bq', 'bk']
+    results = {}
+    
+    for piece in pieces:
+        try:
+            # Essayer d'accéder au fichier
+            app.send_static_file(f'img/chesspieces/wikipedia/{piece}.png')
+            results[piece] = 'OK'
+        except Exception as e:
+            results[piece] = f'Error: {str(e)}'
+    
+    return jsonify({
+        'message': 'Chess pieces test',
+        'results': results
+    })
+
 if __name__ == '__main__':
     app.run(host=config.HOST, port=config.PORT, debug=config.DEBUG) 
