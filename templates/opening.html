@@ -2693,6 +2693,16 @@
                     return false;
                 }
                 
+                // Vérifier si la pièce appartient au joueur actuel
+                const pieceColor = piece.charAt(0); // 'w' ou 'b'
+                const currentPlayerColor = orientation === 'white' ? 'w' : 'b';
+                
+                // Si la pièce n'appartient pas au joueur actuel, empêcher le drag
+                if (pieceColor !== currentPlayerColor) {
+                    console.log('Cannot drag opponent piece:', piece, 'current player:', currentPlayerColor);
+                    return false;
+                }
+                
                 // PREMOVE: Si ce n'est pas le tour du joueur, activer le mode pre-move
                 if ((orientation === 'black' && game.turn() === 'w') || (orientation === 'white' && game.turn() === 'b')) {
                     console.log('Activating premove mode - orientation:', orientation, 'turn:', game.turn());
