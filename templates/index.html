@@ -425,10 +425,22 @@
         // Fonction playSound globale avec fallback et gestion mobile
         window.playSound = function(name) {
             try {
+                console.log('Attempting to play sound:', name);
+                
                 // Créer un nouvel audio à chaque fois pour permettre les clics multiples
                 const audio = new Audio('/static/sounds/' + name + '.mp3');
-                audio.onerror = function() {
-                    console.log('Sound file not found:', name);
+                
+                // Ajouter des gestionnaires d'événements pour le debug
+                audio.onloadstart = function() {
+                    console.log('Audio loading started:', name);
+                };
+                
+                audio.oncanplay = function() {
+                    console.log('Audio can play:', name);
+                };
+                
+                audio.onerror = function(e) {
+                    console.log('Sound file error:', name, e);
                 };
                 
                 // Réinitialiser l'audio pour permettre la lecture multiple
@@ -437,13 +449,15 @@
                 // Gestion spéciale pour mobile
                 const playPromise = audio.play();
                 if (playPromise !== undefined) {
-                    playPromise.catch(function(e) {
-                        console.log('Sound play failed (mobile restriction):', e);
+                    playPromise.then(function() {
+                        console.log('Sound played successfully:', name);
+                    }).catch(function(e) {
+                        console.log('Sound play failed (mobile restriction):', name, e);
                         // Sur mobile, on ignore silencieusement les erreurs d'autoplay
                     });
                 }
             } catch (e) {
-                console.log('Sound initialization failed:', e);
+                console.log('Sound initialization failed:', name, e);
             }
         };
 
@@ -453,9 +467,11 @@
             const now = Date.now();
             // Micro délai de 50ms pour éviter les sons en double
             if (now - lastButtonSoundTime > 50) {
-                console.log('Playing button sound'); // Debug
+                console.log('Playing button sound - calling playSound("btn")'); // Debug
                 playSound('btn');
                 lastButtonSoundTime = now;
+            } else {
+                console.log('Button sound skipped due to timing (50ms delay)');
             }
         }
 
