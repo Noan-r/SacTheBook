@@ -421,6 +421,50 @@
 
 
     <script>
+        // Fonction playSound globale avec fallback et gestion mobile
+        window.playSound = function(name) {
+            try {
+                const audio = new Audio('/static/sounds/' + name + '.mp3');
+                audio.onerror = function() {
+                    console.log('Sound file not found:', name);
+                };
+                
+                // Gestion spéciale pour mobile
+                const playPromise = audio.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(function(e) {
+                        console.log('Sound play failed (mobile restriction):', e);
+                        // Sur mobile, on ignore silencieusement les erreurs d'autoplay
+                    });
+                }
+            } catch (e) {
+                console.log('Sound initialization failed:', e);
+            }
+        };
+
+        // Fonction pour jouer le son de bouton
+        function playButtonSound() {
+            playSound('btn');
+        }
+
+        // Initialiser les sons au premier clic
+        function initializeSounds() {
+            try {
+                // Créer un audio silencieux pour "débloquer" l'audio sur mobile
+                const audio = new Audio('/static/sounds/btn.mp3');
+                audio.volume = 0;
+                audio.play().catch(function(e) {
+                    console.log('Sound initialization failed');
+                });
+            } catch (e) {
+                console.log('Sound initialization error:', e);
+            }
+        }
+
+        // Initialiser les sons au premier clic
+        document.addEventListener('click', initializeSounds, { once: true });
+        document.addEventListener('touchstart', initializeSounds, { once: true });
+
         // Check if coming from settings and force refresh
         if (window.location.search.includes('refresh=true')) {
             // Supprimer le paramètre de l'URL
@@ -434,6 +478,44 @@
         
         // Ajouter un timestamp pour éviter le cache
         document.addEventListener('DOMContentLoaded', function() {
+            // Ajouter le son à tous les boutons et liens
+            const buttons = document.querySelectorAll('button, .btn, a');
+            buttons.forEach(function(button) {
+                button.addEventListener('click', function(e) {
+                    // Éviter de jouer le son si le bouton est désactivé
+                    if (!button.disabled && !button.classList.contains('disabled')) {
+                        playButtonSound();
+                    }
+                });
+            });
+
+            // Pour les éléments ajoutés dynamiquement
+            const observer = new MutationObserver(function(mutations) {
+                mutations.forEach(function(mutation) {
+                    mutation.addedNodes.forEach(function(node) {
+                        if (node.nodeType === 1) { // Element node
+                            const newButtons = node.querySelectorAll ? node.querySelectorAll('button, .btn, a') : [];
+                            if (node.matches && node.matches('button, .btn, a')) {
+                                newButtons.push(node);
+                            }
+                            
+                            newButtons.forEach(function(button) {
+                                button.addEventListener('click', function(e) {
+                                    if (!button.disabled && !button.classList.contains('disabled')) {
+                                        playButtonSound();
+                                    }
+                                });
+                            });
+                        }
+                    });
+                });
+            });
+            
+            observer.observe(document.body, {
+                childList: true,
+                subtree: true
+            });
+
             const links = document.querySelectorAll('a[href*="/openings/settings"]');
             links.forEach(link => {
                 link.addEventListener('click', function() {
