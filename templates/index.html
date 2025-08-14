@@ -483,7 +483,7 @@
         // Ajouter un timestamp pour éviter le cache
         document.addEventListener('DOMContentLoaded', function() {
             // Ajouter le son à tous les boutons, liens et éléments cliquables
-            const buttons = document.querySelectorAll('button, .btn, a, input[type="button"], input[type="submit"], .settings-icon, .opening-card');
+            const buttons = document.querySelectorAll('button, .btn, a, input[type="button"], input[type="submit"], .settings-icon, .opening-card, .settings-img');
             buttons.forEach(function(button) {
                 button.addEventListener('click', function(e) {
                     // Éviter de jouer le son si le bouton est désactivé
@@ -498,8 +498,8 @@
                 mutations.forEach(function(mutation) {
                     mutation.addedNodes.forEach(function(node) {
                         if (node.nodeType === 1) { // Element node
-                            const newButtons = node.querySelectorAll ? node.querySelectorAll('button, .btn, a, input[type="button"], input[type="submit"], .settings-icon, .opening-card') : [];
-                            if (node.matches && node.matches('button, .btn, a, input[type="button"], input[type="submit"], .settings-icon, .opening-card')) {
+                            const newButtons = node.querySelectorAll ? node.querySelectorAll('button, .btn, a, input[type="button"], input[type="submit"], .settings-icon, .opening-card, .settings-img') : [];
+                            if (node.matches && node.matches('button, .btn, a, input[type="button"], input[type="submit"], .settings-icon, .opening-card, .settings-img')) {
                                 newButtons.push(node);
                             }
                             

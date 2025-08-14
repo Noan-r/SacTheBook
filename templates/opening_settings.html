@@ -1544,6 +1544,13 @@
                 subtree: true
             });
 
+            // Ajouter le son spécifiquement aux boutons edit qui sont créés dynamiquement
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('edit-btn')) {
+                    playButtonSound();
+                }
+            });
+
             const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.get('from') === 'index') {
                 const backLink = document.querySelector('.backbtn');

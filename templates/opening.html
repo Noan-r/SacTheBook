@@ -2936,7 +2936,7 @@
         // Ajouter le son à tous les boutons et éléments cliquables
         document.addEventListener('DOMContentLoaded', function() {
             // Sélectionner tous les boutons et éléments cliquables
-            const buttons = document.querySelectorAll('button, .btn, input[type="button"], input[type="submit"], .promotion-piece, .hint-btn, .backbtn');
+            const buttons = document.querySelectorAll('button, .btn, input[type="button"], input[type="submit"], .promotion-piece, .hint-btn, .backbtn, .switch, .switch input[type="checkbox"], .switch-label-left, .switch-label-right');
             
             // Ajouter l'événement de clic avec son
             buttons.forEach(function(button) {
@@ -2953,8 +2953,8 @@
                 mutations.forEach(function(mutation) {
                     mutation.addedNodes.forEach(function(node) {
                         if (node.nodeType === 1) { // Element node
-                            const newButtons = node.querySelectorAll ? node.querySelectorAll('button, .btn, input[type="button"], input[type="submit"], .promotion-piece, .hint-btn, .backbtn') : [];
-                            if (node.matches && node.matches('button, .btn, input[type="button"], input[type="submit"], .promotion-piece, .hint-btn, .backbtn')) {
+                            const newButtons = node.querySelectorAll ? node.querySelectorAll('button, .btn, input[type="button"], input[type="submit"], .promotion-piece, .hint-btn, .backbtn, .switch, .switch input[type="checkbox"], .switch-label-left, .switch-label-right') : [];
+                            if (node.matches && node.matches('button, .btn, input[type="button"], input[type="submit"], .promotion-piece, .hint-btn, .backbtn, .switch, .switch input[type="checkbox"], .switch-label-left, .switch-label-right')) {
                                 newButtons.push(node);
                             }
                             
@@ -2974,6 +2974,14 @@
                 childList: true,
                 subtree: true
             });
+
+            // Ajouter le son spécifiquement au switch Learn/Drill
+            const switchElement = document.getElementById('auto-play-switch');
+            if (switchElement) {
+                switchElement.addEventListener('change', function() {
+                    playButtonSound();
+                });
+            }
         });
         
         // Fonction playSound globale avec fallback et gestion mobile
