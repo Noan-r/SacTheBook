@@ -6,11 +6,15 @@ import config
 import json
 import re
 import os
+from whitenoise import WhiteNoise
 
 app = Flask(__name__, static_folder='static', static_url_path='/static')
 
 # Configuration pour servir les fichiers statiques de manière plus robuste
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
+
+# Configuration WhiteNoise pour servir les fichiers statiques avec Gunicorn
+app.wsgi_app = WhiteNoise(app.wsgi_app, root='static/', prefix='static/')
 app.secret_key = 'chess_openings_secret_key'
 
 class OpeningTrainer:
@@ -1079,26 +1083,24 @@ def test_pieces():
         'results': results
     })
 
-# Route de test pour la nouvelle route des pièces
-@app.route('/test_chess_pieces')
-def test_chess_pieces():
-    """Test the new chess pieces route"""
+# Route de test pour WhiteNoise
+@app.route('/test_whitenoise')
+def test_whitenoise():
+    """Test WhiteNoise static file serving"""
     pieces = ['wp', 'wr', 'wn', 'wb', 'wq', 'wk', 'bp', 'br', 'bn', 'bb', 'bq', 'bk']
     results = {}
     
     for piece in pieces:
         try:
-            piece_path = os.path.join(app.static_folder, 'img', 'chesspieces', 'wikipedia', f'{piece}.png')
-            if os.path.exists(piece_path):
-                file_size = os.path.getsize(piece_path)
-                results[piece] = f'OK ({file_size} bytes) - Path: {piece_path}'
-            else:
-                results[piece] = f'File not found: {piece_path}'
+            # Test avec WhiteNoise
+            static_url = f'/static/img/chesspieces/wikipedia/{piece}.png'
+            results[piece] = f'WhiteNoise URL: {static_url}'
         except Exception as e:
             results[piece] = f'Error: {str(e)}'
     
     return jsonify({
-        'message': 'New chess pieces route test',
+        'message': 'WhiteNoise static file serving test',
+        'whitenoise_enabled': 'WhiteNoise is configured',
         'results': results
     })
 
