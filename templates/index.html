@@ -490,23 +490,39 @@
         
         // Ajouter un timestamp pour éviter le cache
         document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOMContentLoaded - Initializing sound system');
+            
+            // Fonction pour ajouter le son à un élément
+            function addSoundToElement(element) {
+                if (element && !element.hasAttribute('data-sound-added')) {
+                    element.setAttribute('data-sound-added', 'true');
+                    element.addEventListener('click', function(e) {
+                        console.log('Element clicked:', element.tagName, element.className, element.href || element.textContent);
+                        // Éviter de jouer le son si l'élément est désactivé
+                        if (!element.disabled && !element.classList.contains('disabled')) {
+                            playButtonSound();
+                        }
+                    });
+                }
+            }
+            
             // Ajouter le son à tous les boutons, liens et éléments cliquables
             const buttons = document.querySelectorAll('button, .btn, input[type="button"], input[type="submit"]');
+            console.log('Found buttons:', buttons.length);
             
             // Ajouter le son aux liens et éléments spécifiques
             const clickableLinks = document.querySelectorAll('a, .settings-icon, .opening-card');
+            console.log('Found clickable links:', clickableLinks.length);
+            
             const images = document.querySelectorAll('.settings-img');
+            console.log('Found images:', images.length);
             
             // Combiner tous les éléments
             const allElements = [...buttons, ...clickableLinks, ...images];
+            console.log('Total elements to add sound to:', allElements.length);
             
             allElements.forEach(function(element) {
-                element.addEventListener('click', function(e) {
-                    // Éviter de jouer le son si l'élément est désactivé
-                    if (!element.disabled && !element.classList.contains('disabled')) {
-                        playButtonSound();
-                    }
-                });
+                addSoundToElement(element);
             });
 
             // Pour les éléments ajoutés dynamiquement
@@ -550,16 +566,14 @@
             // Event listener global pour capturer tous les clics sur les éléments interactifs
             document.addEventListener('click', function(e) {
                 const target = e.target;
+                console.log('Global click detected on:', target.tagName, target.className, target.href || target.textContent);
                 
                 // Vérifier si c'est un élément qui devrait avoir du son
                 if (target.matches('button, .btn, a, input[type="button"], input[type="submit"], .settings-icon, .opening-card, .settings-img') ||
                     target.closest('button, .btn, a, .settings-icon, .opening-card')) {
                     
-                    // Éviter les doublons avec les event listeners existants
-                    if (!target.hasAttribute('data-sound-added')) {
-                        target.setAttribute('data-sound-added', 'true');
-                        playButtonSound();
-                    }
+                    console.log('Interactive element clicked, playing sound');
+                    playButtonSound();
                 }
             });
 

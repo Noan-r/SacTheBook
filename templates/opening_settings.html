@@ -1587,15 +1587,36 @@
             // Ajouter l'event listener pour la touche Escape
             document.addEventListener('keydown', handleEscapeKey);
 
+            console.log('DOMContentLoaded - Initializing sound system in settings');
+            
+            // Fonction pour ajouter le son à un élément
+            function addSoundToElement(element) {
+                if (element && !element.hasAttribute('data-sound-added')) {
+                    element.setAttribute('data-sound-added', 'true');
+                    element.addEventListener('click', function(e) {
+                        console.log('Settings element clicked:', element.tagName, element.className, element.href || element.textContent);
+                        // Éviter de jouer le son si l'élément est désactivé
+                        if (!element.disabled && !element.classList.contains('disabled')) {
+                            playButtonSound();
+                        }
+                    });
+                }
+            }
+            
             // Ajouter le son à tous les boutons, liens et éléments cliquables
             const buttons = document.querySelectorAll('button, .btn, a, input[type="button"], input[type="submit"], .backbtn, .edit-btn, .save-btn, .cancel-btn, .delete-btn, .add-variation-btn, .add-opening-btn, .delete-opening-btn, .modal-btn');
-            buttons.forEach(function(button) {
-                button.addEventListener('click', function(e) {
-                    // Éviter de jouer le son si le bouton est désactivé
-                    if (!button.disabled && !button.classList.contains('disabled')) {
-                        playButtonSound();
-                    }
-                });
+            console.log('Found buttons in settings:', buttons.length);
+            
+            // Ajouter le son aux boutons switch spécifiquement
+            const switchButtons = document.querySelectorAll('.switch, .switch input[type="checkbox"], .switch-label-left, .switch-label-right, .slider');
+            console.log('Found switch buttons:', switchButtons.length);
+            
+            // Combiner tous les éléments
+            const allElements = [...buttons, ...switchButtons];
+            console.log('Total elements to add sound to in settings:', allElements.length);
+            
+            allElements.forEach(function(element) {
+                addSoundToElement(element);
             });
 
             // Pour les éléments ajoutés dynamiquement
@@ -1603,17 +1624,13 @@
                 mutations.forEach(function(mutation) {
                     mutation.addedNodes.forEach(function(node) {
                         if (node.nodeType === 1) { // Element node
-                            const newButtons = node.querySelectorAll ? node.querySelectorAll('button, .btn, a, input[type="button"], input[type="submit"], .backbtn, .edit-btn, .save-btn, .cancel-btn, .delete-btn, .add-variation-btn, .add-opening-btn, .delete-opening-btn, .modal-btn') : [];
-                            if (node.matches && node.matches('button, .btn, a, input[type="button"], input[type="submit"], .backbtn, .edit-btn, .save-btn, .cancel-btn, .delete-btn, .add-variation-btn, .add-opening-btn, .delete-opening-btn, .modal-btn')) {
+                            const newButtons = node.querySelectorAll ? node.querySelectorAll('button, .btn, a, input[type="button"], input[type="submit"], .backbtn, .edit-btn, .save-btn, .cancel-btn, .delete-btn, .add-variation-btn, .add-opening-btn, .delete-opening-btn, .modal-btn, .switch, .switch input[type="checkbox"], .switch-label-left, .switch-label-right, .slider') : [];
+                            if (node.matches && node.matches('button, .btn, a, input[type="button"], input[type="submit"], .backbtn, .edit-btn, .save-btn, .cancel-btn, .delete-btn, .add-variation-btn, .add-opening-btn, .delete-opening-btn, .modal-btn, .switch, .switch input[type="checkbox"], .switch-label-left, .switch-label-right, .slider')) {
                                 newButtons.push(node);
                             }
                             
                             newButtons.forEach(function(button) {
-                                button.addEventListener('click', function(e) {
-                                    if (!button.disabled && !button.classList.contains('disabled')) {
-                                        playButtonSound();
-                                    }
-                                });
+                                addSoundToElement(button);
                             });
                         }
                     });
@@ -1643,16 +1660,14 @@
             // Event listener global pour capturer tous les clics sur les éléments interactifs
             document.addEventListener('click', function(e) {
                 const target = e.target;
+                console.log('Settings global click detected on:', target.tagName, target.className, target.href || target.textContent);
                 
                 // Vérifier si c'est un élément qui devrait avoir du son
-                if (target.matches('button, .btn, a, input[type="button"], input[type="submit"], .backbtn, .edit-btn, .save-btn, .cancel-btn, .delete-btn, .add-variation-btn, .add-opening-btn, .delete-opening-btn, .modal-btn') ||
-                    target.closest('button, .btn, a, .backbtn, .edit-btn, .save-btn, .cancel-btn, .delete-btn, .add-variation-btn, .add-opening-btn, .delete-opening-btn, .modal-btn')) {
+                if (target.matches('button, .btn, a, input[type="button"], input[type="submit"], .backbtn, .edit-btn, .save-btn, .cancel-btn, .delete-btn, .add-variation-btn, .add-opening-btn, .delete-opening-btn, .modal-btn, .switch, .switch input[type="checkbox"], .switch-label-left, .switch-label-right, .slider') ||
+                    target.closest('button, .btn, a, .backbtn, .edit-btn, .save-btn, .cancel-btn, .delete-btn, .add-variation-btn, .add-opening-btn, .delete-opening-btn, .modal-btn, .switch')) {
                     
-                    // Éviter les doublons avec les event listeners existants
-                    if (!target.hasAttribute('data-sound-added')) {
-                        target.setAttribute('data-sound-added', 'true');
-                        playButtonSound();
-                    }
+                    console.log('Settings interactive element clicked, playing sound');
+                    playButtonSound();
                 }
             });
 

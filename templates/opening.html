@@ -2970,17 +2970,29 @@
         
         // Ajouter le son à tous les boutons et éléments cliquables
         document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOMContentLoaded - Initializing sound system in opening');
+            
+            // Fonction pour ajouter le son à un élément
+            function addSoundToElement(element) {
+                if (element && !element.hasAttribute('data-sound-added')) {
+                    element.setAttribute('data-sound-added', 'true');
+                    element.addEventListener('click', function(e) {
+                        console.log('Opening element clicked:', element.tagName, element.className, element.href || element.textContent);
+                        // Éviter de jouer le son si l'élément est désactivé
+                        if (!element.disabled && !element.classList.contains('disabled')) {
+                            playButtonSound();
+                        }
+                    });
+                }
+            }
+            
             // Sélectionner tous les boutons et éléments cliquables
             const buttons = document.querySelectorAll('button, .btn, input[type="button"], input[type="submit"], .promotion-piece, .hint-btn, .backbtn, .switch, .switch input[type="checkbox"], .switch-label-left, .switch-label-right');
+            console.log('Found buttons in opening:', buttons.length);
             
             // Ajouter l'événement de clic avec son
             buttons.forEach(function(button) {
-                button.addEventListener('click', function(e) {
-                    // Éviter de jouer le son si le bouton est désactivé
-                    if (!button.disabled && !button.classList.contains('disabled')) {
-                        playButtonSound();
-                    }
-                });
+                addSoundToElement(button);
             });
             
             // Pour les boutons ajoutés dynamiquement (comme dans le menu de promotion)
@@ -3037,16 +3049,14 @@
             // Event listener global pour capturer tous les clics sur les éléments interactifs
             document.addEventListener('click', function(e) {
                 const target = e.target;
+                console.log('Opening global click detected on:', target.tagName, target.className, target.href || target.textContent);
                 
                 // Vérifier si c'est un élément qui devrait avoir du son
                 if (target.matches('button, .btn, a, input[type="button"], input[type="submit"], .settings-icon, .opening-card, .settings-img, .backbtn, .switch-label-left, .switch-label-right, .slider, .hint-btn, .promotion-piece') ||
                     target.closest('button, .btn, a, .settings-icon, .opening-card, .backbtn, .hint-btn, .promotion-piece')) {
                     
-                    // Éviter les doublons avec les event listeners existants
-                    if (!target.hasAttribute('data-sound-added')) {
-                        target.setAttribute('data-sound-added', 'true');
-                        playButtonSound();
-                    }
+                    console.log('Opening interactive element clicked, playing sound');
+                    playButtonSound();
                 }
             });
         });
