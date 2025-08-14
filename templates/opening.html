@@ -1576,6 +1576,44 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <script>
+        // === FONCTIONS AUDIO GLOBALES ===
+        // Fonction playSound globale avec fallback et gestion mobile
+        window.playSound = function(name) {
+            try {
+                // Créer un nouvel audio à chaque fois pour permettre les clics multiples
+                const audio = new Audio('/static/sounds/' + name + '.mp3');
+                audio.onerror = function() {
+                    console.log('Sound file not found:', name);
+                };
+                
+                // Réinitialiser l'audio pour permettre la lecture multiple
+                audio.currentTime = 0;
+                
+                // Gestion spéciale pour mobile
+                const playPromise = audio.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(function(e) {
+                        console.log('Sound play failed (mobile restriction):', e);
+                        // Sur mobile, on ignore silencieusement les erreurs d'autoplay
+                    });
+                }
+            } catch (e) {
+                console.log('Sound initialization failed:', e);
+            }
+        };
+
+        // Fonction pour jouer le son de bouton avec micro délai
+        let lastButtonSoundTime = 0;
+        function playButtonSound() {
+            const now = Date.now();
+            // Micro délai de 50ms pour éviter les sons en double
+            if (now - lastButtonSoundTime > 50) {
+                console.log('Playing button sound'); // Debug
+                playSound('btn');
+                lastButtonSoundTime = now;
+            }
+        }
+
         // === VARIABLES GLOBALES ===
         var board = null;
         var game = new Chess();
@@ -3013,41 +3051,7 @@
             });
         });
         
-        // Fonction playSound globale avec fallback et gestion mobile
-        window.playSound = function(name) {
-            try {
-                // Créer un nouvel audio à chaque fois pour permettre les clics multiples
-                const audio = new Audio('/static/sounds/' + name + '.mp3');
-                audio.onerror = function() {
-                    console.log('Sound file not found:', name);
-                };
-                
-                // Réinitialiser l'audio pour permettre la lecture multiple
-                audio.currentTime = 0;
-                
-                // Gestion spéciale pour mobile
-                const playPromise = audio.play();
-                if (playPromise !== undefined) {
-                    playPromise.catch(function(e) {
-                        console.log('Sound play failed (mobile restriction):', e);
-                        // Sur mobile, on ignore silencieusement les erreurs d'autoplay
-                    });
-                }
-            } catch (e) {
-                console.log('Sound initialization failed:', e);
-            }
-        }
 
-        // Fonction pour jouer le son de bouton avec micro délai
-        let lastButtonSoundTime = 0;
-        function playButtonSound() {
-            const now = Date.now();
-            // Micro délai de 50ms pour éviter les sons en double
-            if (now - lastButtonSoundTime > 50) {
-                playSound('btn');
-                lastButtonSoundTime = now;
-            }
-        }
 
             // Configuration de l'échiquier avec thème de pièces alternatif
             var config = {

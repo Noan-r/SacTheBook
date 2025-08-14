@@ -26,10 +26,6 @@
                     "pgn": "1. e4 f5 2. exf5 g6 3. fxg6 Nf6 4. gxh7 Rg8 5. h8=N *"
                 },
                 {
-                    "name": "#3 Bishop Promotion",
-                    "pgn": "1. e4 f5 2. exf5 g6 3. fxg6 Nf6 4. gxh7 Rg8 5. h8=B *"
-                },
-                {
                     "name": "#4 Rook Promotion",
                     "pgn": "1. e4 f5 2. exf5 g6 3. fxg6 Nf6 4. gxh7 Rg8 5. h8=R *"
                 },
@@ -58,20 +54,8 @@
                     "pgn": "1. e4 f5 2. exf5 g6 3. fxg6 Nf6 4. gxh7 Rg8 5. h8=Q *"
                 },
                 {
-                    "name": "#11 Delayed Promotion",
-                    "pgn": "1. e4 f5 2. exf5 g6 3. fxg6 Nf6 4. gxh7 Rg8 5. h8=Q Qxh8 6. d4 e6 7. c4 d6 8. Nc3 Nc6 9. Nf3 Be7 10. Be2 O-O 11. O-O a6 12. a4 b6 13. b3 Bb7 14. Bb2 Qe8 15. Qd2 Qd8 16. Qd8=Q Qxd8 17. f4 e5 18. fxe5 dxe5 19. dxe5 Nxe5 20. Nxe5 Qxe5 21. Bf3 Qe6 22. e5 Qxe5 23. d5 Qxd5 24. cxd5 c5 25. dxc6 bxc6 26. b4 cxb4 27. cxb4 a5 28. bxa5 bxa5 29. a5 a4 30. a6 a3 31. a7 a2 32. a8=Q Qxa8 33. f4 e5 34. fxe5 dxe5 35. dxe5 Nxe5 36. Nxe5 Qxe5 37. Bf3 Qe6 38. e5 Qxe5 39. d5 Qxd5 40. cxd5 c5 41. dxc6 bxc6 42. b4 cxb4 43. cxb4 a5 44. bxa5 bxa5 45. a5 a4 46. a6 a3 47. a7 a2 48. a8=N *"
-                },
-                {
-                    "name": "#12 Bishop Underpromotion",
-                    "pgn": "1. e4 f5 2. exf5 g6 3. fxg6 Nf6 4. gxh7 Rg8 5. h8=B *"
-                },
-                {
                     "name": "#13 Rook Underpromotion",
                     "pgn": "1. e4 f5 2. exf5 g6 3. fxg6 Nf6 4. gxh7 Rg8 5. h8=R *"
-                },
-                {
-                    "name": "#14 Knight Underpromotion",
-                    "pgn": "1. e4 f5 2. exf5 g6 3. fxg6 Nf6 4. gxh7 Rg8 5. h8=N *"
                 },
                 {
                     "name": "#15 Complex Endgame",

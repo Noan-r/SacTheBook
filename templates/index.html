@@ -421,6 +421,7 @@
 
 
     <script>
+        // === FONCTIONS AUDIO GLOBALES ===
         // Fonction playSound globale avec fallback et gestion mobile
         window.playSound = function(name) {
             try {
@@ -452,6 +453,7 @@
             const now = Date.now();
             // Micro délai de 50ms pour éviter les sons en double
             if (now - lastButtonSoundTime > 50) {
+                console.log('Playing button sound'); // Debug
                 playSound('btn');
                 lastButtonSoundTime = now;
             }
