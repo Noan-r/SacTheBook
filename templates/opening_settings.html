@@ -874,15 +874,29 @@
                     const btn = e.target;
                     const item = btn.closest('.variation-item');
                     if (!item) return;
+                    
+                    // Annuler l'édition en cours si une autre ligne est en cours d'édition
+                    if (currentlyEditingItem && currentlyEditingItem !== item) {
+                        cancelCurrentEdit();
+                    }
+                    
                     // Calculer et stocker l'index de la variation
                     const block = item.closest('.opening-block');
                     const allItems = Array.from(block.querySelectorAll('.variation-item'));
                     const idx = allItems.indexOf(item);
                     item.setAttribute('data-variation-index', idx);
+                    
                     // Retirer le préfixe #n si présent pour l'édition
                     let title = item.querySelector('.var-title').textContent;
                     let titleNoNum = title.replace(/^#\d+\s*/, '');
                     const pgn = item.querySelector('.var-pgn').textContent;
+                    
+                    // Stocker les valeurs originales pour pouvoir les restaurer
+                    item.setAttribute('data-original-title', title);
+                    item.setAttribute('data-original-pgn', pgn);
+                    
+                    // Marquer cet élément comme étant en cours d'édition
+                    currentlyEditingItem = item;
                     item.innerHTML = `
                         <div class="variation-edit-row">
                             <input type="text" class="edit-title" value="${titleNoNum}" style="min-width:120px;max-width:100%;">
@@ -930,7 +944,7 @@
                     editPgn.addEventListener('keydown', handleEnterKey);
                     // Inline button management
                     item.querySelector('.cancel-btn').onclick = function() {
-                        item.innerHTML = `• <b class="var-title">${title}</b> : <code class="var-pgn">${pgn}</code> <button type="button" class="edit-btn" title="Edit">✏️</button>`;
+                        cancelCurrentEdit();
                     };
                     // Sauvegarde AJAX
                     item.querySelector('.save-btn').onclick = function() {
@@ -970,6 +984,8 @@
                             })
                         }).then(async r => {
                             if (r.ok) {
+                                // Réinitialiser la variable d'édition en cours
+                                currentlyEditingItem = null;
                                 location.reload();
                             } else {
                                 let msg = 'Error during save';
@@ -1021,6 +1037,10 @@
                             })
                         }).then(async r => {
                             if (r.ok) {
+                                // Réinitialiser la variable d'édition en cours si c'était l'élément en cours d'édition
+                                if (currentlyEditingItem === item) {
+                                    currentlyEditingItem = null;
+                                }
                                 // Supprimer l'élément du DOM
                                 item.remove();
                                 // Actualiser les hashtags des variations restantes
@@ -1044,6 +1064,11 @@
         document.querySelectorAll('.variation-list').forEach(function(list) {
             list.addEventListener('click', function(e) {
                 if (e.target.classList.contains('add-variation-btn')) {
+                    // Annuler l'édition en cours si une ligne est en cours d'édition
+                    if (currentlyEditingItem) {
+                        cancelCurrentEdit();
+                    }
+                    
                     const addRow = list.querySelector('.add-variation-row');
                     if (!addRow) return;
                     // Si déjà ouvert, ne rien faire
@@ -1193,6 +1218,11 @@
         // Ajout d'une nouvelle ouverture (Attack/Defense)
         document.querySelectorAll('.add-opening-btn').forEach(function(btn) {
             btn.onclick = function() {
+                // Annuler l'édition en cours si une ligne est en cours d'édition
+                if (currentlyEditingItem) {
+                    cancelCurrentEdit();
+                }
+                
                 const cat = btn.getAttribute('data-category');
                 const newOpeningZone = document.getElementById('new-opening-zone');
                 
@@ -1477,6 +1507,24 @@
                 });
             });
         }
+
+        // Fonction pour annuler l'édition en cours
+        function cancelCurrentEdit() {
+            if (currentlyEditingItem) {
+                // Récupérer les valeurs originales
+                const originalTitle = currentlyEditingItem.getAttribute('data-original-title');
+                const originalPgn = currentlyEditingItem.getAttribute('data-original-pgn');
+                
+                // Restaurer l'affichage original
+                currentlyEditingItem.innerHTML = `• <b class="var-title">${originalTitle}</b> : <code class="var-pgn">${originalPgn}</code> <button type="button" class="edit-btn" title="Edit">✏️</button>`;
+                
+                // Réinitialiser la variable
+                currentlyEditingItem = null;
+            }
+        }
+
+        // === VARIABLES GLOBALES ===
+        let currentlyEditingItem = null; // Variable pour suivre l'élément en cours d'édition
 
         // === FONCTIONS AUDIO GLOBALES ===
         // Fonction playSound globale avec fallback et gestion mobile
