@@ -279,22 +279,6 @@
             color: #F47C20;
         }
 
-        .line-name {
-            font-size: 16px;
-            font-weight: 600;
-            color: #F47C20;
-            text-align: center;
-            padding: 8px 12px;
-            background: #fff;
-            border: 2px solid #F47C20;
-            border-radius: 8px;
-            margin-bottom: 8px;
-            min-width: 200px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
         /* Mobile line selector improvements */
         @media (max-width: 768px) {
             .line-selector select {
@@ -307,12 +291,6 @@
                 font-size: 0.9em;
                 margin-bottom: 8px;
             }
-
-            .line-name {
-                font-size: 14px;
-                padding: 6px 10px;
-                min-width: 180px;
-            }
         }
         
         @media (max-width: 480px) {
@@ -320,12 +298,6 @@
                 padding: 12px;
                 font-size: 16px;
                 margin-bottom: 12px;
-            }
-
-            .line-name {
-                font-size: 13px;
-                padding: 5px 8px;
-                min-width: 160px;
             }
         }
 
@@ -526,32 +498,32 @@
         .drill-counter {
             display: none;
             text-align: center;
-            padding: 15px;
+            padding: 12px;
             background: #ffe6e6;
             border: 2px solid #ff9999;
             border-radius: 15px;
-            margin: 15px 0;
-            flex: 0 0 160px; /* Hauteur réduite */
+            margin: 12px 0;
+            flex: 0 0 120px; /* Hauteur encore plus réduite */
             position: relative;
-            min-height: 160px;
+            min-height: 120px;
         }
         
         /* Mobile drill counter improvements */
         @media (max-width: 768px) {
             .drill-counter {
-                padding: 12px;
-                margin: 12px 0;
-                min-height: 140px;
-                flex: 0 0 140px;
+                padding: 10px;
+                margin: 10px 0;
+                min-height: 100px;
+                flex: 0 0 100px;
             }
         }
         
         @media (max-width: 480px) {
             .drill-counter {
-                padding: 10px;
-                margin: 10px 0;
-                min-height: 120px;
-                flex: 0 0 120px;
+                padding: 8px;
+                margin: 8px 0;
+                min-height: 80px;
+                flex: 0 0 80px;
             }
         }
         
@@ -559,13 +531,13 @@
         .hint-zone {
             display: none;
             text-align: center;
-            padding: 18px;
+            padding: 15px;
             background: #FFF5E6;
             border: 2px solid #F47C20;
             border-radius: 15px;
-            margin: 15px 0;
+            margin: 12px 0;
             position: relative;
-            min-height: 150px;
+            min-height: 120px;
             cursor: pointer; /* Toute la zone est cliquable */
             transition: all 0.3s ease;
             user-select: none;
@@ -573,24 +545,6 @@
         
         /* Mobile hint zone improvements */
         @media (max-width: 768px) {
-            .hint-zone {
-                padding: 15px;
-                min-height: 120px;
-                margin: 12px 0;
-            }
-            
-            .hint-zone .hint-btn {
-                font-size: 3em;
-                width: 80px;
-                height: 80px;
-            }
-            
-            .hint-zone .hint-text {
-                font-size: 1.2em;
-            }
-        }
-        
-        @media (max-width: 480px) {
             .hint-zone {
                 padding: 12px;
                 min-height: 100px;
@@ -604,7 +558,25 @@
             }
             
             .hint-zone .hint-text {
-                font-size: 1em;
+                font-size: 1.1em;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .hint-zone {
+                padding: 10px;
+                min-height: 80px;
+                margin: 8px 0;
+            }
+            
+            .hint-zone .hint-btn {
+                font-size: 2em;
+                width: 60px;
+                height: 60px;
+            }
+            
+            .hint-zone .hint-text {
+                font-size: 0.9em;
             }
         }
         
@@ -809,7 +781,7 @@
         }
         
         .pawn {
-            font-size: 2.5em;
+            font-size: 3.5em;
             font-weight: bold;
             display: inline-block;
             transition: transform 0.3s ease;
@@ -1641,7 +1613,7 @@
                 </div>
                 
                 <div class="line-selector">
-                    <div class="line-name" id="line-name">{{ lines[0].name if lines else "No line available" }}</div>
+                    <label for="line-select">Opening line:</label>
                     <select id="line-select">
                         {% for i in range(lines|length) %}
                         <option value="{{ i }}">{{ lines[i].name }}</option>
@@ -3391,7 +3363,6 @@
             // Event listeners
             $('#line-select').on('change', function() {
                 currentLineIndex = parseInt($(this).val());
-                updateLineName(); // Mettre à jour le nom de la ligne
                 saveCurrentLine(); // Sauvegarder la ligne courante
                 resetGame();
                 updateNavigationButtons();
@@ -3409,7 +3380,6 @@
                 if (currentLineIndex < lines.length - 1) {
                     currentLineIndex++;
                     $('#line-select').val(currentLineIndex);
-                    updateLineName(); // Mettre à jour le nom de la ligne
                     saveCurrentLine(); // Sauvegarder la ligne courante
                     resetGame();
                     updateNavigationButtons();
@@ -3435,7 +3405,6 @@
                 if (currentLineIndex > 0) {
                     currentLineIndex--;
                     $('#line-select').val(currentLineIndex);
-                    updateLineName(); // Mettre à jour le nom de la ligne
                     saveCurrentLine(); // Sauvegarder la ligne courante
                     resetGame();
                     updateNavigationButtons();
@@ -3475,7 +3444,6 @@
             
             // Synchroniser le sélecteur de ligne avec currentLineIndex
             $('#line-select').val(currentLineIndex);
-            updateLineName(); // Mettre à jour le nom de la ligne affiché
             console.log('Line selector synchronized to:', currentLineIndex);
             
             // Sauvegarder la ligne courante (au cas où elle a été restaurée)
@@ -3528,13 +3496,6 @@
             }
         }
         
-        // Fonction pour mettre à jour le nom de la ligne affiché
-        function updateLineName() {
-            if (lines && lines[currentLineIndex]) {
-                $('#line-name').text(lines[currentLineIndex].name);
-            }
-        }
-
         // Fonction pour mettre à jour l'état des boutons de navigation
         function updateNavigationButtons() {
             console.log('updateNavigationButtons called');
