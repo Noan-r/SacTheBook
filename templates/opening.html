@@ -280,14 +280,15 @@
         }
 
         .line-name {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 600;
             color: #F47C20;
             text-align: center;
-            padding: 12px 16px;
+            padding: 8px 12px;
             background: #fff;
             border: 2px solid #F47C20;
             border-radius: 8px;
+            margin-bottom: 8px;
             min-width: 200px;
             white-space: nowrap;
             overflow: hidden;
@@ -308,8 +309,8 @@
             }
 
             .line-name {
-                font-size: 16px;
-                padding: 10px 14px;
+                font-size: 14px;
+                padding: 6px 10px;
                 min-width: 180px;
             }
         }
@@ -322,8 +323,8 @@
             }
 
             .line-name {
-                font-size: 15px;
-                padding: 8px 12px;
+                font-size: 13px;
+                padding: 5px 8px;
                 min-width: 160px;
             }
         }
@@ -1641,7 +1642,7 @@
                 
                 <div class="line-selector">
                     <div class="line-name" id="line-name">{{ lines[0].name if lines else "No line available" }}</div>
-                    <select id="line-select" style="display: none;">
+                    <select id="line-select">
                         {% for i in range(lines|length) %}
                         <option value="{{ i }}">{{ lines[i].name }}</option>
                         {% endfor %}
@@ -1662,8 +1663,8 @@
                     </label>
                     <span class="switch-label-right">Drill</span>
                 </div>
-            </div>
-
+                </div>
+                
             <!-- Échiquier centré -->
             <div class="board-section">
                 <div id="myBoard"></div>
@@ -1679,7 +1680,7 @@
                         <div class="score" id="drill-score">0</div>
                     </div>
                 </div>
-                
+
                 <!-- Zone Hint (visible en mode Learn) - Switch mode -->
                 <div class="hint-zone" id="hint-zone" title="Click to toggle hint">
                     <div class="hint-btn" id="hint-btn">💡</div>
