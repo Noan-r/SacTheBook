@@ -94,6 +94,13 @@
             flex-wrap: wrap;
         }
 
+        .switch-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
         .controls {
             display: flex;
             justify-content: space-between;
@@ -1592,7 +1599,7 @@
     
     <div class="game-container">
         <div class="unified-section">
-            <!-- En-tête avec pion, titre et boutons -->
+            <!-- En-tête avec pion, titre, boutons et switch -->
             <div class="header-section">
                 <div class="pawn-indicator">
                     {% if orientation == 'white' %}
@@ -1616,15 +1623,7 @@
                     <button class="btn" id="reset-btn">⟲</button>
                     <button class="btn" id="next-line-btn">⏭</button>
                 </div>
-            </div>
 
-            <!-- Échiquier centré -->
-            <div class="board-section">
-                <div id="myBoard"></div>
-            </div>
-
-            <!-- Section inférieure avec switch, drill et hint -->
-            <div class="bottom-section">
                 <div class="switch-container">
                     <span class="switch-label-left">Learn</span>
                     <label class="switch">
@@ -1633,7 +1632,15 @@
                     </label>
                     <span class="switch-label-right">Drill</span>
                 </div>
-                
+            </div>
+
+            <!-- Échiquier centré -->
+            <div class="board-section">
+                <div id="myBoard"></div>
+            </div>
+
+            <!-- Section inférieure avec drill et hint -->
+            <div class="bottom-section">
                 <!-- Compteur Drill (masqué par défaut) -->
                 <div class="drill-counter" id="drill-counter">
                     <h3>Drill Mode</h3>
@@ -1648,7 +1655,7 @@
                     <div class="hint-btn" id="hint-btn">💡</div>
                     <div class="hint-text" id="hint-text"></div>
                 </div>
-                </div>
+            </div>
 
             <!-- Best Score Section -->
             <div class="best-score-footer" id="best-score-footer">
