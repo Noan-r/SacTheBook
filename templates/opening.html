@@ -498,32 +498,32 @@
         .drill-counter {
             display: none;
             text-align: center;
-            padding: 22px;
+            padding: 15px;
             background: #ffe6e6;
             border: 2px solid #ff9999;
             border-radius: 15px;
-            margin: 20px 0;
-            flex: 0 0 220px; /* Hauteur intermédiaire */
+            margin: 15px 0;
+            flex: 0 0 160px; /* Hauteur réduite */
             position: relative;
-            min-height: 220px;
+            min-height: 160px;
         }
         
         /* Mobile drill counter improvements */
         @media (max-width: 768px) {
             .drill-counter {
-                padding: 18px;
-                margin: 15px 0;
-                min-height: 180px;
-                flex: 0 0 180px;
+                padding: 12px;
+                margin: 12px 0;
+                min-height: 140px;
+                flex: 0 0 140px;
             }
         }
         
         @media (max-width: 480px) {
             .drill-counter {
-                padding: 15px;
-                margin: 12px 0;
-                min-height: 160px;
-                flex: 0 0 160px;
+                padding: 10px;
+                margin: 10px 0;
+                min-height: 120px;
+                flex: 0 0 120px;
             }
         }
         
@@ -531,13 +531,13 @@
         .hint-zone {
             display: none;
             text-align: center;
-            padding: 25px;
+            padding: 18px;
             background: #FFF5E6;
             border: 2px solid #F47C20;
             border-radius: 15px;
-            margin: 20px 0;
+            margin: 15px 0;
             position: relative;
-            min-height: 200px;
+            min-height: 150px;
             cursor: pointer; /* Toute la zone est cliquable */
             transition: all 0.3s ease;
             user-select: none;
@@ -545,24 +545,6 @@
         
         /* Mobile hint zone improvements */
         @media (max-width: 768px) {
-            .hint-zone {
-                padding: 20px;
-                min-height: 150px;
-                margin: 15px 0;
-            }
-            
-            .hint-zone .hint-btn {
-                font-size: 3.5em;
-                width: 100px;
-                height: 100px;
-            }
-            
-            .hint-zone .hint-text {
-                font-size: 1.3em;
-            }
-        }
-        
-        @media (max-width: 480px) {
             .hint-zone {
                 padding: 15px;
                 min-height: 120px;
@@ -576,7 +558,25 @@
             }
             
             .hint-zone .hint-text {
-                font-size: 1.1em;
+                font-size: 1.2em;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .hint-zone {
+                padding: 12px;
+                min-height: 100px;
+                margin: 10px 0;
+            }
+            
+            .hint-zone .hint-btn {
+                font-size: 2.5em;
+                width: 70px;
+                height: 70px;
+            }
+            
+            .hint-zone .hint-text {
+                font-size: 1em;
             }
         }
         
@@ -594,7 +594,7 @@
         }
         
         .hint-zone .hint-btn {
-            font-size: 4.5em;
+            font-size: 3.5em;
             padding: 0;
             background: transparent;
             color: #F47C20;
@@ -602,8 +602,8 @@
             border-radius: 50%;
             cursor: pointer;
             transition: all 0.3s ease;
-            width: 120px;
-            height: 120px;
+            width: 90px;
+            height: 90px;
             display: flex;
             align-items: center;
             justify-content: center;
