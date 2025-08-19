@@ -279,6 +279,21 @@
             color: #F47C20;
         }
 
+        .line-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #F47C20;
+            text-align: center;
+            padding: 8px 12px;
+            background: #fff;
+            border: 2px solid #F47C20;
+            border-radius: 8px;
+            min-width: 150px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
         /* Mobile line selector improvements */
         @media (max-width: 768px) {
             .line-selector select {
@@ -1613,8 +1628,8 @@
                 </div>
                 
                 <div class="line-selector">
-                    <label for="line-select">Opening line:</label>
-                    <select id="line-select">
+                    <div class="line-name" id="line-name">{{ lines[0].name if lines else "No line available" }}</div>
+                    <select id="line-select" style="display: none;">
                         {% for i in range(lines|length) %}
                         <option value="{{ i }}">{{ lines[i].name }}</option>
                         {% endfor %}
@@ -3363,6 +3378,7 @@
             // Event listeners
             $('#line-select').on('change', function() {
                 currentLineIndex = parseInt($(this).val());
+                updateLineName(); // Mettre à jour le nom de la ligne
                 saveCurrentLine(); // Sauvegarder la ligne courante
                 resetGame();
                 updateNavigationButtons();
@@ -3380,6 +3396,7 @@
                 if (currentLineIndex < lines.length - 1) {
                     currentLineIndex++;
                     $('#line-select').val(currentLineIndex);
+                    updateLineName(); // Mettre à jour le nom de la ligne
                     saveCurrentLine(); // Sauvegarder la ligne courante
                     resetGame();
                     updateNavigationButtons();
@@ -3405,6 +3422,7 @@
                 if (currentLineIndex > 0) {
                     currentLineIndex--;
                     $('#line-select').val(currentLineIndex);
+                    updateLineName(); // Mettre à jour le nom de la ligne
                     saveCurrentLine(); // Sauvegarder la ligne courante
                     resetGame();
                     updateNavigationButtons();
@@ -3444,6 +3462,7 @@
             
             // Synchroniser le sélecteur de ligne avec currentLineIndex
             $('#line-select').val(currentLineIndex);
+            updateLineName(); // Mettre à jour le nom de la ligne affiché
             console.log('Line selector synchronized to:', currentLineIndex);
             
             // Sauvegarder la ligne courante (au cas où elle a été restaurée)
@@ -3496,6 +3515,13 @@
             }
         }
         
+        // Fonction pour mettre à jour le nom de la ligne affiché
+        function updateLineName() {
+            if (lines && lines[currentLineIndex]) {
+                $('#line-name').text(lines[currentLineIndex].name);
+            }
+        }
+
         // Fonction pour mettre à jour l'état des boutons de navigation
         function updateNavigationButtons() {
             console.log('updateNavigationButtons called');
