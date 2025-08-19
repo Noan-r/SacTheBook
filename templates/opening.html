@@ -92,6 +92,7 @@
             width: 100%;
             gap: 15px;
             flex-wrap: wrap;
+            flex-shrink: 0;
         }
 
         .bottom-section {
@@ -100,6 +101,7 @@
             align-items: center;
             gap: 15px;
             width: 100%;
+            flex-shrink: 0;
         }
         
         /* Mobile info-section adjustments */
@@ -780,8 +782,10 @@
             justify-content: center;
             align-items: center;
             flex: 1;
-            padding: 0 20px;
+            padding: 0;
             width: 100%;
+            height: 100vh;
+            box-sizing: border-box;
         }
 
         .unified-section {
@@ -789,13 +793,16 @@
             border: 2px solid #F47C20;
             border-radius: 20px;
             padding: 25px;
-            max-width: 800px;
             width: 100%;
+            max-width: 100%;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 20px;
             box-shadow: 0 8px 32px rgba(32,81,58,0.18);
+            box-sizing: border-box;
+            overflow: hidden;
         }
         
         /* Ajustements pour tous les écrans */
@@ -805,48 +812,48 @@
             }
             
             .unified-section {
-                max-width: 600px;
-                padding: 20px;
-                gap: 15px;
+                padding: 15px;
+                gap: 10px;
+                min-height: 100vh;
             }
 
             .header-section {
                 flex-direction: column;
-                gap: 10px;
+                gap: 8px;
             }
             
             #myBoard {
-                width: min(90vw, 90vh);
-                height: min(90vw, 90vh);
-                max-width: 500px;
-                max-height: 500px;
-                min-width: 300px;
-                min-height: 300px;
+                width: min(75vw, 75vh);
+                height: min(75vw, 75vh);
+                max-width: 400px;
+                max-height: 400px;
+                min-width: 250px;
+                min-height: 250px;
             }
         }
         
         @media (max-width: 480px) {
             .game-container {
-                padding: 0 8px;
+                padding: 0 5px;
             }
             
             .unified-section {
-                max-width: 450px;
-                padding: 15px;
-                gap: 10px;
+                padding: 10px;
+                gap: 8px;
+                min-height: 100vh;
             }
 
             .header-section {
-                gap: 8px;
+                gap: 6px;
             }
             
             #myBoard {
-                width: min(95vw, 95vh);
-                height: min(95vw, 95vh);
-                max-width: 400px;
-                max-height: 400px;
-                min-width: 250px;
-                min-height: 250px;
+                width: min(80vw, 80vh);
+                height: min(80vw, 80vh);
+                max-width: 350px;
+                max-height: 350px;
+                min-width: 200px;
+                min-height: 200px;
             }
         }
         
@@ -856,15 +863,17 @@
             justify-content: center;
             width: 100%;
             margin: 10px 0;
+            flex: 1;
+            min-height: 0;
         }
         
         #myBoard {
-            width: min(80vh, 80vw);
-            height: min(80vh, 80vw);
-            max-width: 600px;
-            max-height: 600px;
-            min-width: 400px;
-            min-height: 400px;
+            width: min(70vh, 70vw);
+            height: min(70vh, 70vw);
+            max-width: 500px;
+            max-height: 500px;
+            min-width: 300px;
+            min-height: 300px;
             margin: 0 auto;
             border-radius: 16px;
             box-shadow: 0 4px 24px rgba(75,46,25,0.10);
