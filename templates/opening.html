@@ -100,6 +100,20 @@
             align-items: center;
             gap: 8px;
             flex-shrink: 0;
+            transition: all 0.2s ease;
+        }
+        
+        .switch-label-left,
+        .switch-label-right {
+            font-size: 0.9em;
+            font-weight: 600;
+            color: #145334;
+            transition: color 0.2s ease;
+        }
+        
+        .switch-label-left:hover,
+        .switch-label-right:hover {
+            color: #F47C20;
         }
 
         .controls {
@@ -118,6 +132,13 @@
             font-size: 0.9em;
             padding: 12px 8px;
             max-width: calc(33.33% - 7px);
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+        
+        .controls .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 2px 8px rgba(244,124,32,0.2);
         }
 
         .bottom-section {
@@ -546,6 +567,12 @@
             cursor: pointer; /* Toute la zone est cliquable */
             transition: all 0.3s ease;
             user-select: none;
+            box-shadow: 0 2px 8px rgba(244,124,32,0.1);
+        }
+        
+        .hint-zone:hover {
+            box-shadow: 0 4px 16px rgba(244,124,32,0.2);
+            transform: translateY(-2px);
         }
         
         /* Mobile hint zone improvements */
@@ -724,6 +751,12 @@
             margin-left: 0;
             margin-right: 0;
             box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+        
+        .best-score-footer:hover {
+            background: #F0E8D9;
+            box-shadow: 0 2px 8px rgba(212,165,116,0.2);
         }
         
         .best-score-footer.show {
@@ -916,6 +949,13 @@
                 padding: 8px 4px;
                 font-size: 0.8em;
                 max-width: calc(33.33% - 4px);
+                border-radius: 6px;
+                transition: all 0.2s ease;
+            }
+            
+            .controls .btn:hover {
+                transform: scale(1.05);
+                box-shadow: 0 2px 6px rgba(244,124,32,0.2);
             }
             
             #myBoard {
@@ -1096,6 +1136,16 @@
         @media (max-width: 480px) {
             .header h1 {
                 font-size: 1.2em;
+            }
+            .backbtn {
+                padding: 6px 14px 6px 10px;
+                font-size: 0.8em;
+                top: 8px;
+                left: 8px;
+            }
+            .sac-logo {
+                width: 60px;
+                margin: 10px auto 6px auto;
             }
             #myBoard {
                 width: min(95vh, 95vw);
@@ -1369,6 +1419,13 @@
                 min-width: 50px;
                 flex: 1;
                 max-width: 70px;
+                border-radius: 8px;
+                transition: all 0.2s ease;
+            }
+            
+            .controls .btn:hover {
+                transform: scale(1.05);
+                box-shadow: 0 2px 8px rgba(244,124,32,0.2);
             }
             
             .hint-zone {
@@ -1513,8 +1570,20 @@
         
         @media (max-width: 360px) {
             .header h1 {
-                font-size: 1.3em;
+                font-size: 1.1em;
                 padding: 0 5px;
+            }
+            
+            .backbtn {
+                padding: 5px 12px 5px 8px;
+                font-size: 0.75em;
+                top: 6px;
+                left: 6px;
+            }
+            
+            .sac-logo {
+                width: 50px;
+                margin: 8px auto 4px auto;
             }
             
             .game-container {
@@ -1557,6 +1626,13 @@
                 min-width: 35px;
                 flex: 1;
                 max-width: 50px;
+                border-radius: 6px;
+                transition: all 0.2s ease;
+            }
+            
+            .controls .btn:hover {
+                transform: scale(1.05);
+                box-shadow: 0 2px 6px rgba(244,124,32,0.2);
             }
             
             .hint-zone {
