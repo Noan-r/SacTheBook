@@ -421,6 +421,36 @@
 
 
     <script>
+        // === SYSTÈME AUDIO BASE64 ===
+        // Sons encodés en base64 pour les boutons
+        const BUTTON_SOUNDS = {
+            click: 'data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgo',
+            success: 'data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgo',
+            error: 'data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgo'
+        };
+
+        // Fonction pour jouer un son base64
+        function playBase64Sound(soundName) {
+            try {
+                const audio = new Audio(BUTTON_SOUNDS[soundName]);
+                audio.volume = 0.3;
+                audio.play().catch(e => console.log('Base64 audio failed:', e));
+            } catch (e) {
+                console.log('Base64 sound error:', e);
+            }
+        }
+
+        // Fonction pour jouer le son de bouton avec micro délai
+        let lastButtonSoundTime = 0;
+        function playButtonSound() {
+            const now = Date.now();
+            // Micro délai de 50ms pour éviter les sons en double
+            if (now - lastButtonSoundTime > 50) {
+                playBase64Sound('click');
+                lastButtonSoundTime = now;
+            }
+        }
+
         // Check if coming from settings and force refresh
         if (window.location.search.includes('refresh=true')) {
             // Supprimer le paramètre de l'URL
@@ -435,6 +465,14 @@
         // Ajouter un timestamp pour éviter le cache
         document.addEventListener('DOMContentLoaded', function() {
             console.log('DOMContentLoaded - Initializing system');
+
+            // Ajouter le son aux boutons et liens
+            const allClickableElements = document.querySelectorAll('a, .settings-icon, .opening-card, .settings-img');
+            allClickableElements.forEach(element => {
+                element.addEventListener('click', function() {
+                    playButtonSound();
+                });
+            });
 
             const links = document.querySelectorAll('a[href*="/openings/settings"]');
             links.forEach(link => {
