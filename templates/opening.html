@@ -1825,36 +1825,6 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <script>
-        // === SYSTÈME AUDIO BASE64 ===
-        // Sons encodés en base64 pour les boutons
-        const BUTTON_SOUNDS = {
-            click: 'data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgo',
-            success: 'data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgo',
-            error: 'data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgo'
-        };
-
-        // Fonction pour jouer un son base64
-        function playBase64Sound(soundName) {
-            try {
-                const audio = new Audio(BUTTON_SOUNDS[soundName]);
-                audio.volume = 0.3;
-                audio.play().catch(e => console.log('Base64 audio failed:', e));
-            } catch (e) {
-                console.log('Base64 sound error:', e);
-            }
-        }
-
-        // Fonction pour jouer le son de bouton avec micro délai
-        let lastButtonSoundTime = 0;
-        function playButtonSound() {
-            const now = Date.now();
-            // Micro délai de 50ms pour éviter les sons en double
-            if (now - lastButtonSoundTime > 50) {
-                playBase64Sound('click');
-                lastButtonSoundTime = now;
-            }
-        }
-
         // === VARIABLES GLOBALES ===
 
         // === VARIABLES GLOBALES ===
@@ -2155,7 +2125,7 @@
                         align-items: center;
                     " onmouseover="this.style.borderColor='#F47C20'; this.style.transform='scale(1.05)'; this.style.background='#fff5e6'" 
                        onmouseout="this.style.borderColor='#ddd'; this.style.transform='scale(1)'; this.style.background='white'">
-                        <img src="/static/img/chesspieces/wikipedia/${colorPrefix}${piece}.png" style="width: 30px; height: 30px;" alt="${piece}">
+                        <img src="https://cdn.jsdelivr.net/npm/chessboardjs@1.0.0/img/chesspieces/wikipedia/${colorPrefix}${piece}.png" style="width: 30px; height: 30px;" alt="${piece}">
                     </div>
                 `;
             });
@@ -2179,7 +2149,6 @@
             
             // Ajouter les événements de clic
             $('.promotion-piece').on('click', function() {
-                playButtonSound();
                 const piece = $(this).data('piece');
                 console.log('Promotion piece clicked:', piece);
                 window.completePromotion(piece);
@@ -3191,7 +3160,7 @@
                 onDrop: onDrop,
                 onSnapEnd: onSnapEnd,
                 orientation: orientation,
-                pieceTheme: '/static/img/chesspieces/wikipedia/{piece}.png',
+                pieceTheme: 'https://cdn.jsdelivr.net/npm/chessboardjs@1.0.0/img/chesspieces/wikipedia/{piece}.png',
                 showNotation: true,
                 dropOffBoard: 'snapback',
                 sparePieces: false
@@ -3349,12 +3318,10 @@
 
 
             $('#reset-btn').on('click', function() {
-                playButtonSound();
                 resetGame();
             });
 
             $('#next-line-btn').on('click', function() {
-                playButtonSound();
                 if (currentLineIndex < lines.length - 1) {
                     currentLineIndex++;
                     $('#line-select').val(currentLineIndex);
@@ -3369,7 +3336,6 @@
 
             // Switch hint : clic sur toute la zone
             $('#hint-zone').on('click', function() {
-                playButtonSound();
                 if (currentLineIndex < lines.length && currentMoveIndex < lines[currentLineIndex].moves.length) {
                     const hintMove = lines[currentLineIndex].moves[currentMoveIndex];
                     toggleHint(hintMove.san);
@@ -3379,7 +3345,6 @@
 
 
             $('#prev-line-btn').on('click', function() {
-                playButtonSound();
                 if (currentLineIndex > 0) {
                     currentLineIndex--;
                     $('#line-select').val(currentLineIndex);

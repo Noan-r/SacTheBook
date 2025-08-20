@@ -1526,58 +1526,14 @@
         // === VARIABLES GLOBALES ===
         let currentlyEditingItem = null; // Variable pour suivre l'élément en cours d'édition
 
-        // === SYSTÈME AUDIO BASE64 ===
-        // Sons encodés en base64 pour les boutons
-        const BUTTON_SOUNDS = {
-            click: 'data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgo',
-            success: 'data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgo',
-            error: 'data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgo'
-        };
-
-        // Fonction pour jouer un son base64
-        function playBase64Sound(soundName) {
-            try {
-                const audio = new Audio(BUTTON_SOUNDS[soundName]);
-                audio.volume = 0.3;
-                audio.play().catch(e => console.log('Base64 audio failed:', e));
-            } catch (e) {
-                console.log('Base64 sound error:', e);
-            }
-        }
-
-        // Fonction pour jouer le son de bouton avec micro délai
-        let lastButtonSoundTime = 0;
-        function playButtonSound() {
-            const now = Date.now();
-            // Micro délai de 50ms pour éviter les sons en double
-            if (now - lastButtonSoundTime > 50) {
-                playBase64Sound('click');
-                lastButtonSoundTime = now;
-            }
-        }
-
         // Detect if coming from index and modify return link
         document.addEventListener('DOMContentLoaded', function() {
             // Ajouter l'event listener pour la touche Escape
             document.addEventListener('keydown', handleEscapeKey);
 
-                        console.log('DOMContentLoaded - Initializing system in settings');
+            console.log('DOMContentLoaded - Initializing system in settings');
             
-            // Ajouter le son à tous les boutons
-            const allButtons = document.querySelectorAll('button, .btn, a, .backbtn, .edit-btn, .save-btn, .cancel-btn, .delete-btn, .add-variation-btn, .add-opening-btn, .delete-opening-btn, .modal-btn');
-            allButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    playButtonSound();
-                });
-            });
 
-            // Event listener global pour capturer tous les clics sur les éléments interactifs
-            document.addEventListener('click', function(e) {
-                const target = e.target;
-                if (target.matches('button, .btn, a, .backbtn, .edit-btn, .save-btn, .cancel-btn, .delete-btn, .add-variation-btn, .add-opening-btn, .delete-opening-btn, .modal-btn')) {
-                    playButtonSound();
-                }
-            });
 
             const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.get('from') === 'index') {
