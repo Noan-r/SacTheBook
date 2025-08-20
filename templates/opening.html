@@ -503,11 +503,12 @@
             border: 2px solid #ff9999;
             border-radius: 15px;
             margin: 12px 0;
-            flex: 0 0 120px; /* Hauteur fixe */
+            flex: 0 0 120px; /* Hauteur encore plus réduite */
             position: relative;
             min-height: 120px;
-            min-width: 200px; /* Largeur minimale pour garder la forme rectangulaire */
-            width: 100%; /* Utilise toute la largeur disponible */
+            width: 200px; /* Largeur fixe pour garder la forme rectangulaire */
+            margin-left: auto;
+            margin-right: auto;
         }
         
         /* Mobile drill counter improvements */
@@ -517,7 +518,7 @@
                 margin: 10px 0;
                 min-height: 100px;
                 flex: 0 0 100px;
-                min-width: 180px; /* Largeur minimale adaptée pour mobile */
+                width: 180px; /* Largeur adaptée pour tablette */
             }
         }
         
@@ -527,7 +528,7 @@
                 margin: 8px 0;
                 min-height: 80px;
                 flex: 0 0 80px;
-                min-width: 160px; /* Largeur minimale adaptée pour petit mobile */
+                width: 160px; /* Largeur adaptée pour mobile */
             }
         }
         
@@ -1558,6 +1559,7 @@
             .drill-counter {
                 padding: 10px;
                 margin: 10px 0;
+                width: 140px; /* Largeur adaptée pour très petit mobile */
             }
             
             .big-flame {
