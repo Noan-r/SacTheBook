@@ -1043,6 +1043,7 @@ def chess_piece(piece):
             )
             response.headers['Cache-Control'] = 'public, max-age=31536000'
             response.headers['Access-Control-Allow-Origin'] = '*'
+            response.headers['Content-Type'] = 'image/png'
             return response
         else:
             return f"Chess piece not found: {piece}", 404
