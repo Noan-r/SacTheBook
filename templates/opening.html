@@ -733,6 +733,9 @@
             position: relative;
             z-index: 2;
             transform: translateY(15px); /* Décalage réduit pour position plus haute */
+            overflow: hidden; /* Empêcher le débordement */
+            text-overflow: ellipsis; /* Tronquer si nécessaire */
+            white-space: nowrap; /* Empêcher le retour à la ligne */
         }
         
         /* Flamme adaptée à la zone intermédiaire */
@@ -1484,11 +1487,11 @@
             }
             
             .big-flame {
-                font-size: 2.5em; /* Même logique que l'ampoule sur tablette */
+                font-size: 2em; /* Taille réduite pour s'adapter au texte sur tablette */
             }
             
             .drill-score {
-                font-size: 2.5em; /* Taille relative au conteneur sur tablette */
+                font-size: 2em; /* Taille réduite pour éviter le débordement sur tablette */
             }
             
             .best-score-footer {
@@ -1583,11 +1586,11 @@
             }
             
             .big-flame {
-                font-size: 2em; /* Même logique que l'ampoule sur mobile */
+                font-size: 1.5em; /* Taille réduite pour s'adapter au texte sur mobile */
             }
             
             .drill-score {
-                font-size: 2em; /* Taille relative au conteneur sur mobile */
+                font-size: 1.5em; /* Taille réduite pour éviter le débordement sur mobile */
             }
             
             .best-score-footer {
@@ -1705,7 +1708,7 @@
             }
             
             .big-flame {
-                font-size: 1.5em; /* Même logique que l'ampoule sur très petit mobile */
+                font-size: 1.2em; /* Taille réduite pour s'adapter au texte sur très petit mobile */
             }
             
             .controls {
@@ -1723,7 +1726,7 @@
             }
             
             .drill-score {
-                font-size: 1.5em; /* Taille relative au conteneur sur très petit mobile */
+                font-size: 1.2em; /* Taille réduite pour éviter le débordement sur très petit mobile */
             }
             
             .best-score-footer {
