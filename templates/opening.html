@@ -147,6 +147,15 @@
             align-items: center;
             gap: 15px;
             width: 100%;
+            order: 3; /* Garantit que cette section reste après l'échiquier */
+        }
+        
+        .board-section {
+            order: 2; /* Garantit que l'échiquier reste au milieu */
+        }
+        
+        .header-section {
+            order: 1; /* Garantit que l'en-tête reste en premier */
         }
         
         /* Mobile info-section adjustments */
@@ -752,6 +761,7 @@
             margin-right: 0;
             box-sizing: border-box;
             transition: all 0.3s ease;
+            order: 4; /* Garantit que cette section reste en dernier */
         }
         
         .best-score-footer:hover {
@@ -875,6 +885,19 @@
                 padding: 0 10px;
             }
             
+            /* Garantir l'ordre des sections sur tablette */
+            .header-section {
+                order: 1 !important;
+            }
+            
+            .board-section {
+                order: 2 !important;
+            }
+            
+            .bottom-section {
+                order: 3 !important;
+            }
+            
             .unified-section {
                 max-width: 700px;
                 padding: 4px 30px;
@@ -890,24 +913,20 @@
             }
 
             .header-section {
-                flex-direction: row; /* Garde la disposition horizontale */
-                gap: 8px;
+                flex-direction: column;
+                gap: 10px;
                 margin-top: 6px;
-                flex-wrap: wrap; /* Permet le retour à la ligne si nécessaire */
-                justify-content: center;
             }
 
             .controls {
-                width: auto;
-                gap: 6px;
-                flex-shrink: 1;
+                width: 100%;
+                gap: 8px;
             }
 
             .controls .btn {
-                padding: 8px 6px;
-                font-size: 0.8em;
-                min-width: 40px;
-                max-width: 60px;
+                padding: 10px 6px;
+                font-size: 0.85em;
+                max-width: calc(33.33% - 5px);
             }
             
             #myBoard {
@@ -925,6 +944,19 @@
                 padding: 0 8px;
             }
             
+            /* Garantir l'ordre des sections sur mobile */
+            .header-section {
+                order: 1 !important;
+            }
+            
+            .board-section {
+                order: 2 !important;
+            }
+            
+            .bottom-section {
+                order: 3 !important;
+            }
+            
             .unified-section {
                 max-width: 550px;
                 padding: 3px 20px;
@@ -940,24 +972,19 @@
             }
 
             .header-section {
-                flex-direction: row; /* Garde la disposition horizontale */
-                gap: 6px;
+                gap: 8px;
                 margin-top: 4px;
-                flex-wrap: wrap;
-                justify-content: center;
             }
 
             .controls {
-                width: auto;
-                gap: 4px;
-                flex-shrink: 1;
+                width: 100%;
+                gap: 6px;
             }
 
             .controls .btn {
-                padding: 6px 4px;
-                font-size: 0.75em;
-                min-width: 35px;
-                max-width: 50px;
+                padding: 8px 4px;
+                font-size: 0.8em;
+                max-width: calc(33.33% - 4px);
                 border-radius: 6px;
                 transition: all 0.2s ease;
             }
@@ -1387,49 +1414,47 @@
             
             .line-selector {
                 flex-direction: column;
-                gap: 6px;
-                align-items: center;
-                min-width: 120px;
+                gap: 8px;
+                align-items: stretch;
             }
             
             .line-selector label {
                 text-align: center;
                 font-weight: bold;
-                font-size: 12px;
+                font-size: 14px;
             }
             
             .line-selector select {
                 width: 100%;
-                padding: 8px;
-                font-size: 12px;
-                min-width: 120px;
+                padding: 10px;
+                font-size: 14px;
             }
             
             .switch-container {
-                margin: 10px 0;
+                margin: 15px 0;
                 justify-content: center;
-                flex-shrink: 0;
             }
             
             .switch-label-left,
             .switch-label-right {
-                font-size: 11px;
-                padding: 0 6px;
+                font-size: 13px;
+                padding: 0 8px;
             }
             
             .controls {
                 flex-direction: row;
-                gap: 6px;
+                gap: 8px;
                 justify-content: center;
-                margin: 15px 0;
+                margin: 20px 0;
                 flex-wrap: nowrap;
             }
             
             .controls .btn {
-                padding: 8px 10px;
-                font-size: 12px;
-                min-width: 45px;
-                max-width: 65px;
+                padding: 10px 12px;
+                font-size: 14px;
+                min-width: 50px;
+                flex: 1;
+                max-width: 70px;
                 border-radius: 8px;
                 transition: all 0.2s ease;
             }
@@ -1585,6 +1610,19 @@
                 padding: 0 5px;
             }
             
+            /* Garantir l'ordre des sections sur très petit mobile */
+            .header-section {
+                order: 1 !important;
+            }
+            
+            .board-section {
+                order: 2 !important;
+            }
+            
+            .bottom-section {
+                order: 3 !important;
+            }
+            
             .backbtn {
                 padding: 5px 12px 5px 8px;
                 font-size: 0.75em;
@@ -1632,10 +1670,11 @@
             }
             
             .controls .btn {
-                padding: 5px 6px;
-                font-size: 10px;
-                min-width: 30px;
-                max-width: 45px;
+                padding: 6px 8px;
+                font-size: 11px;
+                min-width: 35px;
+                flex: 1;
+                max-width: 50px;
                 border-radius: 6px;
                 transition: all 0.2s ease;
             }
