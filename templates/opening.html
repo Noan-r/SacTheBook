@@ -890,20 +890,24 @@
             }
 
             .header-section {
-                flex-direction: column;
-                gap: 10px;
+                flex-direction: row; /* Garde la disposition horizontale */
+                gap: 8px;
                 margin-top: 6px;
+                flex-wrap: wrap; /* Permet le retour à la ligne si nécessaire */
+                justify-content: center;
             }
 
             .controls {
-                width: 100%;
-                gap: 8px;
+                width: auto;
+                gap: 6px;
+                flex-shrink: 1;
             }
 
             .controls .btn {
-                padding: 10px 6px;
-                font-size: 0.85em;
-                max-width: calc(33.33% - 5px);
+                padding: 8px 6px;
+                font-size: 0.8em;
+                min-width: 40px;
+                max-width: 60px;
             }
             
             #myBoard {
@@ -936,19 +940,24 @@
             }
 
             .header-section {
-                gap: 8px;
+                flex-direction: row; /* Garde la disposition horizontale */
+                gap: 6px;
                 margin-top: 4px;
+                flex-wrap: wrap;
+                justify-content: center;
             }
 
             .controls {
-                width: 100%;
-                gap: 6px;
+                width: auto;
+                gap: 4px;
+                flex-shrink: 1;
             }
 
             .controls .btn {
-                padding: 8px 4px;
-                font-size: 0.8em;
-                max-width: calc(33.33% - 4px);
+                padding: 6px 4px;
+                font-size: 0.75em;
+                min-width: 35px;
+                max-width: 50px;
                 border-radius: 6px;
                 transition: all 0.2s ease;
             }
@@ -1378,47 +1387,49 @@
             
             .line-selector {
                 flex-direction: column;
-                gap: 8px;
-                align-items: stretch;
+                gap: 6px;
+                align-items: center;
+                min-width: 120px;
             }
             
             .line-selector label {
                 text-align: center;
                 font-weight: bold;
-                font-size: 14px;
+                font-size: 12px;
             }
             
             .line-selector select {
                 width: 100%;
-                padding: 10px;
-                font-size: 14px;
+                padding: 8px;
+                font-size: 12px;
+                min-width: 120px;
             }
             
             .switch-container {
-                margin: 15px 0;
+                margin: 10px 0;
                 justify-content: center;
+                flex-shrink: 0;
             }
             
             .switch-label-left,
             .switch-label-right {
-                font-size: 13px;
-                padding: 0 8px;
+                font-size: 11px;
+                padding: 0 6px;
             }
             
             .controls {
                 flex-direction: row;
-                gap: 8px;
+                gap: 6px;
                 justify-content: center;
-                margin: 20px 0;
+                margin: 15px 0;
                 flex-wrap: nowrap;
             }
             
             .controls .btn {
-                padding: 10px 12px;
-                font-size: 14px;
-                min-width: 50px;
-                flex: 1;
-                max-width: 70px;
+                padding: 8px 10px;
+                font-size: 12px;
+                min-width: 45px;
+                max-width: 65px;
                 border-radius: 8px;
                 transition: all 0.2s ease;
             }
@@ -1621,11 +1632,10 @@
             }
             
             .controls .btn {
-                padding: 6px 8px;
-                font-size: 11px;
-                min-width: 35px;
-                flex: 1;
-                max-width: 50px;
+                padding: 5px 6px;
+                font-size: 10px;
+                min-width: 30px;
+                max-width: 45px;
                 border-radius: 6px;
                 transition: all 0.2s ease;
             }
