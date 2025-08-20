@@ -532,33 +532,31 @@
             background: #ffe6e6;
             border: 2px solid #ff9999;
             border-radius: 15px;
-            margin: 12px 0;
+            margin: 12px auto; /* Centrage horizontal */
             flex: 0 0 120px; /* Hauteur encore plus réduite */
             position: relative;
             min-height: 120px;
-            width: 200px; /* Largeur fixe pour garder la forme rectangulaire */
-            margin-left: auto;
-            margin-right: auto;
+            width: 180px; /* Largeur réduite pour un meilleur centrage */
         }
         
         /* Mobile drill counter improvements */
         @media (max-width: 768px) {
             .drill-counter {
                 padding: 10px;
-                margin: 10px 0;
+                margin: 10px auto; /* Centrage horizontal */
                 min-height: 100px;
                 flex: 0 0 100px;
-                width: 180px; /* Largeur adaptée pour tablette */
+                width: 160px; /* Largeur réduite pour tablette */
             }
         }
         
         @media (max-width: 480px) {
             .drill-counter {
                 padding: 8px;
-                margin: 8px 0;
+                margin: 8px auto; /* Centrage horizontal */
                 min-height: 80px;
                 flex: 0 0 80px;
-                width: 160px; /* Largeur adaptée pour mobile */
+                width: 140px; /* Largeur réduite pour mobile */
             }
         }
         
@@ -742,7 +740,7 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 6em; /* Réduite de 8.4em */
+            font-size: 8em; /* Taille augmentée */
             opacity: 0.6;
             z-index: 1;
             pointer-events: none;
@@ -1485,7 +1483,7 @@
             }
             
             .big-flame {
-                font-size: 16px;
+                font-size: 24px; /* Taille augmentée pour tablette */
             }
             
             .drill-score {
@@ -1584,7 +1582,7 @@
             }
             
             .big-flame {
-                font-size: 14px;
+                font-size: 20px; /* Taille augmentée pour mobile */
             }
             
             .drill-score {
@@ -1701,12 +1699,12 @@
             
             .drill-counter {
                 padding: 10px;
-                margin: 10px 0;
-                width: 140px; /* Largeur adaptée pour très petit mobile */
+                margin: 10px auto; /* Centrage horizontal */
+                width: 120px; /* Largeur réduite pour très petit mobile */
             }
             
             .big-flame {
-                font-size: 12px;
+                font-size: 18px; /* Taille augmentée pour très petit mobile */
             }
             
             .controls {
