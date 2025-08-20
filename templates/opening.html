@@ -154,12 +154,6 @@
             justify-content: flex-start;
         }
         
-        /* Garantir que l'écart entre titre et info-section reste fixe */
-        .unified-section.drill-mode,
-        .unified-section:not(.drill-mode) {
-            margin-top: 2px !important; /* Écart fixe et petit */
-        }
-        
         .info-section.drill-mode .drill-counter {
             flex: 0 0 220px; /* Hauteur intermédiaire entre 180px et 300px */
             display: block;
@@ -828,12 +822,18 @@
             padding: 5px 40px;
             max-width: 900px;
             width: calc(100% - 80px);
-            margin: 2px 40px 0 40px !important; /* Marge fixe et très réduite en haut */
+            margin: 2px 40px 0 40px; /* Marge très réduite en haut */
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 8px;
             box-shadow: 0 8px 32px rgba(32,81,58,0.18);
+        }
+        
+        /* Garantir que l'écart entre titre et info-section reste fixe */
+        .unified-section.drill-mode,
+        .unified-section:not(.drill-mode) {
+            margin-top: 2px !important; /* Écart fixe et petit */
         }
         
         /* Ajustements pour tous les écrans */
@@ -847,7 +847,13 @@
                 padding: 4px 30px;
                 gap: 6px;
                 width: calc(100% - 60px);
-                margin: 1px 30px 0 30px !important; /* Marge fixe et très réduite en haut sur tablette */
+                margin: 1px 30px 0 30px; /* Marge très réduite en haut sur tablette */
+            }
+            
+            /* Garantir que l'écart entre titre et info-section reste fixe sur tablette */
+            .unified-section.drill-mode,
+            .unified-section:not(.drill-mode) {
+                margin-top: 1px !important; /* Écart fixe et petit sur tablette */
             }
 
             .header-section {
@@ -887,7 +893,13 @@
                 padding: 3px 20px;
                 gap: 5px;
                 width: calc(100% - 40px);
-                margin: 0px 20px 0 20px !important; /* Marge fixe supprimée en haut sur mobile */
+                margin: 0px 20px 0 20px; /* Marge supprimée en haut sur mobile */
+            }
+            
+            /* Garantir que l'écart entre titre et info-section reste fixe sur mobile */
+            .unified-section.drill-mode,
+            .unified-section:not(.drill-mode) {
+                margin-top: 0px !important; /* Écart fixe et minimal sur mobile */
             }
 
             .header-section {
