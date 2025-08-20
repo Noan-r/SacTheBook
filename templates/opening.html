@@ -1825,59 +1825,7 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <script>
-        // === FONCTIONS AUDIO GLOBALES ===
-        // Fonction playSound globale avec fallback et gestion mobile
-        window.playSound = function(name) {
-            try {
-                console.log('Attempting to play sound:', name);
-                
-                // Créer un nouvel audio à chaque fois pour permettre les clics multiples
-                const audio = new Audio('/static/sounds/' + name + '.mp3');
-                
-                // Ajouter des gestionnaires d'événements pour le debug
-                audio.onloadstart = function() {
-                    console.log('Audio loading started:', name);
-                };
-                
-                audio.oncanplay = function() {
-                    console.log('Audio can play:', name);
-                };
-                
-                audio.onerror = function(e) {
-                    console.log('Sound file error:', name, e);
-                };
-                
-                // Réinitialiser l'audio pour permettre la lecture multiple
-                audio.currentTime = 0;
-                
-                // Gestion spéciale pour mobile
-                const playPromise = audio.play();
-                if (playPromise !== undefined) {
-                    playPromise.then(function() {
-                        console.log('Sound played successfully:', name);
-                    }).catch(function(e) {
-                        console.log('Sound play failed (mobile restriction):', name, e);
-                        // Sur mobile, on ignore silencieusement les erreurs d'autoplay
-                    });
-                }
-            } catch (e) {
-                console.log('Sound initialization failed:', name, e);
-            }
-        };
-
-        // Fonction pour jouer le son de bouton avec micro délai
-        let lastButtonSoundTime = 0;
-        function playButtonSound() {
-            const now = Date.now();
-            // Micro délai de 50ms pour éviter les sons en double
-            if (now - lastButtonSoundTime > 50) {
-                console.log('Playing button sound - calling playSound("btn")'); // Debug
-                playSound('btn');
-                lastButtonSoundTime = now;
-            } else {
-                console.log('Button sound skipped due to timing (50ms delay)');
-            }
-        }
+        // === VARIABLES GLOBALES ===
 
         // === VARIABLES GLOBALES ===
         var board = null;
@@ -2201,7 +2149,6 @@
             
             // Ajouter les événements de clic
             $('.promotion-piece').on('click', function() {
-                playButtonSound();
                 const piece = $(this).data('piece');
                 console.log('Promotion piece clicked:', piece);
                 window.completePromotion(piece);
@@ -2243,7 +2190,6 @@
             
             // Mettre à jour l'affichage avec la vraie pièce
             board.position(game.fen());
-            window.playSound('move');
             
             // Vérifie l'échec et mat
             if (window.checkForCheckmate()) {
@@ -2586,13 +2532,7 @@
         }
         
         $(document).ready(function() {
-            // --- SIMPLIFICATION SONS ---
-            // playSound est maintenant global (window.playSound)
-            window.playMoveSound = function() { window.playSound('move'); }
-            window.playCaptureSound = function() { window.playSound('capture'); }
-            window.playWinSound = function() { window.playSound('win'); }
-            window.playCheckSound = function() { window.playSound('move-check'); }
-            window.playGameEndSound = function() { window.playSound('game-end'); }
+
             
             // --- FONCTIONS POUR ÉCHEC ET MAT ---
             window.checkForCheckmate = function() {
@@ -2604,11 +2544,6 @@
                 
                 if (game.in_checkmate()) {
                     console.log('CHECKMATE DETECTED!');
-                    // Joue les sons d'échec et de fin de partie
-                    window.playCheckSound();
-                    setTimeout(function() {
-                        window.playGameEndSound();
-                    }, 300);
                     
                     // Ajoute le hashtag sur la case du roi
                     window.addCheckmateHashtag();
@@ -3040,7 +2975,6 @@
                     // Désélectionner la pièce après un coup incorrect
                     selectedPiece = null;
                     
-                    window.playSound('incorrect');
                     $('#myBoard').addClass('error-anim');
                     setTimeout(function() {
                         $('#myBoard').removeClass('error-anim');
@@ -3072,7 +3006,6 @@
                 if (drillMode) {
                     // Mode Drill : célébration plus rapide pour un rythme soutenu
                 $('#myBoard').addClass('celebrate');
-                    window.playWinSound();
                     confetti({
                         particleCount: 80,
                         spread: 70,
@@ -3085,7 +3018,6 @@
                 } else {
                     // Mode Learn : délai normal pour bien savourer le succès
                     $('#myBoard').addClass('celebrate');
-                window.playWinSound();
                 confetti({
                     particleCount: 80,
                     spread: 70,
@@ -3132,7 +3064,6 @@
                 game.move(move.san);
                 board.position(game.fen());
                 currentMoveIndex++;
-                window.playSound('move');
                 
                 // Met à jour l'indice si il est affiché
                 window.updateHintContent();
@@ -3192,7 +3123,6 @@
                     board.position(game.fen());
                     return;
                 }
-                window.playSound('move');
                 clearPreMove();
                 board.position(game.fen());
                 
@@ -3216,140 +3146,9 @@
                     // Variables pour la promotion (déplacées au scope global)
         window.pendingPromotion = null;
         
-        // Initialisation des sons pour mobile (après interaction utilisateur)
-        let soundsInitialized = false;
-        
-        function initializeSounds() {
-            if (soundsInitialized) return;
-            
-            console.log('Initializing sounds...');
-            
-            // Essayer d'abord avec le vrai fichier audio
-            try {
-                const audio = new Audio('/static/sounds/btn.mp3');
-                audio.volume = 0;
-                audio.play().then(() => {
-                    soundsInitialized = true;
-                    console.log('Sounds initialized successfully with real file');
-                }).catch((e) => {
-                    console.log('Real file initialization failed, trying fallback:', e);
-                    // Fallback avec audio silencieux
-                    try {
-                        const fallbackAudio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgo');
-                        fallbackAudio.volume = 0;
-                        fallbackAudio.play().then(() => {
-                            soundsInitialized = true;
-                            console.log('Sounds initialized with fallback');
-                        }).catch(() => {
-                            console.log('Fallback initialization also failed');
-                        });
-                    } catch (fallbackError) {
-                        console.log('Fallback initialization error:', fallbackError);
-                    }
-                });
-            } catch (e) {
-                console.log('Sound initialization error:', e);
-            }
-        }
-        
-        // Initialiser les sons au premier clic
-        document.addEventListener('click', initializeSounds, { once: true });
-        document.addEventListener('touchstart', initializeSounds, { once: true });
-        
 
         
-        // Ajouter le son à tous les boutons et éléments cliquables
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('DOMContentLoaded - Initializing sound system in opening');
-            
-            // Fonction pour ajouter le son à un élément
-            function addSoundToElement(element) {
-                if (element && !element.hasAttribute('data-sound-added')) {
-                    element.setAttribute('data-sound-added', 'true');
-                    element.addEventListener('click', function(e) {
-                        console.log('Opening element clicked:', element.tagName, element.className, element.href || element.textContent);
-                        // Éviter de jouer le son si l'élément est désactivé
-                        if (!element.disabled && !element.classList.contains('disabled')) {
-                            playButtonSound();
-                        }
-                    });
-                }
-            }
-            
-            // Sélectionner tous les boutons et éléments cliquables
-            const buttons = document.querySelectorAll('button, .btn, input[type="button"], input[type="submit"], .promotion-piece, .hint-btn, .backbtn, .switch, .switch input[type="checkbox"], .switch-label-left, .switch-label-right');
-            console.log('Found buttons in opening:', buttons.length);
-            
-            // Ajouter l'événement de clic avec son
-            buttons.forEach(function(button) {
-                addSoundToElement(button);
-            });
-            
-            // Pour les boutons ajoutés dynamiquement (comme dans le menu de promotion)
-            const observer = new MutationObserver(function(mutations) {
-                mutations.forEach(function(mutation) {
-                    mutation.addedNodes.forEach(function(node) {
-                        if (node.nodeType === 1) { // Element node
-                            const newButtons = node.querySelectorAll ? node.querySelectorAll('button, .btn, input[type="button"], input[type="submit"], .promotion-piece, .hint-btn, .backbtn, .switch, .switch input[type="checkbox"], .switch-label-left, .switch-label-right') : [];
-                            if (node.matches && node.matches('button, .btn, input[type="button"], input[type="submit"], .promotion-piece, .hint-btn, .backbtn, .switch, .switch input[type="checkbox"], .switch-label-left, .switch-label-right')) {
-                                newButtons.push(node);
-                            }
-                            
-                            newButtons.forEach(function(button) {
-                                button.addEventListener('click', function(e) {
-                                    if (!button.disabled && !button.classList.contains('disabled')) {
-                                        playButtonSound();
-                                    }
-                                });
-                            });
-                        }
-                    });
-                });
-            });
-            
-            observer.observe(document.body, {
-                childList: true,
-                subtree: true
-            });
 
-            // Ajouter le son spécifiquement au switch Learn/Drill
-            const switchElement = document.getElementById('auto-play-switch');
-            if (switchElement) {
-                switchElement.addEventListener('change', function() {
-                    playButtonSound();
-                });
-            }
-
-            // Ajouter le son aux labels du switch
-            const switchLabels = document.querySelectorAll('.switch-label-left, .switch-label-right');
-            switchLabels.forEach(function(label) {
-                label.addEventListener('click', function() {
-                    playButtonSound();
-                });
-            });
-
-            // Ajouter le son au slider du switch
-            const switchSlider = document.querySelector('.slider');
-            if (switchSlider) {
-                switchSlider.addEventListener('click', function() {
-                    playButtonSound();
-                });
-            }
-
-            // Event listener global pour capturer tous les clics sur les éléments interactifs
-            document.addEventListener('click', function(e) {
-                const target = e.target;
-                console.log('Opening global click detected on:', target.tagName, target.className, target.href || target.textContent);
-                
-                // Vérifier si c'est un élément qui devrait avoir du son
-                if (target.matches('button, .btn, a, input[type="button"], input[type="submit"], .settings-icon, .opening-card, .settings-img, .backbtn, .switch-label-left, .switch-label-right, .slider, .hint-btn, .promotion-piece') ||
-                    target.closest('button, .btn, a, .settings-icon, .opening-card, .backbtn, .hint-btn, .promotion-piece')) {
-                    
-                    console.log('Opening interactive element clicked, playing sound');
-                    playButtonSound();
-                }
-            });
-        });
         
 
 
@@ -3519,12 +3318,10 @@
 
 
             $('#reset-btn').on('click', function() {
-                playButtonSound();
                 resetGame();
             });
 
             $('#next-line-btn').on('click', function() {
-                playButtonSound();
                 if (currentLineIndex < lines.length - 1) {
                     currentLineIndex++;
                     $('#line-select').val(currentLineIndex);
@@ -3539,7 +3336,6 @@
 
             // Switch hint : clic sur toute la zone
             $('#hint-zone').on('click', function() {
-                playButtonSound();
                 if (currentLineIndex < lines.length && currentMoveIndex < lines[currentLineIndex].moves.length) {
                     const hintMove = lines[currentLineIndex].moves[currentMoveIndex];
                     toggleHint(hintMove.san);
@@ -3549,7 +3345,6 @@
 
 
             $('#prev-line-btn').on('click', function() {
-                playButtonSound();
                 if (currentLineIndex > 0) {
                     currentLineIndex--;
                     $('#line-select').val(currentLineIndex);
