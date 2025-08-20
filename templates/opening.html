@@ -720,9 +720,8 @@
             right: 0;
             bottom: 0;
             display: flex;
-            align-items: flex-start; /* Centrage plus haut */
+            align-items: center; /* Centrage vertical parfait */
             justify-content: center;
-            padding-top: 20px; /* Espacement du haut */
         }
         
         .drill-counter .score {
@@ -732,7 +731,7 @@
             text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
             position: relative;
             z-index: 2;
-            transform: translateY(15px); /* Décalage réduit pour position plus haute */
+            transform: none; /* Pas de décalage pour centrage parfait */
             overflow: hidden; /* Empêcher le débordement */
             text-overflow: ellipsis; /* Tronquer si nécessaire */
             white-space: nowrap; /* Empêcher le retour à la ligne */
