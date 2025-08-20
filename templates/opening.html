@@ -49,7 +49,7 @@
         
         .header {
             text-align: center;
-            padding: 10px 0;
+            padding: 20px 0 10px 0; /* Plus de marge en haut, moins en bas */
             flex-shrink: 0;
         }
         
@@ -63,7 +63,7 @@
         /* Mobile header adjustments */
         @media (max-width: 768px) {
             .header {
-                padding: 8px 0;
+                padding: 15px 0 8px 0; /* Plus de marge en haut sur mobile */
             }
             .header h1 {
                 font-size: 1.6em;
@@ -72,7 +72,7 @@
         
         @media (max-width: 480px) {
             .header {
-                padding: 6px 0;
+                padding: 12px 0 6px 0; /* Plus de marge en haut sur petit mobile */
             }
             .header h1 {
                 font-size: 1.3em;
@@ -822,7 +822,7 @@
             padding: 5px 40px;
             max-width: 900px;
             width: calc(100% - 80px);
-            margin: 20px 40px 0 40px;
+            margin: 10px 40px 0 40px; /* Réduit la marge en haut */
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -841,7 +841,7 @@
                 padding: 4px 30px;
                 gap: 6px;
                 width: calc(100% - 60px);
-                margin: 15px 30px 0 30px;
+                margin: 8px 30px 0 30px; /* Réduit la marge en haut sur tablette */
             }
 
             .header-section {
@@ -881,7 +881,7 @@
                 padding: 3px 20px;
                 gap: 5px;
                 width: calc(100% - 40px);
-                margin: 10px 20px 0 20px;
+                margin: 5px 20px 0 20px; /* Réduit la marge en haut sur mobile */
             }
 
             .header-section {
