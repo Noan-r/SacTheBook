@@ -2236,7 +2236,7 @@
                         align-items: center;
                     " onmouseover="this.style.borderColor='#F47C20'; this.style.transform='scale(1.05)'; this.style.background='#fff5e6'" 
                        onmouseout="this.style.borderColor='#ddd'; this.style.transform='scale(1)'; this.style.background='white'">
-                        <img src="/chess_pieces/${colorPrefix}${piece}" style="width: 30px; height: 30px;" alt="${piece}">
+                        <img src="/static/img/chesspieces/wikipedia/${colorPrefix}${piece}.png" style="width: 30px; height: 30px;" alt="${piece}">
                     </div>
                 `;
             });
@@ -3302,7 +3302,7 @@
                 onDrop: onDrop,
                 onSnapEnd: onSnapEnd,
                 orientation: orientation,
-                pieceTheme: '/chess_pieces/{piece}',
+                pieceTheme: '/static/img/chesspieces/wikipedia/{piece}.png',
                 showNotation: true,
                 dropOffBoard: 'snapback',
                 sparePieces: false

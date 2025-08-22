@@ -13,6 +13,16 @@ app = Flask(__name__, static_folder='static', static_url_path='/static')
 # Configuration pour servir les fichiers statiques de manière plus robuste
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
+# Configuration pour les fichiers statiques avec en-têtes optimisés
+@app.after_request
+def add_header(response):
+    """Ajouter des en-têtes pour optimiser le cache et la compatibilité mobile"""
+    if response.mimetype in ['image/png', 'image/jpeg', 'image/gif', 'image/webp']:
+        response.headers['Cache-Control'] = 'public, max-age=31536000'
+        response.headers['Access-Control-Allow-Origin'] = '*'
+        response.headers['Vary'] = 'Accept-Encoding'
+    return response
+
 # Configuration WhiteNoise pour servir les fichiers statiques avec Gunicorn
 app.wsgi_app = WhiteNoise(app.wsgi_app, root='static/', prefix='static/')
 app.secret_key = 'chess_openings_secret_key'
@@ -1102,6 +1112,44 @@ def test_whitenoise():
     return jsonify({
         'message': 'WhiteNoise static file serving test',
         'whitenoise_enabled': 'WhiteNoise is configured',
+        'results': results
+    })
+
+# Route de test pour les pièces d'échecs sur mobile
+@app.route('/test_mobile_pieces')
+def test_mobile_pieces():
+    """Test spécifique pour l'affichage des pièces sur mobile"""
+    pieces = ['wp', 'wr', 'wn', 'wb', 'wq', 'wk', 'bp', 'br', 'bn', 'bb', 'bq', 'bk']
+    results = {}
+    
+    for piece in pieces:
+        try:
+            file_path = os.path.join(app.static_folder, 'img', 'chesspieces', 'wikipedia', f'{piece}.png')
+            if os.path.exists(file_path):
+                file_size = os.path.getsize(file_path)
+                static_url = f'/static/img/chesspieces/wikipedia/{piece}.png'
+                results[piece] = {
+                    'status': 'OK',
+                    'size': file_size,
+                    'url': static_url,
+                    'path': file_path
+                }
+            else:
+                results[piece] = {
+                    'status': 'NOT_FOUND',
+                    'path': file_path
+                }
+        except Exception as e:
+            results[piece] = {
+                'status': 'ERROR',
+                'error': str(e)
+            }
+    
+    return jsonify({
+        'message': 'Mobile chess pieces test',
+        'static_folder': app.static_folder,
+        'whitenoise_enabled': 'WhiteNoise is configured',
+        'pieces_folder': os.path.join(app.static_folder, 'img', 'chesspieces', 'wikipedia'),
         'results': results
     })
 
