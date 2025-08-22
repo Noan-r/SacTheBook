@@ -351,6 +351,17 @@
             z-index: -1;
             animation: celebrate-halo 1s ease-in-out;
         }
+        @keyframes celebrate-bg {
+            0% { 
+                border-color: #28a745;
+            }
+            50% { 
+                border-color: #28a745;
+            }
+            100% { 
+                border-color: #28a745;
+            }
+        }
         @keyframes celebrate-halo {
             0% { 
                 box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7);
@@ -379,6 +390,17 @@
             pointer-events: none;
             z-index: -1;
             animation: error-halo 0.6s ease-in-out;
+        }
+        @keyframes error-bg {
+            0% { 
+                border-color: #dc3545;
+            }
+            50% { 
+                border-color: #dc3545;
+            }
+            100% { 
+                border-color: #dc3545;
+            }
         }
         @keyframes error-halo {
             0% { 
@@ -2921,10 +2943,10 @@
             loadBestScore();
 
                           // Learn/Drill switch management
-              $('#auto-play-switch').on('change', function() {
+            $('#auto-play-switch').on('change', function() {
                   window.playButtonSound();
                   drillMode = this.checked;
-                  autoPlayEnabled = this.checked;
+                autoPlayEnabled = this.checked;
                 console.log('Mode:', drillMode ? 'Drill' : 'Learn');
                 
                 if (drillMode) {
@@ -3069,12 +3091,12 @@
                     to: target
                 });
 
-                                  if (move === null) {
-                      console.log('Move invalid');
+                if (move === null) {
+                    console.log('Move invalid');
                       // Désélectionner si le coup est invalide
                       selectedPiece = null;
-                      return 'snapback';
-                  }
+                    return 'snapback';
+                }
                 
                 console.log('Move made:', move);
                 window.validateUserMove(move);
@@ -3506,20 +3528,9 @@
             });
 
             // Event listeners
-            
-            // Ajouter le son au bouton back
-            $('.backbtn').on('click', function(e) {
-                e.preventDefault();
-                window.playButtonSound();
-                // Attendre un peu que le son soit joué avant de changer de page
-                setTimeout(() => {
-                    window.location.href = this.href;
-                }, 100);
-            });
-            
             $('#line-select').on('change', function() {
                   window.playButtonSound();
-                  currentLineIndex = parseInt($(this).val());
+                currentLineIndex = parseInt($(this).val());
                   saveCurrentLine(); // Sauvegarder la ligne courante
                 resetGame();
                 updateNavigationButtons();
@@ -3532,10 +3543,10 @@
                   resetGame();
               });
 
-                          $('#next-line-btn').on('click', function() {
+            $('#next-line-btn').on('click', function() {
                   window.playButtonSound();
-                  if (currentLineIndex < lines.length - 1) {
-                      currentLineIndex++;
+                if (currentLineIndex < lines.length - 1) {
+                    currentLineIndex++;
                     $('#line-select').val(currentLineIndex);
                     saveCurrentLine(); // Sauvegarder la ligne courante
                     resetGame();
@@ -3549,18 +3560,18 @@
                           // Switch hint : clic sur toute la zone
               $('#hint-zone').on('click', function() {
                   window.playButtonSound();
-                  if (currentLineIndex < lines.length && currentMoveIndex < lines[currentLineIndex].moves.length) {
-                      const hintMove = lines[currentLineIndex].moves[currentMoveIndex];
+                if (currentLineIndex < lines.length && currentMoveIndex < lines[currentLineIndex].moves.length) {
+                    const hintMove = lines[currentLineIndex].moves[currentMoveIndex];
                     toggleHint(hintMove.san);
                 }
             });
             
 
 
-                          $('#prev-line-btn').on('click', function() {
+            $('#prev-line-btn').on('click', function() {
                   window.playButtonSound();
-                  if (currentLineIndex > 0) {
-                      currentLineIndex--;
+                if (currentLineIndex > 0) {
+                    currentLineIndex--;
                     $('#line-select').val(currentLineIndex);
                     saveCurrentLine(); // Sauvegarder la ligne courante
                     resetGame();
@@ -3569,6 +3580,16 @@
                 } else {
                     // Déjà à la première ligne
                 }
+            });
+
+            // Ajouter le son au bouton back
+            $('.backbtn').on('click', function(e) {
+                e.preventDefault();
+                window.playButtonSound();
+                // Attendre un peu que le son soit joué avant de changer de page
+                setTimeout(() => {
+                    window.location.href = this.href;
+                }, 100);
             });
 
             console.log('Initialization complete');
