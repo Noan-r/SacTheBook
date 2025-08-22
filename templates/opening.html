@@ -3382,18 +3382,7 @@
                 onDrop: onDrop,
                 onSnapEnd: onSnapEnd,
                 orientation: orientation,
-                pieceTheme: function(piece) {
-                    // Essayer d'abord les CDN, puis fallback vers les fichiers locaux
-                    const cdnUrls = [
-                        `https://cdn.jsdelivr.net/npm/chessboardjs@1.0.0/img/chesspieces/wikipedia/${piece}.png`,
-                        `https://unpkg.com/chessboardjs@1.0.0/img/chesspieces/wikipedia/${piece}.png`,
-                        `https://chessboardjs.com/img/chesspieces/wikipedia/${piece}.png`,
-                        `/static/img/chesspieces/wikipedia/${piece}.png`
-                    ];
-                    
-                    // Retourner la première URL (le navigateur essaiera automatiquement les suivantes si la première échoue)
-                    return cdnUrls[0];
-                },
+                pieceTheme: 'https://cdn.jsdelivr.net/npm/chessboardjs@1.0.0/img/chesspieces/wikipedia/{piece}.png',
                 showNotation: true,
                 dropOffBoard: 'snapback',
                 sparePieces: false
@@ -3408,11 +3397,39 @@
                     console.log('Board created successfully');
                     setupLine();
                     $(window).resize(board.resize);
+                    
+                    // Tester si les pièces CDN se chargent
+                    testCDNImages();
                 } else {
                     console.error('Failed to create board');
                 }
             } catch (error) {
                 console.error('Error creating board:', error);
+            }
+            
+            // Fonction pour tester si les pièces CDN se chargent
+            function testCDNImages() {
+                const testPiece = 'wp';
+                const cdnUrl = `https://cdn.jsdelivr.net/npm/chessboardjs@1.0.0/img/chesspieces/wikipedia/${testPiece}.png`;
+                const img = new Image();
+                
+                img.onload = function() {
+                    console.log('CDN images working, using CDN');
+                };
+                
+                img.onerror = function() {
+                    console.log('CDN images failed, switching to local files');
+                    // Changer vers les fichiers locaux
+                    config.pieceTheme = '/static/img/chesspieces/wikipedia/{piece}.png';
+                    if (board) {
+                        board.destroy();
+                        board = Chessboard('myBoard', config);
+                        setupLine();
+                        $(window).resize(board.resize);
+                    }
+                };
+                
+                img.src = cdnUrl;
             }
             
             // Variables pour la sélection de pièce
