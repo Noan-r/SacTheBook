@@ -1389,6 +1389,7 @@
             
             // Gestion du bouton Confirmer
             const handleConfirm = () => {
+                playButtonSound();
                 modal.classList.remove('show');
                 onConfirm();
                 // Nettoyer les event listeners
@@ -1398,6 +1399,7 @@
             
             // Gestion du bouton Annuler
             const handleCancel = () => {
+                playButtonSound();
                 modal.classList.remove('show');
                 // Nettoyer les event listeners
                 confirmBtn.removeEventListener('click', handleConfirm);
@@ -1422,6 +1424,7 @@
         // Gestion de la suppression d'ouvertures
         document.addEventListener('click', function(e) {
             if (e.target.classList.contains('delete-opening-btn')) {
+                playButtonSound();
                 const btn = e.target;
                 const category = btn.getAttribute('data-category');
                 const name = btn.getAttribute('data-name');
@@ -1596,8 +1599,13 @@
             // Ajouter le son au bouton back
             const backBtn = document.querySelector('.backbtn');
             if (backBtn) {
-                backBtn.addEventListener('click', function() {
+                backBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
                     playButtonSound();
+                    // Attendre un peu que le son soit joué avant de changer de page
+                    setTimeout(() => {
+                        window.location.href = this.href;
+                    }, 100);
                 });
             }
             

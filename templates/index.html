@@ -478,10 +478,15 @@
 
             const links = document.querySelectorAll('a[href*="/openings/settings"]');
             links.forEach(link => {
-                link.addEventListener('click', function() {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
                     playButtonSound();
                     // Ajouter un paramètre pour indiquer qu'on va vers settings
                     this.href = this.href + '?from=index';
+                    // Attendre un peu que le son soit joué avant de changer de page
+                    setTimeout(() => {
+                        window.location.href = this.href;
+                    }, 100);
                 });
             });
             
