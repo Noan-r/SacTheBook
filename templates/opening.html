@@ -337,38 +337,58 @@
             animation: celebrate-bg 1s ease-in-out;
             border: 2px solid #28a745 !important;
             border-radius: 8px !important;
+            position: relative;
         }
-        @keyframes celebrate-bg {
+        .celebrate::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            border-radius: 12px;
+            pointer-events: none;
+            z-index: -1;
+            animation: celebrate-halo 1s ease-in-out;
+        }
+        @keyframes celebrate-halo {
             0% { 
                 box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7);
-                border-color: #28a745;
             }
             50% { 
                 box-shadow: 0 0 30px 10px rgba(40, 167, 69, 0.8);
-                border-color: #28a745;
             }
             100% { 
                 box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7);
-                border-color: #28a745;
             }
         }
         .error-anim {
             animation: error-bg 0.6s ease-in-out;
             border: 2px solid #dc3545 !important;
             border-radius: 8px !important;
+            position: relative;
         }
-        @keyframes error-bg {
+        .error-anim::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            border-radius: 12px;
+            pointer-events: none;
+            z-index: -1;
+            animation: error-halo 0.6s ease-in-out;
+        }
+        @keyframes error-halo {
             0% { 
                 box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.7);
-                border-color: #dc3545;
             }
             50% { 
                 box-shadow: 0 0 30px 10px rgba(220, 53, 69, 0.8);
-                border-color: #dc3545;
             }
             100% { 
                 box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.7);
-                border-color: #dc3545;
             }
         }
         
@@ -3486,7 +3506,18 @@
             });
 
             // Event listeners
-                          $('#line-select').on('change', function() {
+            
+            // Ajouter le son au bouton back
+            $('.backbtn').on('click', function(e) {
+                e.preventDefault();
+                window.playButtonSound();
+                // Attendre un peu que le son soit joué avant de changer de page
+                setTimeout(() => {
+                    window.location.href = this.href;
+                }, 100);
+            });
+            
+            $('#line-select').on('change', function() {
                   window.playButtonSound();
                   currentLineIndex = parseInt($(this).val());
                   saveCurrentLine(); // Sauvegarder la ligne courante
