@@ -421,6 +421,43 @@
 
 
     <script>
+        // === SYSTÈME DE SONS ===
+        var audioContext = null;
+        var soundEnabled = true;
+        
+        // Initialiser l'API Web Audio
+        function initAudio() {
+            try {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                console.log('Audio context initialized');
+            } catch (e) {
+                console.warn('Web Audio API not supported:', e);
+                soundEnabled = false;
+            }
+        }
+        
+        // Fonction pour jouer un son synthétique (pour les boutons)
+        function playButtonSound() {
+            if (!soundEnabled || !audioContext) return;
+            
+            try {
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.setValueAtTime(600, audioContext.currentTime);
+                oscillator.type = 'triangle';
+                gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.05);
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.05);
+            } catch (e) {
+                console.warn('Error playing button sound:', e);
+            }
+        }
+        
         // Check if coming from settings and force refresh
         if (window.location.search.includes('refresh=true')) {
             // Supprimer le paramètre de l'URL
@@ -435,10 +472,14 @@
         // Ajouter un timestamp pour éviter le cache
         document.addEventListener('DOMContentLoaded', function() {
             console.log('DOMContentLoaded - Initializing system');
+            
+            // Initialiser l'audio
+            initAudio();
 
             const links = document.querySelectorAll('a[href*="/openings/settings"]');
             links.forEach(link => {
                 link.addEventListener('click', function() {
+                    playButtonSound();
                     // Ajouter un paramètre pour indiquer qu'on va vers settings
                     this.href = this.href + '?from=index';
                 });
@@ -448,6 +489,7 @@
             const openingLinks = document.querySelectorAll('a[href*="/opening/"]');
             openingLinks.forEach(link => {
                 link.addEventListener('click', function(e) {
+                    playButtonSound();
                     // Ajouter un timestamp pour éviter le cache
                     const timestamp = Date.now();
                     const separator = this.href.includes('?') ? '&' : '?';

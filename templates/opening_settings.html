@@ -871,6 +871,7 @@
         document.querySelectorAll('.variation-list').forEach(function(list) {
             list.addEventListener('click', function(e) {
                 if (e.target.classList.contains('edit-btn')) {
+                    playButtonSound();
                     const btn = e.target;
                     const item = btn.closest('.variation-item');
                     if (!item) return;
@@ -944,10 +945,12 @@
                     editPgn.addEventListener('keydown', handleEnterKey);
                     // Inline button management
                     item.querySelector('.cancel-btn').onclick = function() {
+                        playButtonSound();
                         cancelCurrentEdit();
                     };
                     // Sauvegarde AJAX
                     item.querySelector('.save-btn').onclick = function() {
+                        playButtonSound();
                         let newTitle = item.querySelector('.edit-title').value;
                         const newPgn = item.querySelector('.edit-pgn').value;
                         // Trouver le nom de l'ouverture et la catégorie
@@ -1021,6 +1024,7 @@
                     };
                     // Gestion du bouton de suppression
                     item.querySelector('.delete-btn').onclick = function() {
+                        playButtonSound();
                         // Trouver le nom de l'ouverture et la catégorie
                         const block = item.closest('.opening-block');
                         const openingName = block.querySelector('.opening-title').textContent.replace(/^\s*[♙♟]\s*/, '').trim();
@@ -1064,6 +1068,7 @@
         document.querySelectorAll('.variation-list').forEach(function(list) {
             list.addEventListener('click', function(e) {
                 if (e.target.classList.contains('add-variation-btn')) {
+                    playButtonSound();
                     // Annuler l'édition en cours si une ligne est en cours d'édition
                     if (currentlyEditingItem) {
                         cancelCurrentEdit();
@@ -1124,6 +1129,7 @@
                     setTimeout(() => autoAdjustPgnWidth(editPgn), 10);
                     // Cancel
                     addRow.querySelector('.cancel-btn').onclick = function() {
+                        playButtonSound();
                         addRow.innerHTML = '';
                     };
                     // Gestion de la touche Entrée pour naviguer entre les champs
@@ -1144,6 +1150,7 @@
                     editPgn.addEventListener('keydown', handleEnterKeyAdd);
                     // Sauvegarde AJAX pour l'ajout de variation
                     addRow.querySelector('.save-btn').onclick = function() {
+                        playButtonSound();
                         let varTitle = editTitle.value;
                         const varPgn = editPgn.value;
                         // Préfixe automatique #n si absent
@@ -1218,6 +1225,7 @@
         // Ajout d'une nouvelle ouverture (Attack/Defense)
         document.querySelectorAll('.add-opening-btn').forEach(function(btn) {
             btn.onclick = function() {
+                playButtonSound();
                 // Annuler l'édition en cours si une ligne est en cours d'édition
                 if (currentlyEditingItem) {
                     cancelCurrentEdit();
@@ -1285,6 +1293,7 @@
                 
                 // Bouton Annuler
                 document.getElementById('cancel-opening-btn').onclick = function() {
+                    playButtonSound();
                     newOpeningZone.innerHTML = '';
                     // Retirer la classe active du bouton
                     btn.classList.remove('active');
@@ -1292,6 +1301,7 @@
                 
                 // Bouton Sauvegarder
                 document.getElementById('save-opening-btn').onclick = function() {
+                    playButtonSound();
                     const openingName = nameInput.value.trim();
                     if (!openingName) {
                         // Afficher l'erreur dans le champ
@@ -1523,11 +1533,51 @@
             }
         }
 
+        // === SYSTÈME DE SONS ===
+        var audioContext = null;
+        var soundEnabled = true;
+        
+        // Initialiser l'API Web Audio
+        function initAudio() {
+            try {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                console.log('Audio context initialized');
+            } catch (e) {
+                console.warn('Web Audio API not supported:', e);
+                soundEnabled = false;
+            }
+        }
+        
+        // Fonction pour jouer un son synthétique (pour les boutons)
+        function playButtonSound() {
+            if (!soundEnabled || !audioContext) return;
+            
+            try {
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.setValueAtTime(600, audioContext.currentTime);
+                oscillator.type = 'triangle';
+                gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.05);
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.05);
+            } catch (e) {
+                console.warn('Error playing button sound:', e);
+            }
+        }
+        
         // === VARIABLES GLOBALES ===
         let currentlyEditingItem = null; // Variable pour suivre l'élément en cours d'édition
 
         // Detect if coming from index and modify return link
         document.addEventListener('DOMContentLoaded', function() {
+            // Initialiser l'audio
+            initAudio();
+            
             // Ajouter l'event listener pour la touche Escape
             document.addEventListener('keydown', handleEscapeKey);
 
@@ -1541,6 +1591,14 @@
                 if (backLink) {
                     backLink.href = '/?refresh=true';
                 }
+            }
+            
+            // Ajouter le son au bouton back
+            const backBtn = document.querySelector('.backbtn');
+            if (backBtn) {
+                backBtn.addEventListener('click', function() {
+                    playButtonSound();
+                });
             }
             
             // Vérifier s'il faut faire défiler vers un opening block après rechargement
