@@ -1849,7 +1849,7 @@
         var drillBestScore = 0; // Best score (longest streak)
         
         // Autres variables globales
-        var COMPUTER_MOVE_DELAY = 500;
+        var COMPUTER_MOVE_DELAY = 300;
         var orientation = null; // Sera initialisé depuis le serveur
         var openingName = null; // Sera initialisé depuis le serveur
         
@@ -3197,7 +3197,22 @@
                     return;
                 }
                 const move = lines[currentLineIndex].moves[currentMoveIndex];
-                game.move(move.san);
+                
+                // Analyser le mouvement pour déterminer le son à jouer
+                const moveObj = game.move(move.san);
+                if (moveObj) {
+                    // Jouer le son approprié selon le type de coup
+                    if (moveObj.flags.includes('c')) {
+                        window.playCaptureSound();
+                    } else if (moveObj.flags.includes('k')) {
+                        window.playCastleSound();
+                    } else if (moveObj.flags.includes('p')) {
+                        window.playPromoteSound();
+                    } else {
+                        window.playMoveSound();
+                    }
+                }
+                
                 board.position(game.fen());
                 currentMoveIndex++;
                 
