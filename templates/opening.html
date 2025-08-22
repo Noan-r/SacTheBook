@@ -1858,6 +1858,162 @@
         var whiteSquareGrey = '#a9a9a9';
         var blackSquareGrey = '#696969';
         
+        // === SYSTÈME DE SONS ===
+        var audioContext = null;
+        var soundEnabled = true;
+        
+        // Initialiser l'API Web Audio
+        function initAudio() {
+            try {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                console.log('Audio context initialized');
+            } catch (e) {
+                console.warn('Web Audio API not supported:', e);
+                soundEnabled = false;
+            }
+        }
+        
+        // Fonction pour jouer un son
+        function playSound(type) {
+            if (!soundEnabled || !audioContext) return;
+            
+            try {
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                // Configuration selon le type de son
+                switch(type) {
+                    case 'move':
+                        oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+                        oscillator.type = 'sine';
+                        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+                        oscillator.start(audioContext.currentTime);
+                        oscillator.stop(audioContext.currentTime + 0.1);
+                        break;
+                        
+                    case 'capture':
+                        oscillator.frequency.setValueAtTime(400, audioContext.currentTime);
+                        oscillator.frequency.exponentialRampToValueAtTime(200, audioContext.currentTime + 0.15);
+                        oscillator.type = 'sawtooth';
+                        gainNode.gain.setValueAtTime(0.4, audioContext.currentTime);
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.15);
+                        oscillator.start(audioContext.currentTime);
+                        oscillator.stop(audioContext.currentTime + 0.15);
+                        break;
+                        
+                    case 'check':
+                        oscillator.frequency.setValueAtTime(1000, audioContext.currentTime);
+                        oscillator.frequency.exponentialRampToValueAtTime(1200, audioContext.currentTime + 0.1);
+                        oscillator.type = 'square';
+                        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+                        oscillator.start(audioContext.currentTime);
+                        oscillator.stop(audioContext.currentTime + 0.1);
+                        break;
+                        
+                    case 'win':
+                        // Son de victoire plus complexe
+                        const winOsc1 = audioContext.createOscillator();
+                        const winOsc2 = audioContext.createOscillator();
+                        const winGain = audioContext.createGain();
+                        
+                        winOsc1.connect(winGain);
+                        winOsc2.connect(winGain);
+                        winGain.connect(audioContext.destination);
+                        
+                        winOsc1.frequency.setValueAtTime(523, audioContext.currentTime); // C5
+                        winOsc2.frequency.setValueAtTime(659, audioContext.currentTime); // E5
+                        winOsc1.type = 'sine';
+                        winOsc2.type = 'sine';
+                        
+                        winGain.gain.setValueAtTime(0.2, audioContext.currentTime);
+                        winGain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+                        
+                        winOsc1.start(audioContext.currentTime);
+                        winOsc2.start(audioContext.currentTime);
+                        winOsc1.stop(audioContext.currentTime + 0.5);
+                        winOsc2.stop(audioContext.currentTime + 0.5);
+                        break;
+                        
+                    case 'button':
+                        oscillator.frequency.setValueAtTime(600, audioContext.currentTime);
+                        oscillator.type = 'triangle';
+                        gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.05);
+                        oscillator.start(audioContext.currentTime);
+                        oscillator.stop(audioContext.currentTime + 0.05);
+                        break;
+                        
+                    case 'error':
+                        oscillator.frequency.setValueAtTime(200, audioContext.currentTime);
+                        oscillator.frequency.exponentialRampToValueAtTime(150, audioContext.currentTime + 0.2);
+                        oscillator.type = 'sawtooth';
+                        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+                        oscillator.start(audioContext.currentTime);
+                        oscillator.stop(audioContext.currentTime + 0.2);
+                        break;
+                        
+                    case 'promote':
+                        oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+                        oscillator.frequency.exponentialRampToValueAtTime(1200, audioContext.currentTime + 0.2);
+                        oscillator.type = 'sine';
+                        gainNode.gain.setValueAtTime(0.4, audioContext.currentTime);
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+                        oscillator.start(audioContext.currentTime);
+                        oscillator.stop(audioContext.currentTime + 0.2);
+                        break;
+                        
+                    case 'castle':
+                        oscillator.frequency.setValueAtTime(600, audioContext.currentTime);
+                        oscillator.frequency.exponentialRampToValueAtTime(800, audioContext.currentTime + 0.15);
+                        oscillator.type = 'square';
+                        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.15);
+                        oscillator.start(audioContext.currentTime);
+                        oscillator.stop(audioContext.currentTime + 0.15);
+                        break;
+                        
+                    case 'game-end':
+                        oscillator.frequency.setValueAtTime(300, audioContext.currentTime);
+                        oscillator.frequency.exponentialRampToValueAtTime(200, audioContext.currentTime + 0.3);
+                        oscillator.type = 'sawtooth';
+                        gainNode.gain.setValueAtTime(0.4, audioContext.currentTime);
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+                        oscillator.start(audioContext.currentTime);
+                        oscillator.stop(audioContext.currentTime + 0.3);
+                        break;
+                        
+                    case 'notify':
+                        oscillator.frequency.setValueAtTime(1000, audioContext.currentTime);
+                        oscillator.type = 'sine';
+                        gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.08);
+                        oscillator.start(audioContext.currentTime);
+                        oscillator.stop(audioContext.currentTime + 0.08);
+                        break;
+                }
+            } catch (e) {
+                console.warn('Error playing sound:', e);
+            }
+        }
+        
+        // Fonctions globales pour les sons
+        window.playMoveSound = function() { playSound('move'); };
+        window.playCaptureSound = function() { playSound('capture'); };
+        window.playCheckSound = function() { playSound('check'); };
+        window.playWinSound = function() { playSound('win'); };
+        window.playButtonSound = function() { playSound('button'); };
+        window.playErrorSound = function() { playSound('error'); };
+        window.playPromoteSound = function() { playSound('promote'); };
+        window.playCastleSound = function() { playSound('castle'); };
+        window.playGameEndSound = function() { playSound('game-end'); };
+        window.playNotifySound = function() { playSound('notify'); };
+        
         // Fonctions globales critiques
         function setupLine() {
             console.log('setupLine called - orientation:', orientation, 'currentLineIndex:', currentLineIndex);
@@ -2149,6 +2305,7 @@
             
             // Ajouter les événements de clic
             $('.promotion-piece').on('click', function() {
+                window.playButtonSound();
                 const piece = $(this).data('piece');
                 console.log('Promotion piece clicked:', piece);
                 window.completePromotion(piece);
@@ -2533,6 +2690,8 @@
         
         $(document).ready(function() {
 
+            // Initialiser l'audio
+            initAudio();
             
             // --- FONCTIONS POUR ÉCHEC ET MAT ---
             window.checkForCheckmate = function() {
@@ -2759,6 +2918,7 @@
 
             // Learn/Drill switch management
             $('#auto-play-switch').on('change', function() {
+                window.playButtonSound();
                 drillMode = this.checked;
                 autoPlayEnabled = this.checked;
                 console.log('Mode:', drillMode ? 'Drill' : 'Learn');
@@ -2907,9 +3067,21 @@
 
                 if (move === null) {
                     console.log('Move invalid');
+                    window.playErrorSound();
                     // Désélectionner si le coup est invalide
                     selectedPiece = null;
                     return 'snapback';
+                }
+                
+                // Jouer le son approprié selon le type de coup
+                if (move.flags.includes('c')) {
+                    window.playCaptureSound();
+                } else if (move.flags.includes('k')) {
+                    window.playCastleSound();
+                } else if (move.flags.includes('p')) {
+                    window.playPromoteSound();
+                } else {
+                    window.playMoveSound();
                 }
                 
                 console.log('Move made:', move);
@@ -2934,6 +3106,11 @@
                 
                 // Met à jour l'indice si il est affiché
                 window.updateHintContent();
+                
+                // Vérifier si le coup met en échec
+                if (game.in_check()) {
+                    window.playCheckSound();
+                }
                 
                 // Vérifie l'échec et mat
                 if (window.checkForCheckmate()) {
@@ -2971,6 +3148,7 @@
                 } else {
                     // Coup incorrect
                     console.log('Move is incorrect!');
+                    window.playErrorSound();
                     
                     // Désélectionner la pièce après un coup incorrect
                     selectedPiece = null;
@@ -3005,7 +3183,8 @@
                 
                 if (drillMode) {
                     // Mode Drill : célébration plus rapide pour un rythme soutenu
-                $('#myBoard').addClass('celebrate');
+                    window.playWinSound();
+                    $('#myBoard').addClass('celebrate');
                     confetti({
                         particleCount: 80,
                         spread: 70,
@@ -3017,6 +3196,7 @@
                     }, 500); // Réduit à 500ms pour drill (50% de 1000ms)
                 } else {
                     // Mode Learn : délai normal pour bien savourer le succès
+                    window.playWinSound();
                     $('#myBoard').addClass('celebrate');
                 confetti({
                     particleCount: 80,
@@ -3309,6 +3489,7 @@
 
             // Event listeners
             $('#line-select').on('change', function() {
+                window.playButtonSound();
                 currentLineIndex = parseInt($(this).val());
                 saveCurrentLine(); // Sauvegarder la ligne courante
                 resetGame();
@@ -3318,10 +3499,12 @@
 
 
             $('#reset-btn').on('click', function() {
+                window.playButtonSound();
                 resetGame();
             });
 
             $('#next-line-btn').on('click', function() {
+                window.playButtonSound();
                 if (currentLineIndex < lines.length - 1) {
                     currentLineIndex++;
                     $('#line-select').val(currentLineIndex);
@@ -3336,6 +3519,7 @@
 
             // Switch hint : clic sur toute la zone
             $('#hint-zone').on('click', function() {
+                window.playButtonSound();
                 if (currentLineIndex < lines.length && currentMoveIndex < lines[currentLineIndex].moves.length) {
                     const hintMove = lines[currentLineIndex].moves[currentMoveIndex];
                     toggleHint(hintMove.san);
@@ -3345,6 +3529,7 @@
 
 
             $('#prev-line-btn').on('click', function() {
+                window.playButtonSound();
                 if (currentLineIndex > 0) {
                     currentLineIndex--;
                     $('#line-select').val(currentLineIndex);
