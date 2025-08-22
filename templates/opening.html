@@ -335,92 +335,72 @@
 
         .celebrate {
             animation: celebrate-bg 1s ease-in-out;
-            border: 3px solid #28a745 !important;
-            border-radius: 8px !important;
-            position: relative;
-            box-shadow: 0 0 20px rgba(40, 167, 69, 0.8) !important;
         }
-        .celebrate::before {
-            content: '';
-            position: absolute;
-            top: -15px;
-            left: -15px;
-            right: -15px;
-            bottom: -15px;
-            border-radius: 15px;
+        .celebrate-halo-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             pointer-events: none;
-            z-index: -1;
-            animation: celebrate-halo 1s ease-in-out;
-            background: radial-gradient(circle, rgba(40, 167, 69, 0.3) 0%, rgba(40, 167, 69, 0.1) 50%, transparent 70%);
+            z-index: 9999;
+            animation: celebrate-halo-overlay 1s ease-in-out;
         }
         @keyframes celebrate-bg {
             0% { 
-                border-color: #28a745;
+                box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.8);
             }
             50% { 
-                border-color: #28a745;
+                box-shadow: 0 0 50px 20px rgba(40, 167, 69, 1);
             }
             100% { 
-                border-color: #28a745;
+                box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.8);
             }
         }
-        @keyframes celebrate-halo {
+        @keyframes celebrate-halo-overlay {
             0% { 
-                box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.9);
-                transform: scale(1);
+                background: radial-gradient(circle at center, rgba(40, 167, 69, 0.4) 0%, rgba(40, 167, 69, 0.2) 30%, transparent 60%);
             }
             50% { 
-                box-shadow: 0 0 40px 15px rgba(40, 167, 69, 1);
-                transform: scale(1.05);
+                background: radial-gradient(circle at center, rgba(40, 167, 69, 0.8) 0%, rgba(40, 167, 69, 0.4) 40%, rgba(40, 167, 69, 0.1) 70%, transparent 90%);
             }
             100% { 
-                box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.9);
-                transform: scale(1);
+                background: radial-gradient(circle at center, rgba(40, 167, 69, 0.4) 0%, rgba(40, 167, 69, 0.2) 30%, transparent 60%);
             }
         }
         .error-anim {
             animation: error-bg 0.6s ease-in-out;
-            border: 3px solid #dc3545 !important;
-            border-radius: 8px !important;
-            position: relative;
-            box-shadow: 0 0 20px rgba(220, 53, 69, 0.8) !important;
         }
-        .error-anim::before {
-            content: '';
-            position: absolute;
-            top: -15px;
-            left: -15px;
-            right: -15px;
-            bottom: -15px;
-            border-radius: 15px;
+        .error-halo-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             pointer-events: none;
-            z-index: -1;
-            animation: error-halo 0.6s ease-in-out;
-            background: radial-gradient(circle, rgba(220, 53, 69, 0.3) 0%, rgba(220, 53, 69, 0.1) 50%, transparent 70%);
+            z-index: 9999;
+            animation: error-halo-overlay 0.6s ease-in-out;
         }
         @keyframes error-bg {
             0% { 
-                border-color: #dc3545;
+                box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.8);
             }
             50% { 
-                border-color: #dc3545;
+                box-shadow: 0 0 50px 20px rgba(220, 53, 69, 1);
             }
             100% { 
-                border-color: #dc3545;
+                box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.8);
             }
         }
-        @keyframes error-halo {
+        @keyframes error-halo-overlay {
             0% { 
-                box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.9);
-                transform: scale(1);
+                background: radial-gradient(circle at center, rgba(220, 53, 69, 0.4) 0%, rgba(220, 53, 69, 0.2) 30%, transparent 60%);
             }
             50% { 
-                box-shadow: 0 0 40px 15px rgba(220, 53, 69, 1);
-                transform: scale(1.05);
+                background: radial-gradient(circle at center, rgba(220, 53, 69, 0.8) 0%, rgba(220, 53, 69, 0.4) 40%, rgba(220, 53, 69, 0.1) 70%, transparent 90%);
             }
             100% { 
-                box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.9);
-                transform: scale(1);
+                background: radial-gradient(circle at center, rgba(220, 53, 69, 0.4) 0%, rgba(220, 53, 69, 0.2) 30%, transparent 60%);
             }
         }
         
@@ -3186,8 +3166,14 @@
                     selectedPiece = null;
                     
                     $('#myBoard').addClass('error-anim');
+                    
+                    // Créer l'overlay de halo d'erreur
+                    const errorOverlay = $('<div class="error-halo-overlay"></div>');
+                    $('body').append(errorOverlay);
+                    
                     setTimeout(function() {
                         $('#myBoard').removeClass('error-anim');
+                        errorOverlay.remove();
                     }, 600);
                     game.undo();
                     // Force stop any ongoing drag before error handling
@@ -3216,7 +3202,12 @@
                 if (drillMode) {
                     // Mode Drill : célébration plus rapide pour un rythme soutenu
                     window.playWinSound();
-                $('#myBoard').addClass('celebrate');
+                    $('#myBoard').addClass('celebrate');
+                    
+                    // Créer l'overlay de halo de célébration
+                    const celebrateOverlay = $('<div class="celebrate-halo-overlay"></div>');
+                    $('body').append(celebrateOverlay);
+                    
                     confetti({
                         particleCount: 80,
                         spread: 70,
@@ -3224,21 +3215,28 @@
                     });
                     setTimeout(function() {
                         $('#myBoard').removeClass('celebrate');
+                        celebrateOverlay.remove();
                         handleDrillOpeningSuccess();
                     }, 500); // Réduit à 500ms pour drill (50% de 1000ms)
                 } else {
                     // Mode Learn : délai normal pour bien savourer le succès
                     window.playWinSound();
                     $('#myBoard').addClass('celebrate');
-                confetti({
-                    particleCount: 80,
-                    spread: 70,
-                    origin: { y: 0.6 }
-                });
-                setTimeout(function() {
-                    $('#myBoard').removeClass('celebrate');
-                    goToNextLineOrRestart();
-                }, 1500); // Reste à 1500ms pour learn
+                    
+                    // Créer l'overlay de halo de célébration
+                    const celebrateOverlay = $('<div class="celebrate-halo-overlay"></div>');
+                    $('body').append(celebrateOverlay);
+                    
+                    confetti({
+                        particleCount: 80,
+                        spread: 70,
+                        origin: { y: 0.6 }
+                    });
+                    setTimeout(function() {
+                        $('#myBoard').removeClass('celebrate');
+                        celebrateOverlay.remove();
+                        goToNextLineOrRestart();
+                    }, 1500); // Reste à 1500ms pour learn
                 }
             }
 
