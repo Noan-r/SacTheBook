@@ -1963,6 +1963,7 @@
           window.playWinSound = function() { playAudioFile('win'); };
           window.playButtonSound = function() { playSyntheticSound('button'); };
           window.playErrorSound = function() { playSyntheticSound('error'); };
+          window.playIncorrectSound = function() { playAudioFile('incorrect'); };
           window.playPromoteSound = function() { playAudioFile('promote'); };
           window.playCastleSound = function() { playAudioFile('castle'); };
           window.playGameEndSound = function() { playAudioFile('game-end'); };
@@ -2659,6 +2660,12 @@
                 if (game.in_checkmate()) {
                     console.log('CHECKMATE DETECTED!');
                     
+                    // Jouer les sons check + game-end
+                    window.playCheckSound();
+                    setTimeout(function() {
+                        window.playGameEndSound();
+                    }, 200);
+                    
                     // Ajoute le hashtag sur la case du roi
                     window.addCheckmateHashtag();
                     
@@ -3022,7 +3029,7 @@
 
                                   if (move === null) {
                       console.log('Move invalid');
-                      window.playErrorSound();
+                      window.playIncorrectSound();
                       // Désélectionner si le coup est invalide
                       selectedPiece = null;
                       return 'snapback';
@@ -3098,7 +3105,7 @@
                 } else {
                     // Coup incorrect
                     console.log('Move is incorrect!');
-                    window.playErrorSound();
+                    window.playIncorrectSound();
                     
                     // Désélectionner la pièce après un coup incorrect
                     selectedPiece = null;
