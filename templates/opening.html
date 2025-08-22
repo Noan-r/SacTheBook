@@ -335,21 +335,23 @@
 
         .celebrate {
             animation: celebrate-bg 1s ease-in-out;
-            border: 2px solid #28a745 !important;
+            border: 3px solid #28a745 !important;
             border-radius: 8px !important;
             position: relative;
+            box-shadow: 0 0 20px rgba(40, 167, 69, 0.8) !important;
         }
         .celebrate::before {
             content: '';
             position: absolute;
-            top: -10px;
-            left: -10px;
-            right: -10px;
-            bottom: -10px;
-            border-radius: 12px;
+            top: -15px;
+            left: -15px;
+            right: -15px;
+            bottom: -15px;
+            border-radius: 15px;
             pointer-events: none;
             z-index: -1;
             animation: celebrate-halo 1s ease-in-out;
+            background: radial-gradient(circle, rgba(40, 167, 69, 0.3) 0%, rgba(40, 167, 69, 0.1) 50%, transparent 70%);
         }
         @keyframes celebrate-bg {
             0% { 
@@ -364,32 +366,37 @@
         }
         @keyframes celebrate-halo {
             0% { 
-                box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7);
+                box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.9);
+                transform: scale(1);
             }
             50% { 
-                box-shadow: 0 0 30px 10px rgba(40, 167, 69, 0.8);
+                box-shadow: 0 0 40px 15px rgba(40, 167, 69, 1);
+                transform: scale(1.05);
             }
             100% { 
-                box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7);
+                box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.9);
+                transform: scale(1);
             }
         }
         .error-anim {
             animation: error-bg 0.6s ease-in-out;
-            border: 2px solid #dc3545 !important;
+            border: 3px solid #dc3545 !important;
             border-radius: 8px !important;
             position: relative;
+            box-shadow: 0 0 20px rgba(220, 53, 69, 0.8) !important;
         }
         .error-anim::before {
             content: '';
             position: absolute;
-            top: -10px;
-            left: -10px;
-            right: -10px;
-            bottom: -10px;
-            border-radius: 12px;
+            top: -15px;
+            left: -15px;
+            right: -15px;
+            bottom: -15px;
+            border-radius: 15px;
             pointer-events: none;
             z-index: -1;
             animation: error-halo 0.6s ease-in-out;
+            background: radial-gradient(circle, rgba(220, 53, 69, 0.3) 0%, rgba(220, 53, 69, 0.1) 50%, transparent 70%);
         }
         @keyframes error-bg {
             0% { 
@@ -404,13 +411,16 @@
         }
         @keyframes error-halo {
             0% { 
-                box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.7);
+                box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.9);
+                transform: scale(1);
             }
             50% { 
-                box-shadow: 0 0 30px 10px rgba(220, 53, 69, 0.8);
+                box-shadow: 0 0 40px 15px rgba(220, 53, 69, 1);
+                transform: scale(1.05);
             }
             100% { 
-                box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.7);
+                box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.9);
+                transform: scale(1);
             }
         }
         
