@@ -21,6 +21,10 @@ def add_header(response):
         response.headers['Cache-Control'] = 'public, max-age=31536000'
         response.headers['Access-Control-Allow-Origin'] = '*'
         response.headers['Vary'] = 'Accept-Encoding'
+        response.headers['Content-Type'] = response.mimetype
+        # En-têtes spécifiques pour mobile
+        response.headers['X-Content-Type-Options'] = 'nosniff'
+        response.headers['X-Frame-Options'] = 'SAMEORIGIN'
     return response
 
 # Configuration WhiteNoise pour servir les fichiers statiques avec Gunicorn
@@ -1128,10 +1132,12 @@ def test_mobile_pieces():
             if os.path.exists(file_path):
                 file_size = os.path.getsize(file_path)
                 static_url = f'/static/img/chesspieces/wikipedia/{piece}.png'
+                cdn_url = f'https://cdn.jsdelivr.net/npm/chessboardjs@1.0.0/img/chesspieces/wikipedia/{piece}.png'
                 results[piece] = {
                     'status': 'OK',
                     'size': file_size,
-                    'url': static_url,
+                    'local_url': static_url,
+                    'cdn_url': cdn_url,
                     'path': file_path
                 }
             else:
@@ -1150,6 +1156,7 @@ def test_mobile_pieces():
         'static_folder': app.static_folder,
         'whitenoise_enabled': 'WhiteNoise is configured',
         'pieces_folder': os.path.join(app.static_folder, 'img', 'chesspieces', 'wikipedia'),
+        'cdn_base': 'https://cdn.jsdelivr.net/npm/chessboardjs@1.0.0/img/chesspieces/wikipedia/',
         'results': results
     })
 

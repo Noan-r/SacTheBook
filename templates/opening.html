@@ -2300,7 +2300,9 @@
                         align-items: center;
                     " onmouseover="this.style.borderColor='#F47C20'; this.style.transform='scale(1.05)'; this.style.background='#fff5e6'" 
                        onmouseout="this.style.borderColor='#ddd'; this.style.transform='scale(1)'; this.style.background='white'">
-                        <img src="/static/img/chesspieces/wikipedia/${colorPrefix}${piece}.png" style="width: 30px; height: 30px;" alt="${piece}">
+                        <img src="https://cdn.jsdelivr.net/npm/chessboardjs@1.0.0/img/chesspieces/wikipedia/${colorPrefix}${piece}.png" 
+                             onerror="this.onerror=null; this.src='/static/img/chesspieces/wikipedia/${colorPrefix}${piece}.png';" 
+                             style="width: 30px; height: 30px;" alt="${piece}">
                     </div>
                 `;
             });
@@ -3380,7 +3382,18 @@
                 onDrop: onDrop,
                 onSnapEnd: onSnapEnd,
                 orientation: orientation,
-                pieceTheme: '/static/img/chesspieces/wikipedia/{piece}.png',
+                pieceTheme: function(piece) {
+                    // Essayer d'abord les CDN, puis fallback vers les fichiers locaux
+                    const cdnUrls = [
+                        `https://cdn.jsdelivr.net/npm/chessboardjs@1.0.0/img/chesspieces/wikipedia/${piece}.png`,
+                        `https://unpkg.com/chessboardjs@1.0.0/img/chesspieces/wikipedia/${piece}.png`,
+                        `https://chessboardjs.com/img/chesspieces/wikipedia/${piece}.png`,
+                        `/static/img/chesspieces/wikipedia/${piece}.png`
+                    ];
+                    
+                    // Retourner la première URL (le navigateur essaiera automatiquement les suivantes si la première échoue)
+                    return cdnUrls[0];
+                },
                 showNotation: true,
                 dropOffBoard: 'snapback',
                 sparePieces: false
