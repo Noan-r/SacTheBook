@@ -3620,6 +3620,19 @@
                     
                     // Tester si les pièces CDN se chargent
                     testCDNImages();
+                    
+                    // Vérifier si les pièces s'affichent après un délai
+                    setTimeout(function() {
+                        const pieces = $('.square-55d63 img');
+                        if (pieces.length === 0) {
+                            console.log('No pieces visible, forcing reload');
+                            board.destroy();
+                            config.pieceTheme = 'https://unpkg.com/chessboardjs@1.0.0/img/chesspieces/wikipedia/{piece}.png';
+                            board = Chessboard('myBoard', config);
+                            setupLine();
+                            $(window).resize(board.resize);
+                        }
+                    }, 2000);
                 } else {
                     console.error('Failed to create board');
                 }
@@ -3638,9 +3651,65 @@
                 };
                 
                 img.onerror = function() {
-                    console.log('CDN images failed, switching to local files');
-                    // Changer vers les fichiers locaux
+                    console.log('CDN images failed, trying alternative CDN');
+                    // Essayer un CDN alternatif
+                    config.pieceTheme = 'https://unpkg.com/chessboardjs@1.0.0/img/chesspieces/wikipedia/{piece}.png';
+                    if (board) {
+                        board.destroy();
+                        board = Chessboard('myBoard', config);
+                        setupLine();
+                        $(window).resize(board.resize);
+                        
+                        // Tester le CDN alternatif
+                        testAlternativeCDN();
+                    }
+                };
+                
+                img.src = cdnUrl;
+            }
+            
+            // Fonction pour tester le CDN alternatif
+            function testAlternativeCDN() {
+                const testPiece = 'wp';
+                const altCdnUrl = `https://unpkg.com/chessboardjs@1.0.0/img/chesspieces/wikipedia/${testPiece}.png`;
+                const img = new Image();
+                
+                img.onload = function() {
+                    console.log('Alternative CDN working');
+                };
+                
+                img.onerror = function() {
+                    console.log('Alternative CDN failed, using local files');
+                    // En dernier recours, utiliser les fichiers locaux
                     config.pieceTheme = '/static/img/chesspieces/wikipedia/{piece}.png';
+                    if (board) {
+                        board.destroy();
+                        board = Chessboard('myBoard', config);
+                        setupLine();
+                        $(window).resize(board.resize);
+                        
+                        // Tester les fichiers locaux
+                        testLocalFiles();
+                    }
+                };
+                
+                img.src = altCdnUrl;
+            }
+            
+            // Fonction pour tester les fichiers locaux
+            function testLocalFiles() {
+                const testPiece = 'wp';
+                const localUrl = `/static/img/chesspieces/wikipedia/${testPiece}.png`;
+                const img = new Image();
+                
+                img.onload = function() {
+                    console.log('Local files working');
+                };
+                
+                img.onerror = function() {
+                    console.log('Local files failed, using fallback CDN');
+                    // Dernier recours : utiliser un autre CDN
+                    config.pieceTheme = 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png';
                     if (board) {
                         board.destroy();
                         board = Chessboard('myBoard', config);
@@ -3649,7 +3718,7 @@
                     }
                 };
                 
-                img.src = cdnUrl;
+                img.src = localUrl;
             }
             
             // Variables pour la sélection de pièce

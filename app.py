@@ -22,6 +22,35 @@ app = Flask(__name__, static_folder='static', static_url_path='/static')
 # Configuration pour servir les fichiers statiques de manière plus robuste
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
+# Route spécifique pour les images des pièces d'échecs
+@app.route('/static/img/chesspieces/wikipedia/<filename>')
+def serve_chess_piece(filename):
+    """Sert les images des pièces d'échecs avec les bons headers"""
+    try:
+        return send_from_directory('static/img/chesspieces/wikipedia', filename, 
+                                 mimetype='image/png',
+                                 cache_timeout=0)
+    except Exception as e:
+        print(f"Erreur lors du service de l'image {filename}: {e}")
+        return '', 404
+
+@app.route('/test-chess-pieces')
+def test_chess_pieces():
+    """Route de test pour vérifier l'accessibilité des pièces d'échecs"""
+    pieces = ['wp', 'wr', 'wn', 'wb', 'wq', 'wk', 'bp', 'br', 'bn', 'bb', 'bq', 'bk']
+    available_pieces = []
+    
+    for piece in pieces:
+        piece_path = os.path.join('static', 'img', 'chesspieces', 'wikipedia', f'{piece}.png')
+        if os.path.exists(piece_path):
+            available_pieces.append(piece)
+    
+    return jsonify({
+        'total_pieces': len(pieces),
+        'available_pieces': available_pieces,
+        'missing_pieces': [p for p in pieces if p not in available_pieces]
+    })
+
 # Configuration GitHub pour la synchronisation
 GITHUB_TOKEN = os.environ.get('GITHUB_TOKEN', '')
 GITHUB_REPO = os.environ.get('GITHUB_REPO', 'Noan-r/SacTheBook')
