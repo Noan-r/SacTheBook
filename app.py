@@ -11,6 +11,10 @@ import requests
 from github import Github
 import base64
 import hashlib
+from dotenv import load_dotenv
+
+# Charger les variables d'environnement depuis le fichier .env
+load_dotenv()
 
 app = Flask(__name__, static_folder='static', static_url_path='/static')
 

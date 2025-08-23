@@ -4,4 +4,5 @@ Werkzeug==2.3.7
 gunicorn==21.2.0
 whitenoise==6.6.0
 PyGithub==2.1.1
-requests==2.31.0 
+requests==2.31.0
+python-dotenv==1.1.1 
