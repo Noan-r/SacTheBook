@@ -131,9 +131,6 @@
             box-shadow: 0 2px 8px rgba(244,124,32,0.10);
             border: none;
             text-decoration: none;
-            position: absolute;
-            top: 20px;
-            left: 20px;
             transition: background 0.2s, transform 0.2s;
         }
         
@@ -142,8 +139,15 @@
             .backbtn {
                 font-size: 1em;
                 padding: 10px 24px 10px 18px;
-                top: 15px;
-                left: 15px;
+            }
+            
+            .github-sync-buttons {
+                gap: 5px;
+            }
+            
+            .github-btn {
+                font-size: 0.9em;
+                padding: 8px 12px;
             }
         }
         
@@ -151,14 +155,52 @@
             .backbtn {
                 font-size: 0.9em;
                 padding: 8px 20px 8px 15px;
-                top: 10px;
-                left: 10px;
+            }
+            
+            .github-sync-buttons {
+                flex-direction: column;
+                gap: 5px;
+            }
+            
+            .github-btn {
+                font-size: 0.8em;
+                padding: 6px 10px;
             }
         }
         .backbtn:hover {
             background: #B23A2B;
             color: #fff;
             transform: scale(1.06);
+        }
+        
+        /* Styles pour les boutons GitHub */
+        .github-btn {
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        
+        .github-btn.loading {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+        
+        .github-btn.success {
+            border-color: #28a745;
+            box-shadow: 0 0 10px rgba(40, 167, 69, 0.5);
+        }
+        
+        .github-btn.error {
+            border-color: #dc3545;
+            box-shadow: 0 0 10px rgba(220, 53, 69, 0.5);
+        }
+        
+        .loading-spinner {
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
         .openings-list {
             margin-bottom: 40px;
@@ -714,23 +756,20 @@
     <div style="width:100%;text-align:center;margin-top:8px;margin-bottom:0;">
         <img src="/static/SacTheBook_Icon.png" alt="SacTheBook Logo" class="sac-logo" style="width:70px;max-width:18vw;display:inline-block;vertical-align:middle;border:2px solid #F47C20;border-radius:16px;background:#145334;">
     </div>
-    <a href="/" class="backbtn">← Back</a>
-    
-    <!-- Section de synchronisation GitHub -->
-    <div class="github-sync-section" style="background: #F8F5EC; border-radius: 15px; box-shadow: 0 4px 16px rgba(32,81,58,0.12); padding: 20px; max-width: 900px; margin: 20px auto; text-align: center;">
-        <h3 style="color: #F47C20; margin-bottom: 15px; font-size: 1.3em;">🔄 Synchronisation GitHub</h3>
-        <div id="github-status" style="margin-bottom: 15px; padding: 10px; border-radius: 8px; background: #f0f0f0;">
-            <span id="github-status-text">Vérification de la configuration...</span>
-        </div>
-        <div class="github-buttons" style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
-            <button type="button" class="btn github-btn" id="sync-to-github" style="background: #28a745;">
-                📤 Synchroniser vers GitHub
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <a href="/" class="backbtn">← Back</a>
+        
+        <!-- Boutons de synchronisation GitHub -->
+        <div class="github-sync-buttons" style="display: flex; gap: 10px;">
+            <button type="button" class="btn github-btn" id="sync-to-github" style="background: #28a745; position: relative;">
+                <span class="btn-text">📤 Sync to GitHub</span>
+                <span class="loading-spinner" style="display: none;">⏳</span>
             </button>
-            <button type="button" class="btn github-btn" id="sync-from-github" style="background: #007bff;">
-                📥 Synchroniser depuis GitHub
+            <button type="button" class="btn github-btn" id="sync-from-github" style="background: #007bff; position: relative;">
+                <span class="btn-text">📥 Sync from GitHub</span>
+                <span class="loading-spinner" style="display: none;">⏳</span>
             </button>
         </div>
-        <div id="github-result" style="margin-top: 15px; padding: 10px; border-radius: 8px; display: none;"></div>
     </div>
     
     <div class="container">
@@ -1658,54 +1697,48 @@
         
         // === FONCTIONS DE SYNCHRONISATION GITHUB ===
         function initGitHubSync() {
-            // Vérifier le statut GitHub
-            checkGitHubStatus();
-            
             // Ajouter les event listeners pour les boutons de synchronisation
             document.getElementById('sync-to-github').addEventListener('click', function() {
                 playButtonSound();
-                syncToGitHub();
+                syncToGitHub(this);
             });
             
             document.getElementById('sync-from-github').addEventListener('click', function() {
                 playButtonSound();
-                syncFromGitHub();
+                syncFromGitHub(this);
             });
         }
         
-        function checkGitHubStatus() {
-            fetch('/openings/settings/github_status')
-                .then(response => response.json())
-                .then(data => {
-                    const statusText = document.getElementById('github-status-text');
-                    const statusDiv = document.getElementById('github-status');
-                    const buttons = document.querySelectorAll('.github-btn');
-                    
-                    if (data.github_configured) {
-                        statusText.textContent = `✅ GitHub configuré - Repo: ${data.repo}`;
-                        statusDiv.style.background = '#d4edda';
-                        statusDiv.style.color = '#155724';
-                        buttons.forEach(btn => btn.disabled = false);
-                    } else {
-                        statusText.textContent = '❌ GitHub non configuré - Synchronisation désactivée';
-                        statusDiv.style.background = '#f8d7da';
-                        statusDiv.style.color = '#721c24';
-                        buttons.forEach(btn => btn.disabled = true);
-                    }
-                })
-                .catch(error => {
-                    console.error('Erreur lors de la vérification du statut GitHub:', error);
-                    const statusText = document.getElementById('github-status-text');
-                    statusText.textContent = '❌ Erreur de connexion';
-                });
+        function showLoadingState(button) {
+            button.classList.add('loading');
+            button.querySelector('.btn-text').style.display = 'none';
+            button.querySelector('.loading-spinner').style.display = 'inline';
         }
         
-        function syncToGitHub() {
-            const resultDiv = document.getElementById('github-result');
-            resultDiv.style.display = 'block';
-            resultDiv.style.background = '#fff3cd';
-            resultDiv.style.color = '#856404';
-            resultDiv.textContent = '🔄 Synchronisation en cours...';
+        function hideLoadingState(button) {
+            button.classList.remove('loading');
+            button.querySelector('.btn-text').style.display = 'inline';
+            button.querySelector('.loading-spinner').style.display = 'none';
+        }
+        
+        function showSuccessState(button) {
+            button.classList.remove('error');
+            button.classList.add('success');
+            setTimeout(() => {
+                button.classList.remove('success');
+            }, 2000);
+        }
+        
+        function showErrorState(button) {
+            button.classList.remove('success');
+            button.classList.add('error');
+            setTimeout(() => {
+                button.classList.remove('error');
+            }, 2000);
+        }
+        
+        function syncToGitHub(button) {
+            showLoadingState(button);
             
             fetch('/openings/settings/sync_to_github', {
                 method: 'POST',
@@ -1715,30 +1748,22 @@
             })
             .then(response => response.json())
             .then(data => {
+                hideLoadingState(button);
                 if (data.success) {
-                    resultDiv.style.background = '#d4edda';
-                    resultDiv.style.color = '#155724';
-                    resultDiv.textContent = `✅ ${data.message}`;
+                    showSuccessState(button);
                 } else {
-                    resultDiv.style.background = '#f8d7da';
-                    resultDiv.style.color = '#721c24';
-                    resultDiv.textContent = `❌ Erreur: ${data.error}`;
+                    showErrorState(button);
                 }
             })
             .catch(error => {
                 console.error('Erreur lors de la synchronisation:', error);
-                resultDiv.style.background = '#f8d7da';
-                resultDiv.style.color = '#721c24';
-                resultDiv.textContent = '❌ Erreur de connexion';
+                hideLoadingState(button);
+                showErrorState(button);
             });
         }
         
-        function syncFromGitHub() {
-            const resultDiv = document.getElementById('github-result');
-            resultDiv.style.display = 'block';
-            resultDiv.style.background = '#fff3cd';
-            resultDiv.style.color = '#856404';
-            resultDiv.textContent = '🔄 Synchronisation en cours...';
+        function syncFromGitHub(button) {
+            showLoadingState(button);
             
             fetch('/openings/settings/sync_from_github', {
                 method: 'POST',
@@ -1748,25 +1773,21 @@
             })
             .then(response => response.json())
             .then(data => {
+                hideLoadingState(button);
                 if (data.success) {
-                    resultDiv.style.background = '#d4edda';
-                    resultDiv.style.color = '#155724';
-                    resultDiv.textContent = `✅ ${data.message}`;
+                    showSuccessState(button);
                     // Recharger la page pour afficher les nouvelles données
                     setTimeout(() => {
                         window.location.reload();
                     }, 1500);
                 } else {
-                    resultDiv.style.background = '#f8d7da';
-                    resultDiv.style.color = '#721c24';
-                    resultDiv.textContent = `❌ Erreur: ${data.error}`;
+                    showErrorState(button);
                 }
             })
             .catch(error => {
                 console.error('Erreur lors de la synchronisation:', error);
-                resultDiv.style.background = '#f8d7da';
-                resultDiv.style.color = '#721c24';
-                resultDiv.textContent = '❌ Erreur de connexion';
+                hideLoadingState(button);
+                showErrorState(button);
             });
         }
     </script>
