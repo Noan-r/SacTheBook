@@ -339,7 +339,7 @@
         
         @media (max-width: 480px) {
             .line-selector select {
-                padding: 8px;
+            padding: 8px;
                 font-size: 14px;
                 margin-bottom: 8px;
             }
@@ -431,6 +431,14 @@
             margin-bottom: 15px;
         }
         
+        .line-and-controls-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+        }
+        
         .pawn-indicator {
             text-align: center;
             margin-bottom: 0;
@@ -452,9 +460,63 @@
                 flex-shrink: 0;
             }
             
+            .line-and-controls-container {
+                flex-direction: column;
+                align-items: center;
+                gap: 8px;
+                width: 100%;
+            }
+            
             .line-selector {
                 flex: 1;
                 min-width: 0;
+            }
+        }
+        
+        /* Mode paysage (landscape) */
+        @media (max-width: 480px) and (orientation: landscape) {
+            .pawn-and-line-container {
+                flex-direction: column;
+                align-items: center;
+                gap: 4px;
+                margin-bottom: 4px;
+            }
+            
+            .pawn-indicator {
+                margin-bottom: 0;
+                padding: 2px;
+            }
+            
+            .line-and-controls-container {
+                flex-direction: row;
+                align-items: center;
+                justify-content: center;
+                gap: 10px;
+                width: auto;
+            }
+            
+            .line-selector {
+                flex: none;
+                min-width: auto;
+                margin-bottom: 0;
+            }
+            
+            .controls {
+                display: flex;
+                gap: 3px;
+                margin: 0;
+                flex-shrink: 0;
+            }
+            
+            .header-section {
+                flex-direction: column;
+                align-items: center;
+                gap: 4px;
+            }
+            
+            .info-section {
+                max-height: 100px;
+                padding: 6px;
             }
         }
 
@@ -1633,12 +1695,14 @@
             
             .info-section {
                 order: 1;
-                padding: 12px;
-                min-height: 125px;
+                padding: 8px;
+                min-height: 100px;
+                max-height: 120px;
                 border-radius: 12px;
                 width: 100%;
                 max-width: 350px;
                 margin: 0 auto;
+                overflow: hidden;
             }
             
             .line-selector select {
@@ -1653,37 +1717,37 @@
             }
             
             .controls {
-                gap: 6px;
-                margin: 15px 0;
+                gap: 4px;
+                margin: 8px 0;
                 flex-wrap: nowrap;
             }
             
             .controls .btn {
-                padding: 8px 10px;
-                font-size: 12px;
-                min-width: 40px;
+                padding: 6px 8px;
+                font-size: 11px;
+                min-width: 35px;
                 flex: 1;
-                max-width: 60px;
+                max-width: 55px;
             }
             
             .hint-zone {
-                margin: 8px 0;
-                padding: 8px;
+                margin: 4px 0;
+                padding: 6px;
             }
             
             .hint-btn {
-                font-size: 16px;
-                padding: 6px;
+                font-size: 14px;
+                padding: 4px;
             }
             
             .hint-text {
-                font-size: 12px;
-                padding: 6px;
+                font-size: 11px;
+                padding: 4px;
             }
             
             .drill-counter {
-                padding: 6px;
-                margin: 6px 0;
+                padding: 4px;
+                margin: 4px 0;
             }
             
             .big-flame {
@@ -1695,7 +1759,7 @@
             }
             
             .best-score-footer {
-                padding: 8px;
+                padding: 6px;
             }
             
             .best-score-icon {
@@ -1753,12 +1817,14 @@
             
             .info-section {
                 order: 1;
-                padding: 8px;
-                min-height: 100px;
+                padding: 6px;
+                min-height: 80px;
+                max-height: 100px;
                 border-radius: 10px;
                 width: 100%;
                 max-width: 300px;
                 margin: 0 auto;
+                overflow: hidden;
             }
             
             .line-selector select {
@@ -1856,28 +1922,30 @@
             <!-- En-tête avec pion, titre, boutons et switch -->
             <div class="header-section">
                 <div class="pawn-and-line-container">
-                    <div class="pawn-indicator">
-                        {% if orientation == 'white' %}
-                            <span class="pawn white-pawn">♙</span>
-                        {% else %}
-                            <span class="pawn black-pawn">♟</span>
-                        {% endif %}
-                    </div>
-                    
-                    <div class="line-selector">
-                        <label for="line-select">Opening line:</label>
-                        <select id="line-select">
-                            {% for i in range(lines|length) %}
-                            <option value="{{ i }}">{{ lines[i].name }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
+                <div class="pawn-indicator">
+                    {% if orientation == 'white' %}
+                        <span class="pawn white-pawn">♙</span>
+                    {% else %}
+                        <span class="pawn black-pawn">♟</span>
+                    {% endif %}
                 </div>
+                
+                    <div class="line-and-controls-container">
+                <div class="line-selector">
+                    <label for="line-select">Opening line:</label>
+                    <select id="line-select">
+                        {% for i in range(lines|length) %}
+                        <option value="{{ i }}">{{ lines[i].name }}</option>
+                        {% endfor %}
+                    </select>
+                        </div>
 
-                <div class="controls">                   
-                    <button class="btn" id="prev-line-btn">⏪</button>
-                    <button class="btn" id="reset-btn">🔄</button>
-                    <button class="btn" id="next-line-btn">⏩</button>
+                        <div class="controls">                   
+                            <button class="btn" id="prev-line-btn">⏪</button>
+                            <button class="btn" id="reset-btn">🔄</button>
+                            <button class="btn" id="next-line-btn">⏩</button>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="switch-container">
