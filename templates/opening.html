@@ -133,7 +133,7 @@
             font-size: 0.9em;
             padding: 12px 8px;
             max-width: calc(33.33% - 7px);
-            min-width: 80px;
+            min-width: 53px;
             border-radius: 8px;
             transition: all 0.2s ease;
         }
@@ -483,20 +483,21 @@
             .pawn-and-line-container {
                 flex-direction: column;
                 align-items: center;
-                gap: 8px;
-                margin-bottom: 8px;
+                gap: 6px;
+                margin-bottom: 6px;
             }
             
             .pawn-indicator {
                 margin-bottom: 0;
-                padding: 3px;
+                padding: 2px;
+                text-align: center;
             }
             
             .line-and-controls-container {
                 flex-direction: row;
                 align-items: center;
                 justify-content: center;
-                gap: 15px;
+                gap: 12px;
                 width: auto;
             }
             
@@ -506,17 +507,44 @@
                 margin-bottom: 0;
             }
             
+            .line-selector label {
+                font-size: 0.75em;
+                margin-bottom: 2px;
+            }
+            
+            .line-selector select {
+                padding: 6px;
+                font-size: 12px;
+            }
+            
             .controls {
                 display: flex;
-                gap: 4px;
+                gap: 3px;
                 margin: 0;
                 flex-shrink: 0;
+            }
+            
+            .controls .btn {
+                padding: 6px 8px;
+                font-size: 11px;
+                min-width: 35px;
             }
             
             .header-section {
                 flex-direction: column;
                 align-items: center;
-                gap: 8px;
+                gap: 6px;
+            }
+            
+            .switch-container {
+                padding: 8px 12px;
+                gap: 10px;
+                margin-bottom: 6px;
+            }
+            
+            .switch-label-left,
+            .switch-label-right {
+                font-size: 0.7em;
             }
         }
         
@@ -525,20 +553,21 @@
             .pawn-and-line-container {
                 flex-direction: column;
                 align-items: center;
-                gap: 8px;
-                margin-bottom: 8px;
+                gap: 6px;
+                margin-bottom: 6px;
             }
             
             .pawn-indicator {
                 margin-bottom: 0;
-                padding: 3px;
+                padding: 2px;
+                text-align: center;
             }
             
             .line-and-controls-container {
                 flex-direction: row;
                 align-items: center;
                 justify-content: center;
-                gap: 15px;
+                gap: 12px;
                 width: auto;
             }
             
@@ -548,6 +577,16 @@
                 margin-bottom: 0;
             }
             
+            .line-selector label {
+                font-size: 0.8em;
+                margin-bottom: 3px;
+            }
+            
+            .line-selector select {
+                padding: 8px;
+                font-size: 13px;
+            }
+            
             .controls {
                 display: flex;
                 gap: 4px;
@@ -555,10 +594,27 @@
                 flex-shrink: 0;
             }
             
+            .controls .btn {
+                padding: 8px 10px;
+                font-size: 12px;
+                min-width: 45px;
+            }
+            
             .header-section {
                 flex-direction: column;
                 align-items: center;
-                gap: 8px;
+                gap: 6px;
+            }
+            
+            .switch-container {
+                padding: 10px 15px;
+                gap: 12px;
+                margin-bottom: 6px;
+            }
+            
+            .switch-label-left,
+            .switch-label-right {
+                font-size: 0.8em;
             }
         }
 
@@ -1698,7 +1754,7 @@
             .controls .btn {
                 padding: 10px 12px;
                 font-size: 14px;
-                min-width: 100px;
+                min-width: 67px;
                 flex: 1;
                 max-width: 70px;
                 border-radius: 8px;
@@ -1804,7 +1860,7 @@
             .controls .btn {
                 padding: 8px 10px;
                 font-size: 12px;
-                min-width: 80px;
+                min-width: 53px;
                 flex: 1;
                 max-width: 60px;
             }
@@ -1964,7 +2020,7 @@
             .controls .btn {
                 padding: 5px 6px;
                 font-size: 10px;
-                min-width: 60px;
+                min-width: 40px;
                 flex: 1;
                 max-width: 45px;
             }
