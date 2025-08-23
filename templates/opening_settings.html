@@ -37,6 +37,7 @@
                 background-size: 80px 80px, 80px 80px, 80px 80px, 80px 80px, 80px 80px, 80px 80px;
                 background-position: 10px 30px, 150px 50px, 280px 20px, 80px 120px, 220px 90px, 350px 60px;
                 padding: 10px;
+                font-size: 14px;
             }
         }
         .container {
@@ -62,6 +63,7 @@
                 padding: 20px;
                 margin: 15px auto;
                 border-radius: 12px;
+                font-size: 14px;
             }
         }
         h1 {
@@ -80,7 +82,7 @@
         
         @media (max-width: 480px) {
             h1 {
-                font-size: 1.5em;
+                font-size: 1.3em;
                 margin-bottom: 20px;
             }
         }
@@ -110,7 +112,7 @@
         @media (max-width: 480px) {
             .btn {
                 padding: 7px 15px;
-                font-size: 0.85em;
+                font-size: 0.8em;
                 margin: 0 2px;
             }
         }
@@ -711,12 +713,12 @@
             }
             
             .modal-title {
-                font-size: 1em;
+                font-size: 0.9em;
                 margin-bottom: 12px;
             }
             
             .modal-message {
-                font-size: 0.9em;
+                font-size: 0.8em;
                 margin-bottom: 18px;
             }
             
@@ -726,7 +728,27 @@
             
             .modal-btn {
                 padding: 10px 20px;
+                font-size: 0.8em;
+            }
+            
+            .opening-title {
                 font-size: 0.9em;
+            }
+            
+            .variation-item {
+                font-size: 0.8em;
+            }
+            
+            .var-title {
+                font-size: 0.9em;
+            }
+            
+            .var-pgn {
+                font-size: 0.75em;
+            }
+            
+            h2 {
+                font-size: 1.1em;
             }
         }
         
@@ -760,20 +782,19 @@
     </style>
 </head>
 <body>
-    <div style="width:100%;text-align:center;margin-top:8px;margin-bottom:0;">
-        <img src="/static/SacTheBook_Icon.png" alt="SacTheBook Logo" class="sac-logo" style="width:70px;max-width:18vw;display:inline-block;vertical-align:middle;border:2px solid #F47C20;border-radius:16px;background:#145334;">
-    </div>
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
         <a href="/" class="backbtn">← Back</a>
         
+        <img src="/static/SacTheBook_Icon.png" alt="SacTheBook Logo" class="sac-logo" style="width:70px;max-width:18vw;display:inline-block;vertical-align:middle;border:2px solid #F47C20;border-radius:16px;background:#145334;">
+        
         <!-- Boutons de synchronisation GitHub -->
-        <div class="github-sync-buttons" style="display: flex; flex-direction: column; gap: 8px;">
-            <button type="button" class="btn github-btn" id="sync-to-github" style="background: #28a745; position: relative;">
-                <span class="btn-text">📤 Sync to GitHub</span>
+        <div class="github-sync-buttons" style="display: flex; flex-direction: column; gap: 6px;">
+            <button type="button" class="btn github-btn" id="sync-to-github" style="background: #F47C20; position: relative; padding: 6px 12px; font-size: 0.85em;">
+                <span class="btn-text">⬆️ Sync to GitHub</span>
                 <span class="loading-spinner" style="display: none;">⏳</span>
             </button>
-            <button type="button" class="btn github-btn" id="sync-from-github" style="background: #007bff; position: relative;">
-                <span class="btn-text">📥 Sync from GitHub</span>
+            <button type="button" class="btn github-btn" id="sync-from-github" style="background: #F47C20; position: relative; padding: 6px 12px; font-size: 0.85em;">
+                <span class="btn-text">⬇️ Sync from GitHub</span>
                 <span class="loading-spinner" style="display: none;">⏳</span>
             </button>
         </div>
@@ -1720,12 +1741,28 @@
             button.classList.add('loading');
             button.querySelector('.btn-text').style.display = 'none';
             button.querySelector('.loading-spinner').style.display = 'inline';
+            
+            // Désactiver l'autre bouton GitHub
+            const otherButton = button.id === 'sync-to-github' ? 
+                document.getElementById('sync-from-github') : 
+                document.getElementById('sync-to-github');
+            otherButton.disabled = true;
+            otherButton.style.opacity = '0.5';
+            otherButton.style.cursor = 'not-allowed';
         }
         
         function hideLoadingState(button) {
             button.classList.remove('loading');
             button.querySelector('.btn-text').style.display = 'inline';
             button.querySelector('.loading-spinner').style.display = 'none';
+            
+            // Réactiver l'autre bouton GitHub
+            const otherButton = button.id === 'sync-to-github' ? 
+                document.getElementById('sync-from-github') : 
+                document.getElementById('sync-to-github');
+            otherButton.disabled = false;
+            otherButton.style.opacity = '1';
+            otherButton.style.cursor = 'pointer';
         }
         
         function showSuccessState(button) {

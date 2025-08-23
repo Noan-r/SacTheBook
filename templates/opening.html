@@ -44,6 +44,7 @@
             body {
                 background-size: 80px 80px, 80px 80px, 80px 80px, 80px 80px, 80px 80px, 80px 80px;
                 background-position: 10px 30px, 150px 50px, 280px 20px, 80px 120px, 220px 90px, 350px 60px;
+                font-size: 14px;
             }
         }
         
@@ -75,7 +76,7 @@
                 padding: 12px 0 6px 0; /* Plus de marge en haut sur petit mobile */
             }
             .header h1 {
-                font-size: 1.3em;
+                font-size: 1.1em;
             }
         }
         
@@ -176,6 +177,7 @@
                 max-width: 100%;
                 height: auto;
                 min-height: 175px;
+                font-size: 13px;
             }
         }
         
@@ -264,6 +266,13 @@
                 font-size: 0.8em;
                 min-width: 60px;
                 flex: 1 1 calc(50% - 2px);
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .btn, button {
+                font-size: 0.75em;
+                padding: 8px 6px;
             }
         }
         

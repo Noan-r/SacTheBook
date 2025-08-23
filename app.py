@@ -724,8 +724,8 @@ def delete_variation():
 def delete_opening():
     # Accepte JSON ou form classique
     if request.is_json:
-        data = request.get_json()
-        category = data.get('category')
+    data = request.get_json()
+    category = data.get('category')
         name = data.get('name')
     else:
         category = request.form.get('category')
@@ -1386,7 +1386,7 @@ def list_static():
         return jsonify({
             'error': str(e),
             'static_folder': app.static_folder
-        })
+    })
 
 if __name__ == '__main__':
     app.run(host=config.HOST, port=config.PORT, debug=config.DEBUG) 
