@@ -715,6 +715,24 @@
         <img src="/static/SacTheBook_Icon.png" alt="SacTheBook Logo" class="sac-logo" style="width:70px;max-width:18vw;display:inline-block;vertical-align:middle;border:2px solid #F47C20;border-radius:16px;background:#145334;">
     </div>
     <a href="/" class="backbtn">← Back</a>
+    
+    <!-- Section de synchronisation GitHub -->
+    <div class="github-sync-section" style="background: #F8F5EC; border-radius: 15px; box-shadow: 0 4px 16px rgba(32,81,58,0.12); padding: 20px; max-width: 900px; margin: 20px auto; text-align: center;">
+        <h3 style="color: #F47C20; margin-bottom: 15px; font-size: 1.3em;">🔄 Synchronisation GitHub</h3>
+        <div id="github-status" style="margin-bottom: 15px; padding: 10px; border-radius: 8px; background: #f0f0f0;">
+            <span id="github-status-text">Vérification de la configuration...</span>
+        </div>
+        <div class="github-buttons" style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+            <button type="button" class="btn github-btn" id="sync-to-github" style="background: #28a745;">
+                📤 Synchroniser vers GitHub
+            </button>
+            <button type="button" class="btn github-btn" id="sync-from-github" style="background: #007bff;">
+                📥 Synchroniser depuis GitHub
+            </button>
+        </div>
+        <div id="github-result" style="margin-top: 15px; padding: 10px; border-radius: 8px; display: none;"></div>
+    </div>
+    
     <div class="container">
         <h1>Opening Settings</h1>
         <div class="openings-list">
@@ -1586,6 +1604,9 @@
 
             console.log('DOMContentLoaded - Initializing system in settings');
             
+            // Initialiser la synchronisation GitHub
+            initGitHubSync();
+            
 
 
             const urlParams = new URLSearchParams(window.location.search);
@@ -1634,6 +1655,120 @@
                 }, 300);
             }
         });
+        
+        // === FONCTIONS DE SYNCHRONISATION GITHUB ===
+        function initGitHubSync() {
+            // Vérifier le statut GitHub
+            checkGitHubStatus();
+            
+            // Ajouter les event listeners pour les boutons de synchronisation
+            document.getElementById('sync-to-github').addEventListener('click', function() {
+                playButtonSound();
+                syncToGitHub();
+            });
+            
+            document.getElementById('sync-from-github').addEventListener('click', function() {
+                playButtonSound();
+                syncFromGitHub();
+            });
+        }
+        
+        function checkGitHubStatus() {
+            fetch('/openings/settings/github_status')
+                .then(response => response.json())
+                .then(data => {
+                    const statusText = document.getElementById('github-status-text');
+                    const statusDiv = document.getElementById('github-status');
+                    const buttons = document.querySelectorAll('.github-btn');
+                    
+                    if (data.github_configured) {
+                        statusText.textContent = `✅ GitHub configuré - Repo: ${data.repo}`;
+                        statusDiv.style.background = '#d4edda';
+                        statusDiv.style.color = '#155724';
+                        buttons.forEach(btn => btn.disabled = false);
+                    } else {
+                        statusText.textContent = '❌ GitHub non configuré - Synchronisation désactivée';
+                        statusDiv.style.background = '#f8d7da';
+                        statusDiv.style.color = '#721c24';
+                        buttons.forEach(btn => btn.disabled = true);
+                    }
+                })
+                .catch(error => {
+                    console.error('Erreur lors de la vérification du statut GitHub:', error);
+                    const statusText = document.getElementById('github-status-text');
+                    statusText.textContent = '❌ Erreur de connexion';
+                });
+        }
+        
+        function syncToGitHub() {
+            const resultDiv = document.getElementById('github-result');
+            resultDiv.style.display = 'block';
+            resultDiv.style.background = '#fff3cd';
+            resultDiv.style.color = '#856404';
+            resultDiv.textContent = '🔄 Synchronisation en cours...';
+            
+            fetch('/openings/settings/sync_to_github', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    resultDiv.style.background = '#d4edda';
+                    resultDiv.style.color = '#155724';
+                    resultDiv.textContent = `✅ ${data.message}`;
+                } else {
+                    resultDiv.style.background = '#f8d7da';
+                    resultDiv.style.color = '#721c24';
+                    resultDiv.textContent = `❌ Erreur: ${data.error}`;
+                }
+            })
+            .catch(error => {
+                console.error('Erreur lors de la synchronisation:', error);
+                resultDiv.style.background = '#f8d7da';
+                resultDiv.style.color = '#721c24';
+                resultDiv.textContent = '❌ Erreur de connexion';
+            });
+        }
+        
+        function syncFromGitHub() {
+            const resultDiv = document.getElementById('github-result');
+            resultDiv.style.display = 'block';
+            resultDiv.style.background = '#fff3cd';
+            resultDiv.style.color = '#856404';
+            resultDiv.textContent = '🔄 Synchronisation en cours...';
+            
+            fetch('/openings/settings/sync_from_github', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    resultDiv.style.background = '#d4edda';
+                    resultDiv.style.color = '#155724';
+                    resultDiv.textContent = `✅ ${data.message}`;
+                    // Recharger la page pour afficher les nouvelles données
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
+                } else {
+                    resultDiv.style.background = '#f8d7da';
+                    resultDiv.style.color = '#721c24';
+                    resultDiv.textContent = `❌ Erreur: ${data.error}`;
+                }
+            })
+            .catch(error => {
+                console.error('Erreur lors de la synchronisation:', error);
+                resultDiv.style.background = '#f8d7da';
+                resultDiv.style.color = '#721c24';
+                resultDiv.textContent = '❌ Erreur de connexion';
+            });
+        }
     </script>
 </body>
 </html> 

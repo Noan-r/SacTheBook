@@ -7,11 +7,117 @@ import json
 import re
 import os
 from whitenoise import WhiteNoise
+import requests
+from github import Github
+import base64
+import hashlib
 
 app = Flask(__name__, static_folder='static', static_url_path='/static')
 
 # Configuration pour servir les fichiers statiques de manière plus robuste
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
+
+# Configuration GitHub pour la synchronisation
+GITHUB_TOKEN = os.environ.get('GITHUB_TOKEN', '')
+GITHUB_REPO = os.environ.get('GITHUB_REPO', 'Noan-r/SacTheBook')
+GITHUB_BRANCH = os.environ.get('GITHUB_BRANCH', 'master')
+GITHUB_FILE_PATH = os.environ.get('GITHUB_FILE_PATH', 'data/openings.json')
+
+# Initialiser l'API GitHub si le token est disponible
+github_client = None
+if GITHUB_TOKEN:
+    try:
+        github_client = Github(GITHUB_TOKEN)
+        print(f"GitHub API initialisée pour le repo: {GITHUB_REPO}")
+    except Exception as e:
+        print(f"Erreur lors de l'initialisation de GitHub API: {e}")
+        github_client = None
+else:
+    print("Aucun token GitHub configuré - synchronisation désactivée")
+
+def sync_to_github():
+    """Synchronise les données locales vers GitHub"""
+    if not github_client:
+        return {'success': False, 'error': 'GitHub non configuré'}
+    
+    try:
+        # Recharger les données locales
+        config.load_openings_from_json()
+        
+        # Lire le fichier JSON local
+        with open('data/openings.json', 'r', encoding='utf-8') as f:
+            content = f.read()
+        
+        # Calculer le hash du contenu
+        content_hash = hashlib.sha256(content.encode()).hexdigest()
+        
+        # Récupérer le repo
+        repo = github_client.get_repo(GITHUB_REPO)
+        
+        try:
+            # Essayer de récupérer le fichier existant
+            file = repo.get_contents(GITHUB_FILE_PATH, ref=GITHUB_BRANCH)
+            current_sha = file.sha
+            
+            # Vérifier si le contenu a changé
+            if file.content == base64.b64encode(content.encode()).decode():
+                return {'success': True, 'message': 'Aucun changement détecté'}
+            
+            # Mettre à jour le fichier
+            commit_message = f"Sync openings data - {content_hash[:8]}"
+            repo.update_file(
+                GITHUB_FILE_PATH,
+                commit_message,
+                content,
+                current_sha,
+                branch=GITHUB_BRANCH
+            )
+            
+            return {'success': True, 'message': 'Données synchronisées vers GitHub'}
+            
+        except Exception as e:
+            if "Not Found" in str(e):
+                # Le fichier n'existe pas, le créer
+                commit_message = f"Initial sync openings data - {content_hash[:8]}"
+                repo.create_file(
+                    GITHUB_FILE_PATH,
+                    commit_message,
+                    content,
+                    branch=GITHUB_BRANCH
+                )
+                return {'success': True, 'message': 'Fichier créé sur GitHub'}
+            else:
+                raise e
+                
+    except Exception as e:
+        print(f"Erreur lors de la synchronisation GitHub: {e}")
+        return {'success': False, 'error': str(e)}
+
+def sync_from_github():
+    """Synchronise les données depuis GitHub vers local"""
+    if not github_client:
+        return {'success': False, 'error': 'GitHub non configuré'}
+    
+    try:
+        # Récupérer le repo
+        repo = github_client.get_repo(GITHUB_REPO)
+        
+        # Récupérer le fichier depuis GitHub
+        file = repo.get_contents(GITHUB_FILE_PATH, ref=GITHUB_BRANCH)
+        content = base64.b64decode(file.content).decode('utf-8')
+        
+        # Sauvegarder localement
+        with open('data/openings.json', 'w', encoding='utf-8') as f:
+            f.write(content)
+        
+        # Recharger les données en mémoire
+        config.load_openings_from_json()
+        
+        return {'success': True, 'message': 'Données synchronisées depuis GitHub'}
+        
+    except Exception as e:
+        print(f"Erreur lors de la synchronisation depuis GitHub: {e}")
+        return {'success': False, 'error': str(e)}
 
 # Configuration pour les fichiers statiques avec en-têtes optimisés
 @app.after_request
@@ -339,6 +445,13 @@ def add_opening():
     print(f"DEBUG: Tentative de sauvegarde pour '{name}' dans la catégorie '{category}'")
     if config.save_openings_to_json():
         print(f"DEBUG: Ouverture '{name}' ajoutée avec succès")
+        
+        # Synchroniser avec GitHub si configuré
+        github_result = None
+        if github_client:
+            github_result = sync_to_github()
+            print(f"DEBUG: Synchronisation GitHub: {github_result}")
+        
         # Recharger les données après la sauvegarde pour s'assurer qu'elles sont synchronisées
         config.load_openings_from_json()
         print(f"DEBUG: Après rechargement, config.OPENINGS[{category}] contient: {[op['name'] for op in config.OPENINGS.get(category, [])]}")
@@ -352,7 +465,10 @@ def add_opening():
         
         if opening_added:
             print(f"DEBUG: Ouverture '{name}' confirmée dans la structure")
-            return jsonify({'success': True})
+            response = {'success': True}
+            if github_result:
+                response['github_sync'] = github_result
+            return jsonify(response)
         else:
             print(f"DEBUG: ERREUR - Ouverture '{name}' non trouvée après ajout")
             return jsonify({'error': 'Erreur de synchronisation'}), 500
@@ -429,7 +545,17 @@ def add_variation():
             # Sauvegarder dans le fichier JSON
             if config.save_openings_to_json():
                 print(f"DEBUG: Variation ajoutée avec succès à '{name}'")
-                return jsonify({'success': True})
+                
+                # Synchroniser avec GitHub si configuré
+                github_result = None
+                if github_client:
+                    github_result = sync_to_github()
+                    print(f"DEBUG: Synchronisation GitHub: {github_result}")
+                
+                response = {'success': True}
+                if github_result:
+                    response['github_sync'] = github_result
+                return jsonify(response)
             else:
                 print("DEBUG: Erreur lors de la sauvegarde JSON")
                 return jsonify({'error': 'Erreur lors de la sauvegarde'}), 500
@@ -458,7 +584,17 @@ def add_variation():
                 opening['variations'].append({'name': var_title.strip(), 'pgn': var_pgn.strip()})
                 if config.save_openings_to_json():
                     print(f"DEBUG: Ouverture créée et variation ajoutée avec succès")
-                    return jsonify({'success': True})
+                    
+                    # Synchroniser avec GitHub si configuré
+                    github_result = None
+                    if github_client:
+                        github_result = sync_to_github()
+                        print(f"DEBUG: Synchronisation GitHub: {github_result}")
+                    
+                    response = {'success': True}
+                    if github_result:
+                        response['github_sync'] = github_result
+                    return jsonify(response)
                 else:
                     return jsonify({'error': 'Erreur lors de la sauvegarde'}), 500
         
@@ -511,7 +647,17 @@ def edit_variation():
                 # Sauvegarder dans le fichier JSON
                 if config.save_openings_to_json():
                     print(f"DEBUG: Variation {variation_index} modifiée avec succès dans '{opening_name}'")
-                    return jsonify({'success': True})
+                    
+                    # Synchroniser avec GitHub si configuré
+                    github_result = None
+                    if github_client:
+                        github_result = sync_to_github()
+                        print(f"DEBUG: Synchronisation GitHub: {github_result}")
+                    
+                    response = {'success': True}
+                    if github_result:
+                        response['github_sync'] = github_result
+                    return jsonify(response)
                 else:
                     print("DEBUG: Erreur lors de la sauvegarde JSON")
                     return jsonify({'error': 'Erreur lors de la sauvegarde sur disque'}), 500
@@ -550,7 +696,17 @@ def delete_variation():
                 # Sauvegarder dans le fichier JSON
                 if config.save_openings_to_json():
                     print(f"DEBUG: Variation {variation_index} supprimée avec succès de '{opening_name}'")
-                    return jsonify({'success': True})
+                    
+                    # Synchroniser avec GitHub si configuré
+                    github_result = None
+                    if github_client:
+                        github_result = sync_to_github()
+                        print(f"DEBUG: Synchronisation GitHub: {github_result}")
+                    
+                    response = {'success': True}
+                    if github_result:
+                        response['github_sync'] = github_result
+                    return jsonify(response)
                 else:
                     print("DEBUG: Erreur lors de la sauvegarde JSON")
                     return jsonify({'error': 'Erreur lors de la sauvegarde sur disque'}), 500
@@ -562,14 +718,19 @@ def delete_variation():
 
 @app.route('/openings/settings/delete_opening', methods=['POST'])
 def delete_opening():
-    data = request.get_json()
-    category = data.get('category')
-    opening_name = data.get('name')
+    # Accepte JSON ou form classique
+    if request.is_json:
+        data = request.get_json()
+        category = data.get('category')
+        name = data.get('name')
+    else:
+        category = request.form.get('category')
+        name = request.form.get('name')
     
-    print(f"DEBUG delete_opening: category='{category}', opening='{opening_name}'")
+    print(f"DEBUG delete_opening: category='{category}', name='{name}'")
     
-    if not (category and opening_name):
-        return jsonify({'error': 'Missing data'}), 400
+    if not (category and name):
+        return jsonify({'error': 'Données manquantes'}), 400
     
     # Recharger les données depuis le fichier pour s'assurer qu'elles sont à jour
     config.load_openings_from_json()
@@ -577,19 +738,51 @@ def delete_opening():
     # Chercher et supprimer l'ouverture
     if category in config.OPENINGS:
         for i, opening in enumerate(config.OPENINGS[category]):
-            if opening['name'] == opening_name:
-                # Supprimer l'ouverture
-                deleted_opening = config.OPENINGS[category].pop(i)
+            if opening['name'] == name:
+                del config.OPENINGS[category][i]
+                
                 # Sauvegarder dans le fichier JSON
                 if config.save_openings_to_json():
-                    print(f"DEBUG: Ouverture '{opening_name}' supprimée avec succès de la catégorie '{category}'")
-                    return jsonify({'success': True})
+                    print(f"DEBUG: Ouverture '{name}' supprimée avec succès")
+                    
+                    # Synchroniser avec GitHub si configuré
+                    github_result = None
+                    if github_client:
+                        github_result = sync_to_github()
+                        print(f"DEBUG: Synchronisation GitHub: {github_result}")
+                    
+                    response = {'success': True}
+                    if github_result:
+                        response['github_sync'] = github_result
+                    return jsonify(response)
                 else:
                     print("DEBUG: Erreur lors de la sauvegarde JSON")
-                    return jsonify({'error': 'Erreur lors de la sauvegarde sur disque'}), 500
+                    return jsonify({'error': 'Erreur lors de la sauvegarde'}), 500
     
-    print(f"DEBUG: Ouverture '{opening_name}' non trouvée dans la catégorie '{category}'")
-    return jsonify({'error': 'Opening not found'}), 404
+    return jsonify({'error': 'Ouverture non trouvée'}), 404
+
+# Routes de synchronisation GitHub
+@app.route('/openings/settings/sync_to_github', methods=['POST'])
+def sync_to_github_route():
+    """Synchronise les données locales vers GitHub"""
+    result = sync_to_github()
+    return jsonify(result)
+
+@app.route('/openings/settings/sync_from_github', methods=['POST'])
+def sync_from_github_route():
+    """Synchronise les données depuis GitHub vers local"""
+    result = sync_from_github()
+    return jsonify(result)
+
+@app.route('/openings/settings/github_status', methods=['GET'])
+def github_status():
+    """Retourne le statut de la configuration GitHub"""
+    return jsonify({
+        'github_configured': github_client is not None,
+        'repo': GITHUB_REPO,
+        'branch': GITHUB_BRANCH,
+        'file_path': GITHUB_FILE_PATH
+    })
 
 @app.route('/api/validate_move', methods=['POST'])
 def validate_move():
