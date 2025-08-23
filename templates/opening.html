@@ -444,6 +444,14 @@
             width: 100%;
         }
         
+        .controls-and-switch {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+        }
+        
         .pawn-indicator {
             text-align: center;
             margin-bottom: 0;
@@ -483,21 +491,20 @@
             .pawn-and-line-container {
                 flex-direction: column;
                 align-items: center;
-                gap: 6px;
-                margin-bottom: 6px;
+                gap: 8px;
+                margin-bottom: 8px;
             }
             
             .pawn-indicator {
                 margin-bottom: 0;
-                padding: 2px;
-                text-align: center;
+                padding: 3px;
             }
             
             .line-and-controls-container {
                 flex-direction: row;
                 align-items: center;
                 justify-content: center;
-                gap: 12px;
+                gap: 15px;
                 width: auto;
             }
             
@@ -505,86 +512,6 @@
                 flex: none;
                 min-width: auto;
                 margin-bottom: 0;
-            }
-            
-            .line-selector label {
-                font-size: 0.75em;
-                margin-bottom: 2px;
-            }
-            
-            .line-selector select {
-                padding: 6px;
-                font-size: 12px;
-            }
-            
-            .controls {
-                display: flex;
-                gap: 3px;
-                margin: 0;
-                flex-shrink: 0;
-            }
-            
-            .controls .btn {
-                padding: 6px 8px;
-                font-size: 11px;
-                min-width: 35px;
-            }
-            
-            .header-section {
-                flex-direction: column;
-                align-items: center;
-                gap: 6px;
-            }
-            
-            .switch-container {
-                padding: 8px 12px;
-                gap: 10px;
-                margin-bottom: 6px;
-            }
-            
-            .switch-label-left,
-            .switch-label-right {
-                font-size: 0.7em;
-            }
-        }
-        
-        /* Mode paysage pour écrans plus larges */
-        @media (min-width: 481px) and (orientation: landscape) {
-            .pawn-and-line-container {
-                flex-direction: column;
-                align-items: center;
-                gap: 6px;
-                margin-bottom: 6px;
-            }
-            
-            .pawn-indicator {
-                margin-bottom: 0;
-                padding: 2px;
-                text-align: center;
-            }
-            
-            .line-and-controls-container {
-                flex-direction: row;
-                align-items: center;
-                justify-content: center;
-                gap: 12px;
-                width: auto;
-            }
-            
-            .line-selector {
-                flex: none;
-                min-width: auto;
-                margin-bottom: 0;
-            }
-            
-            .line-selector label {
-                font-size: 0.8em;
-                margin-bottom: 3px;
-            }
-            
-            .line-selector select {
-                padding: 8px;
-                font-size: 13px;
             }
             
             .controls {
@@ -594,27 +521,52 @@
                 flex-shrink: 0;
             }
             
-            .controls .btn {
-                padding: 8px 10px;
-                font-size: 12px;
-                min-width: 45px;
+            .header-section {
+                flex-direction: column;
+                align-items: center;
+                gap: 8px;
+            }
+        }
+        
+        /* Mode paysage pour écrans plus larges */
+        @media (min-width: 481px) and (orientation: landscape) {
+            .pawn-and-line-container {
+                flex-direction: column;
+                align-items: center;
+                gap: 8px;
+                margin-bottom: 8px;
+            }
+            
+            .pawn-indicator {
+                margin-bottom: 0;
+                padding: 3px;
+            }
+            
+            .line-and-controls-container {
+                flex-direction: row;
+                align-items: center;
+                justify-content: center;
+                gap: 15px;
+                width: auto;
+            }
+            
+            .line-selector {
+                flex: none;
+                min-width: auto;
+                margin-bottom: 0;
+            }
+            
+            .controls {
+                display: flex;
+                gap: 4px;
+                margin: 0;
+                flex-shrink: 0;
             }
             
             .header-section {
                 flex-direction: column;
                 align-items: center;
-                gap: 6px;
-            }
-            
-            .switch-container {
-                padding: 10px 15px;
-                gap: 12px;
-                margin-bottom: 6px;
-            }
-            
-            .switch-label-left,
-            .switch-label-right {
-                font-size: 0.8em;
+                gap: 8px;
             }
         }
 
@@ -624,11 +576,11 @@
             align-items: center;
             justify-content: center;
             margin-bottom: 15px;
-            padding: 15px;
+            padding: 8px 12px;
             background: #fff;
-            border-radius: 10px;
+            border-radius: 8px;
             border: 1px solid #F47C20;
-            gap: 15px;
+            gap: 8px;
         }
         
         /* Optimisation pour afficher le switch sur la même ligne quand l'espace le permet */
@@ -637,7 +589,7 @@
                 flex-direction: row;
                 align-items: center;
                 justify-content: space-between;
-                gap: 20px;
+                gap: 15px;
             }
             
             .pawn-and-line-container {
@@ -645,10 +597,17 @@
                 margin-bottom: 0;
             }
             
+            .controls-and-switch {
+                flex-direction: row;
+                align-items: center;
+                justify-content: center;
+                gap: 15px;
+            }
+            
             .switch-container {
                 flex-shrink: 0;
                 margin-bottom: 0;
-                padding: 12px 15px;
+                padding: 8px 12px;
             }
         }
         
@@ -2063,31 +2022,33 @@
                     {% endif %}
                 </div>
                 
-                    <div class="line-and-controls-container">
-                <div class="line-selector">
-                    <label for="line-select">Opening line:</label>
-                    <select id="line-select">
-                        {% for i in range(lines|length) %}
-                        <option value="{{ i }}">{{ lines[i].name }}</option>
-                        {% endfor %}
-                    </select>
+                                        <div class="line-and-controls-container">
+                        <div class="line-selector">
+                            <label for="line-select">Opening line:</label>
+                            <select id="line-select">
+                                {% for i in range(lines|length) %}
+                                <option value="{{ i }}">{{ lines[i].name }}</option>
+                                {% endfor %}
+                            </select>
                         </div>
 
-                        <div class="controls">                   
-                            <button class="btn" id="prev-line-btn">⏪</button>
-                            <button class="btn" id="reset-btn">🔄</button>
-                            <button class="btn" id="next-line-btn">⏩</button>
+                        <div class="controls-and-switch">
+                            <div class="controls">                   
+                                <button class="btn" id="prev-line-btn">⏪</button>
+                                <button class="btn" id="reset-btn">🔄</button>
+                                <button class="btn" id="next-line-btn">⏩</button>
+                            </div>
+                            
+                            <div class="switch-container">
+                                <span class="switch-label-left">Learn</span>
+                                <label class="switch">
+                                    <input type="checkbox" id="auto-play-switch">
+                                    <span class="slider"></span>
+                                </label>
+                                <span class="switch-label-right">Drill</span>
+                            </div>
                         </div>
                     </div>
-                </div>
-
-                <div class="switch-container">
-                    <span class="switch-label-left">Learn</span>
-                    <label class="switch">
-                        <input type="checkbox" id="auto-play-switch">
-                        <span class="slider"></span>
-                    </label>
-                    <span class="switch-label-right">Drill</span>
                 </div>
                 </div>
                 
