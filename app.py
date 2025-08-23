@@ -27,9 +27,23 @@ app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 def serve_chess_piece(filename):
     """Sert les images des pièces d'échecs avec les bons headers"""
     try:
-        return send_from_directory('static/img/chesspieces/wikipedia', filename, 
-                                 mimetype='image/png',
-                                 cache_timeout=0)
+        # Vérifier si le fichier existe
+        piece_path = os.path.join('static', 'img', 'chesspieces', 'wikipedia', filename)
+        if not os.path.exists(piece_path):
+            print(f"Fichier non trouvé: {piece_path}")
+            return '', 404
+        
+        print(f"Serving chess piece: {filename}")
+        response = send_from_directory('static/img/chesspieces/wikipedia', filename, 
+                                     mimetype='image/png',
+                                     cache_timeout=0)
+        
+        # Ajouter des headers CORS pour éviter les problèmes
+        response.headers['Access-Control-Allow-Origin'] = '*'
+        response.headers['Access-Control-Allow-Methods'] = 'GET'
+        response.headers['Access-Control-Allow-Headers'] = 'Content-Type'
+        
+        return response
     except Exception as e:
         print(f"Erreur lors du service de l'image {filename}: {e}")
         return '', 404
@@ -39,16 +53,48 @@ def test_chess_pieces():
     """Route de test pour vérifier l'accessibilité des pièces d'échecs"""
     pieces = ['wp', 'wr', 'wn', 'wb', 'wq', 'wk', 'bp', 'br', 'bn', 'bb', 'bq', 'bk']
     available_pieces = []
+    piece_details = []
     
     for piece in pieces:
         piece_path = os.path.join('static', 'img', 'chesspieces', 'wikipedia', f'{piece}.png')
-        if os.path.exists(piece_path):
+        exists = os.path.exists(piece_path)
+        if exists:
             available_pieces.append(piece)
+            # Obtenir la taille du fichier
+            try:
+                file_size = os.path.getsize(piece_path)
+                piece_details.append({
+                    'piece': piece,
+                    'exists': True,
+                    'size': file_size,
+                    'path': piece_path
+                })
+            except:
+                piece_details.append({
+                    'piece': piece,
+                    'exists': True,
+                    'size': 'unknown',
+                    'path': piece_path
+                })
+        else:
+            piece_details.append({
+                'piece': piece,
+                'exists': False,
+                'size': 0,
+                'path': piece_path
+            })
+    
+    # Vérifier le répertoire
+    dir_path = os.path.join('static', 'img', 'chesspieces', 'wikipedia')
+    dir_exists = os.path.exists(dir_path)
     
     return jsonify({
         'total_pieces': len(pieces),
         'available_pieces': available_pieces,
-        'missing_pieces': [p for p in pieces if p not in available_pieces]
+        'missing_pieces': [p for p in pieces if p not in available_pieces],
+        'directory_exists': dir_exists,
+        'directory_path': dir_path,
+        'piece_details': piece_details
     })
 
 # Configuration GitHub pour la synchronisation
