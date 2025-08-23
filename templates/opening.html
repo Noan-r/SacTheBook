@@ -485,35 +485,57 @@
                 flex-direction: row;
                 align-items: center;
                 justify-content: center;
-                gap: 15px;
-                width: auto;
-            }
-            
-            .line-and-controls-container {
-                flex-direction: row;
-                align-items: center;
-                justify-content: center;
-                gap: 15px;
-                width: auto;
+                gap: 8px;
+                width: 100%;
+                flex-wrap: wrap;
             }
             
             .line-selector {
-                flex: none;
-                min-width: auto;
+                flex: 1;
+                min-width: 0;
                 margin-bottom: 0;
+                max-width: 200px;
+            }
+            
+            .line-selector select {
+                font-size: 12px;
+                padding: 6px;
+                margin-bottom: 0;
+            }
+            
+            .line-selector label {
+                font-size: 11px;
+                margin-bottom: 2px;
+            }
+            
+            .controls-and-switch {
+                flex-shrink: 0;
+                gap: 6px;
             }
             
             .controls {
                 display: flex;
-                gap: 4px;
+                gap: 3px;
                 margin: 0;
                 flex-shrink: 0;
+            }
+            
+            .controls .btn {
+                padding: 4px 2px;
+                font-size: 0.7em;
+                min-width: 30px;
+            }
+            
+            .switch-container {
+                padding: 3px 5px;
+                gap: 3px;
+                font-size: 0.7em;
             }
             
             .header-section {
                 flex-direction: column;
                 align-items: center;
-                gap: 8px;
+                gap: 6px;
             }
         }
         
@@ -523,22 +545,32 @@
                 flex-direction: row;
                 align-items: center;
                 justify-content: center;
-                gap: 15px;
-                width: auto;
-            }
-            
-            .line-and-controls-container {
-                flex-direction: row;
-                align-items: center;
-                justify-content: center;
-                gap: 15px;
-                width: auto;
+                gap: 10px;
+                width: 100%;
+                flex-wrap: wrap;
             }
             
             .line-selector {
-                flex: none;
-                min-width: auto;
+                flex: 1;
+                min-width: 0;
                 margin-bottom: 0;
+                max-width: 250px;
+            }
+            
+            .line-selector select {
+                font-size: 13px;
+                padding: 8px;
+                margin-bottom: 0;
+            }
+            
+            .line-selector label {
+                font-size: 12px;
+                margin-bottom: 4px;
+            }
+            
+            .controls-and-switch {
+                flex-shrink: 0;
+                gap: 8px;
             }
             
             .controls {
@@ -546,6 +578,18 @@
                 gap: 4px;
                 margin: 0;
                 flex-shrink: 0;
+            }
+            
+            .controls .btn {
+                padding: 6px 4px;
+                font-size: 0.8em;
+                min-width: 35px;
+            }
+            
+            .switch-container {
+                padding: 5px 7px;
+                gap: 4px;
+                font-size: 0.8em;
             }
             
             .header-section {
@@ -573,11 +617,25 @@
             .header-section {
                 flex-direction: row;
                 align-items: center;
-                justify-content: space-between;
-            gap: 15px;
+                justify-content: center;
+                gap: 15px;
             }
             
-
+            .line-and-controls-container {
+                flex-direction: row;
+                align-items: center;
+                justify-content: center;
+                gap: 15px;
+                width: auto;
+                flex-wrap: nowrap;
+            }
+            
+            .line-selector {
+                flex: none;
+                min-width: auto;
+                margin-bottom: 0;
+                max-width: none;
+            }
             
             .controls-and-switch {
                 flex-direction: row;
