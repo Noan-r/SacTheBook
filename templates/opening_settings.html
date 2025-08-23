@@ -141,14 +141,15 @@
                 padding: 10px 24px 10px 18px;
             }
             
-            .github-sync-buttons {
-                gap: 5px;
-            }
-            
-            .github-btn {
-                font-size: 0.9em;
-                padding: 8px 12px;
-            }
+                    .github-sync-buttons {
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .github-btn {
+            font-size: 0.9em;
+            padding: 8px 12px;
+        }
         }
         
         @media (max-width: 480px) {
@@ -157,15 +158,15 @@
                 padding: 8px 20px 8px 15px;
             }
             
-            .github-sync-buttons {
-                flex-direction: column;
-                gap: 5px;
-            }
-            
-            .github-btn {
-                font-size: 0.8em;
-                padding: 6px 10px;
-            }
+                    .github-sync-buttons {
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .github-btn {
+            font-size: 0.8em;
+            padding: 6px 10px;
+        }
         }
         .backbtn:hover {
             background: #B23A2B;
@@ -177,6 +178,8 @@
         .github-btn {
             transition: all 0.3s ease;
             border: 2px solid transparent;
+            width: 100%;
+            margin: 0;
         }
         
         .github-btn.loading {
@@ -186,12 +189,16 @@
         
         .github-btn.success {
             border-color: #28a745;
-            box-shadow: 0 0 10px rgba(40, 167, 69, 0.5);
+            box-shadow: 0 0 15px rgba(40, 167, 69, 0.8), inset 0 0 10px rgba(40, 167, 69, 0.3);
+            background: linear-gradient(135deg, #28a745, #20c997) !important;
+            transform: scale(1.02);
         }
         
         .github-btn.error {
             border-color: #dc3545;
-            box-shadow: 0 0 10px rgba(220, 53, 69, 0.5);
+            box-shadow: 0 0 15px rgba(220, 53, 69, 0.8), inset 0 0 10px rgba(220, 53, 69, 0.3);
+            background: linear-gradient(135deg, #dc3545, #c82333) !important;
+            transform: scale(1.02);
         }
         
         .loading-spinner {
@@ -760,7 +767,7 @@
         <a href="/" class="backbtn">← Back</a>
         
         <!-- Boutons de synchronisation GitHub -->
-        <div class="github-sync-buttons" style="display: flex; gap: 10px;">
+        <div class="github-sync-buttons" style="display: flex; flex-direction: column; gap: 8px;">
             <button type="button" class="btn github-btn" id="sync-to-github" style="background: #28a745; position: relative;">
                 <span class="btn-text">📤 Sync to GitHub</span>
                 <span class="loading-spinner" style="display: none;">⏳</span>
@@ -1722,6 +1729,7 @@
         }
         
         function showSuccessState(button) {
+            console.log('✅ GitHub sync successful');
             button.classList.remove('error');
             button.classList.add('success');
             setTimeout(() => {
@@ -1730,6 +1738,7 @@
         }
         
         function showErrorState(button) {
+            console.log('❌ GitHub sync failed');
             button.classList.remove('success');
             button.classList.add('error');
             setTimeout(() => {
