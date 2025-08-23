@@ -119,9 +119,9 @@
 
         .controls {
             display: flex;
-            justify-content: space-between;
-            width: 100%;
-            gap: 10px;
+            justify-content: center;
+            align-items: center;
+            gap: 6px;
             flex: 1;
             min-width: 0;
         }
@@ -131,9 +131,9 @@
             min-width: 0;
             white-space: nowrap;
             font-size: 0.9em;
-            padding: 12px 8px;
-            max-width: calc(33.33% - 7px);
-            min-width: 53px;
+            padding: 8px 6px;
+            max-width: none;
+            min-width: 40px;
             border-radius: 8px;
             transition: all 0.2s ease;
         }
@@ -428,50 +428,32 @@
             }
         }
         
-        .pawn-and-line-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 10px;
-        }
+
         
         .line-and-controls-container {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             width: 100%;
         }
         
         .controls-and-switch {
             display: flex;
-            flex-direction: column;
+            flex-direction: row;
             align-items: center;
-            gap: 6px;
+            justify-content: center;
+            gap: 8px;
             width: 100%;
+            flex-wrap: nowrap;
         }
         
-        .pawn-indicator {
-            text-align: center;
-            margin-bottom: 0;
-            padding: 10px;
-        }
+
         
         @media (max-width: 480px) {
-            .pawn-and-line-container {
-                flex-direction: row;
-                align-items: center;
-                justify-content: center;
-                gap: 15px;
-                margin-bottom: 10px;
-            }
+
             
-            .pawn-indicator {
-                margin-bottom: 0;
-                padding: 5px;
-                flex-shrink: 0;
-            }
+
             
             .line-and-controls-container {
                 flex-direction: column;
@@ -488,16 +470,12 @@
         
         /* Mode paysage (landscape) */
         @media (max-width: 480px) and (orientation: landscape) {
-            .pawn-and-line-container {
-                flex-direction: column;
+            .line-and-controls-container {
+                flex-direction: row;
                 align-items: center;
-                gap: 8px;
-                margin-bottom: 8px;
-            }
-            
-            .pawn-indicator {
-                margin-bottom: 0;
-                padding: 3px;
+                justify-content: center;
+                gap: 15px;
+                width: auto;
             }
             
             .line-and-controls-container {
@@ -530,16 +508,12 @@
         
         /* Mode paysage pour écrans plus larges */
         @media (min-width: 481px) and (orientation: landscape) {
-            .pawn-and-line-container {
-                flex-direction: column;
+            .line-and-controls-container {
+                flex-direction: row;
                 align-items: center;
-                gap: 8px;
-                margin-bottom: 8px;
-            }
-            
-            .pawn-indicator {
-                margin-bottom: 0;
-                padding: 3px;
+                justify-content: center;
+                gap: 15px;
+                width: auto;
             }
             
             .line-and-controls-container {
@@ -575,12 +549,12 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 8px;
-            padding: 6px 10px;
+            padding: 6px 8px;
             background: #fff;
             border-radius: 8px;
             border: 1px solid #F47C20;
-            gap: 6px;
+            gap: 4px;
+            flex-shrink: 0;
         }
         
         /* Optimisation pour afficher le switch sur la même ligne quand l'espace le permet */
@@ -592,10 +566,7 @@
             gap: 15px;
             }
             
-            .pawn-and-line-container {
-                flex: 1;
-                margin-bottom: 0;
-            }
+
             
             .controls-and-switch {
                 flex-direction: row;
@@ -614,9 +585,9 @@
         /* Mobile switch improvements */
         @media (max-width: 768px) {
             .switch-container {
-                padding: 12px;
-                gap: 12px;
-                margin-bottom: 12px;
+                padding: 6px 8px;
+                gap: 6px;
+                margin-bottom: 0;
             }
             
             .switch {
@@ -638,9 +609,9 @@
         
         @media (max-width: 480px) {
             .switch-container {
-                padding: 8px;
-                gap: 8px;
-                margin-bottom: 8px;
+                padding: 4px 6px;
+                gap: 4px;
+                margin-bottom: 0;
             }
             
             .switch-label-left,
@@ -1229,13 +1200,13 @@
 
             .controls {
                 width: 100%;
-                gap: 6px;
+                gap: 4px;
             }
 
             .controls .btn {
-                padding: 8px 4px;
-                font-size: 0.8em;
-                max-width: calc(33.33% - 4px);
+                padding: 6px 3px;
+                font-size: 0.75em;
+                min-width: 35px;
                 border-radius: 6px;
                 transition: all 0.2s ease;
             }
@@ -2013,40 +1984,30 @@
         <div class="unified-section">
             <!-- En-tête avec pion, titre, boutons et switch -->
             <div class="header-section">
-                <div class="pawn-and-line-container">
-                <div class="pawn-indicator">
-                    {% if orientation == 'white' %}
-                        <span class="pawn white-pawn">♙</span>
-                    {% else %}
-                        <span class="pawn black-pawn">♟</span>
-                    {% endif %}
-                </div>
-                
-                                        <div class="line-and-controls-container">
-                <div class="line-selector">
-                    <label for="line-select">Opening line:</label>
-                    <select id="line-select">
-                        {% for i in range(lines|length) %}
-                        <option value="{{ i }}">{{ lines[i].name }}</option>
-                        {% endfor %}
-                    </select>
+                                <div class="line-and-controls-container">
+                    <div class="line-selector">
+                        <label for="line-select">Opening line:</label>
+                        <select id="line-select">
+                            {% for i in range(lines|length) %}
+                            <option value="{{ i }}">{{ lines[i].name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="controls-and-switch">
+                        <div class="controls">                   
+                            <button class="btn" id="prev-line-btn">⏪</button>
+                            <button class="btn" id="reset-btn">🔄</button>
+                            <button class="btn" id="next-line-btn">⏩</button>
                         </div>
-
-                        <div class="controls-and-switch">
-                            <div class="controls">                   
-                                <button class="btn" id="prev-line-btn">⏪</button>
-                                <button class="btn" id="reset-btn">🔄</button>
-                                <button class="btn" id="next-line-btn">⏩</button>
-                </div>
-
-                <div class="switch-container">
-                    <span class="switch-label-left">Learn</span>
-                    <label class="switch">
-                        <input type="checkbox" id="auto-play-switch">
-                        <span class="slider"></span>
-                    </label>
-                    <span class="switch-label-right">Drill</span>
-                            </div>
+                        
+                        <div class="switch-container">
+                            <span class="switch-label-left">Learn</span>
+                            <label class="switch">
+                                <input type="checkbox" id="auto-play-switch">
+                                <span class="slider"></span>
+                            </label>
+                            <span class="switch-label-right">Drill</span>
                         </div>
                     </div>
                 </div>
