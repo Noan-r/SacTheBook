@@ -432,8 +432,8 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 10px;
-            margin-bottom: 15px;
+            gap: 8px;
+            margin-bottom: 10px;
         }
         
         .line-and-controls-container {
@@ -448,7 +448,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             width: 100%;
         }
         
@@ -575,12 +575,12 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 15px;
-            padding: 8px 12px;
+            margin-bottom: 8px;
+            padding: 6px 10px;
             background: #fff;
             border-radius: 8px;
             border: 1px solid #F47C20;
-            gap: 8px;
+            gap: 6px;
         }
         
         /* Optimisation pour afficher le switch sur la même ligne quand l'espace le permet */
@@ -589,7 +589,7 @@
                 flex-direction: row;
                 align-items: center;
                 justify-content: space-between;
-                gap: 15px;
+            gap: 15px;
             }
             
             .pawn-and-line-container {
@@ -1107,10 +1107,10 @@
             background: #F8F5EC;
             border: 2px solid #F47C20;
             border-radius: 20px;
-            padding: 3px 40px;
+            padding: 3px 30px;
             max-width: 900px;
-            width: calc(100% - 80px);
-            margin: 1px 40px 0 40px; /* Marge encore plus réduite en haut */
+            width: calc(100% - 60px);
+            margin: 1px 30px 0 30px; /* Marge minimale */
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -1149,10 +1149,10 @@
             
             .unified-section {
                 max-width: 700px;
-                padding: 2px 30px;
+                padding: 2px 20px;
                 gap: 4px;
-                width: calc(100% - 60px);
-                margin: 0px 30px 0 30px; /* Marge supprimée en haut sur tablette */
+                width: calc(100% - 40px);
+                margin: 0px 20px 0 20px; /* Marge minimale sur tablette */
             }
             
             /* Garantir que l'écart entre titre et info-section reste fixe sur tablette */
@@ -1210,10 +1210,10 @@
             
             .unified-section {
                 max-width: 550px;
-                padding: 1px 20px;
+                padding: 1px 15px;
                 gap: 3px;
-                width: calc(100% - 40px);
-                margin: 0px 20px 0 20px; /* Marge supprimée en haut sur mobile */
+                width: calc(100% - 30px);
+                margin: 0px 15px 0 15px; /* Marge minimale sur mobile */
             }
             
             /* Garantir que l'écart entre titre et info-section reste fixe sur mobile */
@@ -1246,12 +1246,12 @@
             }
             
             #myBoard {
-                width: min(80vw, 55vh);
-                height: min(80vw, 55vh);
-                max-width: 300px;
-                max-height: 300px;
-                min-width: 200px;
-                min-height: 200px;
+                width: min(90vw, 75vh);
+                height: min(90vw, 75vh);
+                max-width: 350px;
+                max-height: 350px;
+                min-width: 220px;
+                min-height: 220px;
             }
         }
         
@@ -1260,16 +1260,16 @@
             align-items: center;
             justify-content: center;
             width: 100%;
-            margin: 5px 0;
+            margin: 3px 0;
         }
         
         #myBoard {
-            width: min(60vh, 60vw);
-            height: min(60vh, 60vw);
-            max-width: 400px;
-            max-height: 400px;
-            min-width: 250px;
-            min-height: 250px;
+            width: min(75vh, 75vw);
+            height: min(75vh, 75vw);
+            max-width: 500px;
+            max-height: 500px;
+            min-width: 320px;
+            min-height: 320px;
             margin: 0 auto;
             border-radius: 16px;
             box-shadow: 0 4px 24px rgba(75,46,25,0.10);
@@ -1279,12 +1279,12 @@
         /* Mobile board adjustments */
         @media (max-width: 768px) {
             #myBoard {
-                width: min(75vw, 60vh);
-                height: min(75vw, 60vh);
-                max-width: 350px;
-                max-height: 350px;
-                min-width: 250px;
-                min-height: 250px;
+                width: min(85vw, 70vh);
+                height: min(85vw, 70vh);
+                max-width: 450px;
+                max-height: 450px;
+                min-width: 280px;
+                min-height: 280px;
             }
         }
         
@@ -1355,10 +1355,10 @@
                 padding: 0 15px;
             }
             #myBoard {
-                width: min(55vh, 55vw);
-                height: min(55vh, 55vw);
-                max-width: 400px;
-                max-height: 400px;
+                width: min(80vh, 80vw);
+                height: min(80vh, 80vw);
+                max-width: 550px;
+                max-height: 550px;
             }
             .info-section {
                 max-width: 450px;
@@ -1435,12 +1435,12 @@
                 margin: 10px auto 6px auto;
             }
             #myBoard {
-                width: min(65vw, 45vh);
-                height: min(65vw, 45vh);
-                max-width: 280px;
-                max-height: 280px;
-                min-width: 160px;
-                min-height: 160px;
+                width: min(70vw, 50vh);
+                height: min(70vw, 50vh);
+                max-width: 300px;
+                max-height: 300px;
+                min-width: 180px;
+                min-height: 180px;
             }
             .info-section {
                 padding: 12px;
@@ -1768,15 +1768,6 @@
             .best-score-text {
                 font-size: 12px;
             }
-            
-            #myBoard {
-                width: min(70vw, 50vh);
-                height: min(70vw, 50vh);
-                max-width: 350px;
-                max-height: 350px;
-                min-width: 200px;
-                min-height: 200px;
-            }
         }
         
         @media (max-width: 480px) {
@@ -1876,8 +1867,8 @@
         
         @media (max-width: 360px) {
             .header h1 {
-                font-size: 1.1em;
-                padding: 0 5px;
+                font-size: 1em;
+                padding: 0 3px;
             }
             
             /* Garantir l'ordre des sections sur très petit mobile */
@@ -1907,8 +1898,8 @@
             
             .game-container {
                 flex-direction: column;
-                gap: 10px;
-                padding: 8px;
+                gap: 8px;
+                padding: 6px;
             }
             
             .board-section {
@@ -1920,8 +1911,8 @@
             
             .info-section {
                 order: 1;
-                padding: 8px;
-                min-height: 100px;
+                padding: 6px;
+                min-height: 80px;
                 border-radius: 10px;
                 width: 100%;
                 max-width: 300px;
@@ -2032,13 +2023,13 @@
                 </div>
                 
                                         <div class="line-and-controls-container">
-                        <div class="line-selector">
-                            <label for="line-select">Opening line:</label>
-                            <select id="line-select">
-                                {% for i in range(lines|length) %}
-                                <option value="{{ i }}">{{ lines[i].name }}</option>
-                                {% endfor %}
-                            </select>
+                <div class="line-selector">
+                    <label for="line-select">Opening line:</label>
+                    <select id="line-select">
+                        {% for i in range(lines|length) %}
+                        <option value="{{ i }}">{{ lines[i].name }}</option>
+                        {% endfor %}
+                    </select>
                         </div>
 
                         <div class="controls-and-switch">
@@ -2046,15 +2037,15 @@
                                 <button class="btn" id="prev-line-btn">⏪</button>
                                 <button class="btn" id="reset-btn">🔄</button>
                                 <button class="btn" id="next-line-btn">⏩</button>
-                            </div>
-                            
-                            <div class="switch-container">
-                                <span class="switch-label-left">Learn</span>
-                                <label class="switch">
-                                    <input type="checkbox" id="auto-play-switch">
-                                    <span class="slider"></span>
-                                </label>
-                                <span class="switch-label-right">Drill</span>
+                </div>
+
+                <div class="switch-container">
+                    <span class="switch-label-left">Learn</span>
+                    <label class="switch">
+                        <input type="checkbox" id="auto-play-switch">
+                        <span class="slider"></span>
+                    </label>
+                    <span class="switch-label-right">Drill</span>
                             </div>
                         </div>
                     </div>
