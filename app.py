@@ -12,6 +12,7 @@ from github import Github
 import base64
 import hashlib
 from dotenv import load_dotenv
+from datetime import datetime
 
 # Charger les variables d'environnement depuis le fichier .env
 load_dotenv()
@@ -351,6 +352,7 @@ def validate_pgn(pgn, color, category, opening_name, variation_index=None):
 @app.route('/')
 def index():
     """Home page with the main menu"""
+    print(f"📄 Page d'accueil demandée - {datetime.now().strftime('%H:%M:%S')}")
     # Recharger les données depuis le fichier pour s'assurer qu'elles sont à jour
     config.load_openings_from_json()
     # Recréer l'instance trainer avec les données mises à jour
@@ -1389,4 +1391,21 @@ def list_static():
     })
 
 if __name__ == '__main__':
-    app.run(host=config.HOST, port=config.PORT, debug=config.DEBUG) 
+    print("=" * 50)
+    print("🚀 Démarrage de SacTheBook...")
+    print(f"📍 Host: {config.HOST}")
+    print(f"🔌 Port: {config.PORT}")
+    print(f"🐛 Debug: {config.DEBUG}")
+    print(f"📁 Static folder: {app.static_folder}")
+    print(f"🔧 GitHub configuré: {github_client is not None}")
+    if github_client:
+        print(f"📦 Repo GitHub: {GITHUB_REPO}")
+    print("=" * 50)
+    print("🌐 Application accessible sur: http://localhost:5000")
+    print("=" * 50)
+    
+    try:
+        app.run(host=config.HOST, port=config.PORT, debug=config.DEBUG)
+    except Exception as e:
+        print(f"❌ Erreur lors du démarrage: {e}")
+        input("Appuyez sur Entrée pour continuer...") 
