@@ -1107,14 +1107,14 @@
             background: #F8F5EC;
             border: 2px solid #F47C20;
             border-radius: 20px;
-            padding: 5px 40px;
+            padding: 3px 40px;
             max-width: 900px;
             width: calc(100% - 80px);
-            margin: 2px 40px 0 40px; /* Marge très réduite en haut */
+            margin: 1px 40px 0 40px; /* Marge encore plus réduite en haut */
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             box-shadow: 0 8px 32px rgba(32,81,58,0.18);
             height: 100%;
             overflow: hidden;
@@ -1149,10 +1149,10 @@
             
             .unified-section {
                 max-width: 700px;
-                padding: 4px 30px;
-                gap: 6px;
+                padding: 2px 30px;
+                gap: 4px;
                 width: calc(100% - 60px);
-                margin: 1px 30px 0 30px; /* Marge très réduite en haut sur tablette */
+                margin: 0px 30px 0 30px; /* Marge supprimée en haut sur tablette */
             }
             
             /* Garantir que l'écart entre titre et info-section reste fixe sur tablette */
@@ -1210,8 +1210,8 @@
             
             .unified-section {
                 max-width: 550px;
-                padding: 3px 20px;
-                gap: 5px;
+                padding: 1px 20px;
+                gap: 3px;
                 width: calc(100% - 40px);
                 margin: 0px 20px 0 20px; /* Marge supprimée en haut sur mobile */
             }
@@ -1264,12 +1264,12 @@
         }
         
         #myBoard {
-            width: min(65vh, 65vw);
-            height: min(65vh, 65vw);
-            max-width: 450px;
-            max-height: 450px;
-            min-width: 300px;
-            min-height: 300px;
+            width: min(60vh, 60vw);
+            height: min(60vh, 60vw);
+            max-width: 400px;
+            max-height: 400px;
+            min-width: 250px;
+            min-height: 250px;
             margin: 0 auto;
             border-radius: 16px;
             box-shadow: 0 4px 24px rgba(75,46,25,0.10);
@@ -1355,10 +1355,10 @@
                 padding: 0 15px;
             }
             #myBoard {
-                width: min(70vh, 70vw);
-                height: min(70vh, 70vw);
-                max-width: 500px;
-                max-height: 500px;
+                width: min(55vh, 55vw);
+                height: min(55vh, 55vw);
+                max-width: 400px;
+                max-height: 400px;
             }
             .info-section {
                 max-width: 450px;
@@ -1435,12 +1435,12 @@
                 margin: 10px auto 6px auto;
             }
             #myBoard {
-                width: min(70vw, 50vh);
-                height: min(70vw, 50vh);
-                max-width: 300px;
-                max-height: 300px;
-                min-width: 180px;
-                min-height: 180px;
+                width: min(65vw, 45vh);
+                height: min(65vw, 45vh);
+                max-width: 280px;
+                max-height: 280px;
+                min-width: 160px;
+                min-height: 160px;
             }
             .info-section {
                 padding: 12px;
@@ -1767,6 +1767,15 @@
             
             .best-score-text {
                 font-size: 12px;
+            }
+            
+            #myBoard {
+                width: min(70vw, 50vh);
+                height: min(70vw, 50vh);
+                max-width: 350px;
+                max-height: 350px;
+                min-width: 200px;
+                min-height: 200px;
             }
         }
         
