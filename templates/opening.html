@@ -518,6 +518,48 @@
                 gap: 8px;
             }
         }
+        
+        /* Mode paysage pour écrans plus larges */
+        @media (min-width: 481px) and (orientation: landscape) {
+            .pawn-and-line-container {
+                flex-direction: column;
+                align-items: center;
+                gap: 8px;
+                margin-bottom: 8px;
+            }
+            
+            .pawn-indicator {
+                margin-bottom: 0;
+                padding: 3px;
+            }
+            
+            .line-and-controls-container {
+                flex-direction: row;
+                align-items: center;
+                justify-content: center;
+                gap: 15px;
+                width: auto;
+            }
+            
+            .line-selector {
+                flex: none;
+                min-width: auto;
+                margin-bottom: 0;
+            }
+            
+            .controls {
+                display: flex;
+                gap: 4px;
+                margin: 0;
+                flex-shrink: 0;
+            }
+            
+            .header-section {
+                flex-direction: column;
+                align-items: center;
+                gap: 8px;
+            }
+        }
 
         /* Switch button styles */
         .switch-container {
