@@ -3595,6 +3595,12 @@
 
 
             // Configuration de l'échiquier avec thème de pièces alternatif
+            // Fonction pour mapper les noms de pièces vers les fichiers corrects
+            function getPieceImage(piece) {
+                // Convertir les majuscules en minuscules pour correspondre aux fichiers CDN
+                return `https://cdn.jsdelivr.net/npm/chessboardjs@1.0.0/img/chesspieces/wikipedia/${piece.toLowerCase()}.png`;
+            }
+            
             var config = {
                 draggable: true,
                 position: 'start',
@@ -3602,7 +3608,7 @@
                 onDrop: onDrop,
                 onSnapEnd: onSnapEnd,
                 orientation: orientation,
-                pieceTheme: 'https://cdn.jsdelivr.net/npm/chessboardjs@1.0.0/img/chesspieces/wikipedia/{piece}.png',
+                pieceTheme: getPieceImage,
                 showNotation: true,
                 dropOffBoard: 'snapback',
                 sparePieces: false
@@ -3627,7 +3633,9 @@
                         if (pieces.length === 0) {
                             console.log('No pieces visible, forcing reload');
                             board.destroy();
-                            config.pieceTheme = 'https://unpkg.com/chessboardjs@1.0.0/img/chesspieces/wikipedia/{piece}.png';
+                            config.pieceTheme = function(piece) {
+                                return `https://unpkg.com/chessboardjs@1.0.0/img/chesspieces/wikipedia/${piece.toLowerCase()}.png`;
+                            };
                             board = Chessboard('myBoard', config);
                             setupLine();
                             $(window).resize(board.resize);
@@ -3652,8 +3660,10 @@
                 
                 img.onerror = function() {
                     console.log('CDN images failed, trying alternative CDN');
-                    // Essayer un CDN alternatif
-                    config.pieceTheme = 'https://unpkg.com/chessboardjs@1.0.0/img/chesspieces/wikipedia/{piece}.png';
+                    // Essayer un CDN alternatif avec fonction de mapping
+                    config.pieceTheme = function(piece) {
+                        return `https://unpkg.com/chessboardjs@1.0.0/img/chesspieces/wikipedia/${piece.toLowerCase()}.png`;
+                    };
                     if (board) {
                         board.destroy();
                         board = Chessboard('myBoard', config);
@@ -3680,8 +3690,10 @@
                 
                 img.onerror = function() {
                     console.log('Alternative CDN failed, using local files');
-                    // En dernier recours, utiliser les fichiers locaux
-                    config.pieceTheme = '/static/img/chesspieces/wikipedia/{piece}.png';
+                    // En dernier recours, utiliser les fichiers locaux avec mapping
+                    config.pieceTheme = function(piece) {
+                        return `/static/img/chesspieces/wikipedia/${piece.toLowerCase()}.png`;
+                    };
                     if (board) {
                         board.destroy();
                         board = Chessboard('myBoard', config);
@@ -3708,8 +3720,10 @@
                 
                 img.onerror = function() {
                     console.log('Local files failed, using fallback CDN');
-                    // Dernier recours : utiliser un autre CDN
-                    config.pieceTheme = 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png';
+                    // Dernier recours : utiliser un autre CDN avec mapping
+                    config.pieceTheme = function(piece) {
+                        return `https://chessboardjs.com/img/chesspieces/wikipedia/${piece.toLowerCase()}.png`;
+                    };
                     if (board) {
                         board.destroy();
                         board = Chessboard('myBoard', config);
