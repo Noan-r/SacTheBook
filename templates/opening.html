@@ -3202,19 +3202,19 @@
                 if (drillMode) {
                     // Mode Drill : célébration plus rapide pour un rythme soutenu
                     window.playWinSound();
-                    $('#myBoard').addClass('celebrate');
+                $('#myBoard').addClass('celebrate');
                     
                     // Créer l'overlay de halo de célébration
                     const celebrateOverlay = $('<div class="celebrate-halo-overlay"></div>');
                     $('body').append(celebrateOverlay);
                     
-                    confetti({
-                        particleCount: 80,
-                        spread: 70,
-                        origin: { y: 0.6 }
-                    });
-                    setTimeout(function() {
-                        $('#myBoard').removeClass('celebrate');
+                confetti({
+                    particleCount: 80,
+                    spread: 70,
+                    origin: { y: 0.6 }
+                });
+                setTimeout(function() {
+                    $('#myBoard').removeClass('celebrate');
                         celebrateOverlay.remove();
                         handleDrillOpeningSuccess();
                     }, 500); // Réduit à 500ms pour drill (50% de 1000ms)
@@ -3235,7 +3235,7 @@
                     setTimeout(function() {
                         $('#myBoard').removeClass('celebrate');
                         celebrateOverlay.remove();
-                        goToNextLineOrRestart();
+                    goToNextLineOrRestart();
                     }, 1500); // Reste à 1500ms pour learn
                 }
             }
