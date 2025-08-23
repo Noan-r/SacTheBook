@@ -724,8 +724,8 @@ def delete_variation():
 def delete_opening():
     # Accepte JSON ou form classique
     if request.is_json:
-        data = request.get_json()
-        category = data.get('category')
+    data = request.get_json()
+    category = data.get('category')
         name = data.get('name')
     else:
         category = request.form.get('category')
