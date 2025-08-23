@@ -494,11 +494,16 @@
             const openingLinks = document.querySelectorAll('a[href*="/opening/"]');
             openingLinks.forEach(link => {
                 link.addEventListener('click', function(e) {
+                    e.preventDefault();
                     playButtonSound();
                     // Ajouter un timestamp pour éviter le cache
                     const timestamp = Date.now();
                     const separator = this.href.includes('?') ? '&' : '?';
-                    this.href = this.href + separator + '_t=' + timestamp;
+                    const newHref = this.href + separator + '_t=' + timestamp;
+                    // Attendre un peu que le son soit joué avant de changer de page
+                    setTimeout(() => {
+                        window.location.href = newHref;
+                    }, 100);
                 });
             });
         });
