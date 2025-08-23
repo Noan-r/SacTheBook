@@ -2186,7 +2186,14 @@
               } else if (audioContext.state === 'suspended') {
                   audioContext.resume().then(() => {
                       console.log('Audio context resumed after user interaction');
+                  }).catch(e => {
+                      console.warn('Failed to resume audio context:', e);
                   });
+              }
+              
+              // Forcer l'initialisation des fichiers audio
+              if (Object.keys(audioFiles).length === 0) {
+                  loadAudioFiles();
               }
           }
           
@@ -2212,7 +2219,12 @@
           
           // Fonction pour jouer un son synthétique (pour les boutons)
           function playSyntheticSound(type) {
-              if (!soundEnabled || !audioContext) return;
+              if (!soundEnabled) return;
+              
+              // Initialiser l'audio si nécessaire
+              initAudioOnUserInteraction();
+              
+              if (!audioContext) return;
               
               try {
                   const oscillator = audioContext.createOscillator();
@@ -2258,7 +2270,15 @@
           
           // Fonction pour jouer un fichier audio
           function playAudioFile(type) {
-              if (!soundEnabled || !audioFiles[type]) return;
+              if (!soundEnabled) return;
+              
+              // Initialiser l'audio si nécessaire
+              initAudioOnUserInteraction();
+              
+              if (!audioFiles[type]) {
+                  console.warn('Audio file not loaded:', type);
+                  return;
+              }
               
               try {
                   const audio = audioFiles[type];
@@ -2303,13 +2323,18 @@
             }
             
             if (orientation === 'black') {
+                // Pour les noirs, on doit jouer le premier coup des blancs pour être en défense
                 if (lines[currentLineIndex] && lines[currentLineIndex].moves.length > 0) {
                     const move = lines[currentLineIndex].moves[currentMoveIndex];
                     game.move(move.san);
                     currentMoveIndex++;
+                    console.log('Black orientation: played white move for defense setup');
                 }
+            } else if (orientation === 'white') {
+                // Pour les blancs, on commence avec la position initiale
+                console.log('White orientation: starting with initial position');
             } else if (orientation === null) {
-                console.warn('orientation not yet initialized, skipping black setup');
+                console.warn('orientation not yet initialized, skipping setup');
             }
             board.position(game.fen());
             // S'assurer que le drag-and-drop est activé pour le nouveau jeu
@@ -3804,6 +3829,7 @@
             // Détecter le début du drag (souris et tactile)
             $('#myBoard').on('mousedown touchstart', '.square-55d63', function(e) {
                 e.preventDefault(); // Empêcher le comportement par défaut sur mobile
+                e.stopPropagation(); // Empêcher la propagation
                 
                 // Initialiser l'audio sur la première interaction
                 initAudioOnUserInteraction();
@@ -3817,12 +3843,23 @@
                 if (square) {
                     isDragging = false;
                     dragStartSquare = square;
+                    
+                    // Démarrer le drag après un court délai pour les événements tactiles
+                    if (e.type === 'touchstart') {
+                        setTimeout(() => {
+                            if (dragStartSquare === square) {
+                                isDragging = true;
+                            }
+                        }, 150);
+                    }
                 }
             });
             
             // Détecter le mouvement (drag)
             $('#myBoard').on('mousemove touchmove', '.square-55d63', function(e) {
                 e.preventDefault(); // Empêcher le scroll sur mobile
+                e.stopPropagation(); // Empêcher la propagation
+                
                 if (dragStartSquare) {
                     isDragging = true;
                 }
@@ -3831,6 +3868,7 @@
             // Gérer les clics simples (sans drag)
             $('#myBoard').on('click touchend', '.square-55d63', function(e) {
                 e.preventDefault(); // Empêcher le comportement par défaut sur mobile
+                e.stopPropagation(); // Empêcher la propagation
                 
                 // Ignorer le clic droit
                 if (e.type === 'click' && e.button === 2) {
@@ -3900,6 +3938,18 @@
                 clearPreMove();
                 premoveSource = null;
                 return false;
+            });
+            
+            // Empêcher le zoom sur l'échiquier sur mobile
+            $('#myBoard').on('touchstart', function(e) {
+                if (e.touches.length > 1) {
+                    e.preventDefault();
+                }
+            });
+            
+            // Empêcher le scroll sur l'échiquier
+            $('#myBoard').on('touchmove', function(e) {
+                e.preventDefault();
             });
 
             // PREMOVE: Clic sur case pour préparer un pre-move (pour les utilisateurs qui préfèrent cliquer)
