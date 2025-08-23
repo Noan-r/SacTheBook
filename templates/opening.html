@@ -2132,12 +2132,31 @@
           // Initialiser l'API Web Audio
           function initAudio() {
               try {
+                  // Sur mobile, on doit attendre une interaction utilisateur
+                  if (audioContext && audioContext.state === 'suspended') {
+                      audioContext.resume().then(() => {
+                          console.log('Audio context resumed');
+                      });
+                      return;
+                  }
+                  
                   audioContext = new (window.AudioContext || window.webkitAudioContext)();
                   console.log('Audio context initialized');
                   loadAudioFiles();
               } catch (e) {
                   console.warn('Web Audio API not supported:', e);
                   soundEnabled = false;
+              }
+          }
+          
+          // Fonction pour initialiser l'audio après interaction utilisateur
+          function initAudioOnUserInteraction() {
+              if (!audioContext) {
+                  initAudio();
+              } else if (audioContext.state === 'suspended') {
+                  audioContext.resume().then(() => {
+                      console.log('Audio context resumed after user interaction');
+                  });
               }
           }
           
@@ -2227,7 +2246,10 @@
           window.playCaptureSound = function() { playAudioFile('capture'); };
           window.playCheckSound = function() { playAudioFile('check'); };
           window.playWinSound = function() { playAudioFile('win'); };
-          window.playButtonSound = function() { playSyntheticSound('button'); };
+          window.playButtonSound = function() { 
+              initAudioOnUserInteraction();
+              playSyntheticSound('button'); 
+          };
           window.playErrorSound = function() { playSyntheticSound('error'); };
           window.playIncorrectSound = function() { playAudioFile('incorrect'); };
           window.playPromoteSound = function() { playAudioFile('promote'); };
@@ -3639,6 +3661,13 @@
                             board = Chessboard('myBoard', config);
                             setupLine();
                             $(window).resize(board.resize);
+                        } else {
+                            console.log(`Found ${pieces.length} pieces on board`);
+                            // Vérifier les couleurs des pièces
+                            pieces.each(function() {
+                                const src = $(this).attr('src');
+                                console.log('Piece src:', src);
+                            });
                         }
                     }, 2000);
                 } else {
@@ -3742,10 +3771,15 @@
             var isDragging = false;
             var dragStartSquare = null;
             
-            // Détecter le début du drag
-            $('#myBoard').on('mousedown', '.square-55d63', function(e) {
+            // Détecter le début du drag (souris et tactile)
+            $('#myBoard').on('mousedown touchstart', '.square-55d63', function(e) {
+                e.preventDefault(); // Empêcher le comportement par défaut sur mobile
+                
+                // Initialiser l'audio sur la première interaction
+                initAudioOnUserInteraction();
+                
                 // Ignorer le clic droit
-                if (e.button === 2) {
+                if (e.type === 'mousedown' && e.button === 2) {
                     return;
                 }
                 
@@ -3757,16 +3791,19 @@
             });
             
             // Détecter le mouvement (drag)
-            $('#myBoard').on('mousemove', '.square-55d63', function(e) {
+            $('#myBoard').on('mousemove touchmove', '.square-55d63', function(e) {
+                e.preventDefault(); // Empêcher le scroll sur mobile
                 if (dragStartSquare) {
                     isDragging = true;
                 }
             });
             
             // Gérer les clics simples (sans drag)
-            $('#myBoard').on('click', '.square-55d63', function(e) {
+            $('#myBoard').on('click touchend', '.square-55d63', function(e) {
+                e.preventDefault(); // Empêcher le comportement par défaut sur mobile
+                
                 // Ignorer le clic droit
-                if (e.button === 2) {
+                if (e.type === 'click' && e.button === 2) {
                     return;
                 }
                 
