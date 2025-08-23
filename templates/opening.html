@@ -133,6 +133,7 @@
             font-size: 0.9em;
             padding: 12px 8px;
             max-width: calc(33.33% - 7px);
+            min-width: 80px;
             border-radius: 8px;
             transition: all 0.2s ease;
         }
@@ -175,7 +176,7 @@
         @media (max-width: 480px) {
             .info-section {
                 padding: 10px;
-                min-width: 250px;
+                min-width: 280px;
                 max-width: 100%;
                 height: auto;
                 min-height: 120px;
@@ -572,6 +573,27 @@
             border-radius: 10px;
             border: 1px solid #F47C20;
             gap: 15px;
+        }
+        
+        /* Optimisation pour afficher le switch sur la même ligne quand l'espace le permet */
+        @media (min-width: 600px) {
+            .header-section {
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+                gap: 20px;
+            }
+            
+            .pawn-and-line-container {
+                flex: 1;
+                margin-bottom: 0;
+            }
+            
+            .switch-container {
+                flex-shrink: 0;
+                margin-bottom: 0;
+                padding: 12px 15px;
+            }
         }
         
         /* Mobile switch improvements */
@@ -1585,7 +1607,7 @@
             .info-section {
                 order: 1;
                 width: 100%;
-                max-width: 400px;
+                max-width: 450px;
                 margin: 0 auto;
                 height: auto;
                 min-height: 120px;
@@ -1631,7 +1653,7 @@
                 min-height: 100px;
                 max-height: 140px;
                 width: 100%;
-                max-width: 400px;
+                max-width: 450px;
                 margin: 0 auto;
                 overflow: hidden;
             }
@@ -1676,7 +1698,7 @@
             .controls .btn {
                 padding: 10px 12px;
                 font-size: 14px;
-                min-width: 50px;
+                min-width: 100px;
                 flex: 1;
                 max-width: 70px;
                 border-radius: 8px;
@@ -1782,7 +1804,7 @@
             .controls .btn {
                 padding: 8px 10px;
                 font-size: 12px;
-                min-width: 40px;
+                min-width: 80px;
                 flex: 1;
                 max-width: 60px;
             }
@@ -1942,7 +1964,7 @@
             .controls .btn {
                 padding: 5px 6px;
                 font-size: 10px;
-                min-width: 30px;
+                min-width: 60px;
                 flex: 1;
                 max-width: 45px;
             }
