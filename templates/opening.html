@@ -2294,10 +2294,30 @@
                   var whiteSquareGrey = '#a9a9a9';
           var blackSquareGrey = '#696969';
           
-          // === SYSTÈME DE SONS ===
-          var audioContext = null;
-          var soundEnabled = true;
-          var audioFiles = {};
+                  // === SYSTÈME DE SONS ===
+        var audioContext = null;
+        var soundEnabled = true;
+        var audioFiles = {};
+        
+        // === FONCTION GLOBALE POUR FORCER L'ORIENTATION ===
+        function forceBoardOrientation() {
+            if (board && orientation && board.orientation() !== orientation) {
+                console.log('FORCE ORIENTATION: Changing from', board.orientation(), 'to', orientation);
+                board.orientation(orientation);
+                board.position(game.fen());
+                return true;
+            }
+            return false;
+        }
+        
+        // === FONCTION POUR CRÉER LE PLATEAU AVEC ORIENTATION CORRECTE ===
+        function createBoardWithCorrectOrientation(config) {
+            const newBoard = Chessboard('myBoard', config);
+            if (newBoard) {
+                forceBoardOrientation();
+            }
+            return newBoard;
+        }
           
           // Initialiser l'API Web Audio
           function initAudio() {
@@ -2503,6 +2523,11 @@
                     updateMobileDiagnostic();
                 }, 100);
             }
+            
+            // CORRECTION CRITIQUE: Forcer l'orientation après un délai pour s'assurer qu'elle est appliquée
+            setTimeout(function() {
+                forceBoardOrientation();
+            }, 500);
             // S'assurer que le drag-and-drop est activé pour le nouveau jeu
             board.draggable = true;
             updateStatus();
@@ -3365,6 +3390,13 @@
             lines = JSON.parse('{{ lines|tojson|safe }}'); // Assignation à la variable globale
             orientation = '{{ orientation }}'; // Assignation à la variable globale
             currentLineIndex = 0; // Initialisation de la variable globale
+            
+            // Vérification périodique de l'orientation (toutes les 2 secondes)
+            setInterval(function() {
+                if (board && orientation) {
+                    forceBoardOrientation();
+                }
+            }, 2000);
 
             console.log('Variables initialisées:', {
                 openingName: openingName,
@@ -3890,7 +3922,7 @@
             console.log('Board orientation type:', typeof orientation);
             
             try {
-                board = Chessboard('myBoard', config);
+                board = createBoardWithCorrectOrientation(config);
                 
                 if (board) {
                     console.log('Board created successfully');
@@ -3898,6 +3930,9 @@
                     console.log('=== BOARD CREATION DIAGNOSTIC ===');
                     console.log('Expected orientation:', orientation);
                     console.log('Board orientation matches expected:', board.orientation() === orientation);
+                    
+                    // CORRECTION CRITIQUE: Forcer l'orientation immédiatement après création
+                    forceBoardOrientation();
                     
                     setupLine();
                     $(window).resize(board.resize);
@@ -3915,8 +3950,9 @@
                                 return `https://unpkg.com/chessboardjs@1.0.0/img/chesspieces/wikipedia/${piece.toLowerCase()}.png`;
                             };
                             board = Chessboard('myBoard', config);
-                    setupLine();
-                    $(window).resize(board.resize);
+                            forceBoardOrientation();
+                            setupLine();
+                            $(window).resize(board.resize);
                         } else {
                             console.log(`Found ${pieces.length} pieces on board`);
                             // Vérifier les couleurs des pièces
