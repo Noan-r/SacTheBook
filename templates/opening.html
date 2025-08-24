@@ -50,7 +50,7 @@
         
         .header {
             text-align: center;
-            padding: 15px 0 8px 0; /* Réduit pour maximiser l'échiquier */
+            padding: 10px 0 5px 0; /* Encore plus réduit pour maximiser l'échiquier */
             flex-shrink: 0;
         }
         
@@ -64,7 +64,7 @@
         /* Mobile header adjustments */
         @media (max-width: 768px) {
             .header {
-                padding: 12px 0 6px 0; /* Réduit pour maximiser l'échiquier */
+                padding: 8px 0 4px 0; /* Encore plus réduit pour maximiser l'échiquier */
             }
             .header h1 {
                 font-size: 1.6em;
@@ -73,7 +73,7 @@
         
         @media (max-width: 480px) {
             .header {
-                padding: 10px 0 5px 0; /* Réduit pour maximiser l'échiquier */
+                padding: 6px 0 3px 0; /* Encore plus réduit pour maximiser l'échiquier */
             }
             .header h1 {
                 font-size: 1.1em;
@@ -147,7 +147,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 15px;
+            gap: 10px; /* Réduit l'espace entre les éléments */
             width: 100%;
             order: 3; /* Garantit que cette section reste après l'échiquier */
             margin-bottom: 15px; /* Marge en bas de la page */
@@ -164,24 +164,24 @@
         /* Mobile info-section adjustments */
         @media (max-width: 768px) {
             .info-section {
-                padding: 12px;
+                padding: 10px;
                 min-width: 280px;
                 max-width: 100%;
                 height: auto;
-                min-height: 140px;
-                max-height: 180px;
+                min-height: 130px;
+                max-height: 160px;
                 overflow: hidden;
             }
         }
         
         @media (max-width: 480px) {
             .info-section {
-                padding: 8px;
+                padding: 6px;
                 min-width: 280px;
                 max-width: 100%;
                 height: auto;
-                min-height: 110px;
-                max-height: 130px;
+                min-height: 100px;
+                max-height: 120px;
                 font-size: 13px;
                 overflow: hidden;
             }
@@ -238,7 +238,7 @@
         .controls {
             display: flex;
             gap: 6px;
-            margin-bottom: 15px;
+            margin-bottom: 10px; /* Réduit l'espace en bas */
             flex-wrap: nowrap;
             justify-content: center;
         }
@@ -333,7 +333,7 @@
             border: 2px solid #F47C20;
             border-radius: 8px;
             font-size: 14px;
-            margin-bottom: 12px;
+            margin-bottom: 8px; /* Réduit l'espace en bas */
             background: #fff;
             color: #F47C20;
         }
@@ -1238,8 +1238,8 @@
             
             .unified-section {
                 max-width: 700px;
-                padding: 1px 20px;
-                gap: 3px;
+                padding: 0px 20px;
+                gap: 2px;
                 width: calc(100% - 40px);
                 margin: 0px 20px 0 20px; /* Marge minimale sur tablette */
             }
@@ -1252,8 +1252,8 @@
 
             .header-section {
                 flex-direction: column;
-                gap: 10px;
-                margin-top: 6px;
+                gap: 6px;
+                margin-top: 4px;
             }
 
             .controls {
@@ -1300,7 +1300,7 @@
             .unified-section {
                 max-width: 550px;
                 padding: 0px 15px;
-                gap: 2px;
+                gap: 1px;
                 width: calc(100% - 30px);
                 margin: 0px 15px 0 15px; /* Marge minimale sur mobile */
             }
@@ -1312,8 +1312,8 @@
             }
 
             .header-section {
-                gap: 8px;
-                margin-top: 4px;
+                gap: 4px;
+                margin-top: 2px;
             }
 
             .controls {
@@ -1349,7 +1349,7 @@
             align-items: center;
             justify-content: center;
             width: 100%;
-            margin: 2px 0;
+            margin: 1px 0; /* Réduit encore plus */
             flex: 1; /* Prend tout l'espace disponible */
         }
         
