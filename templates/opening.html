@@ -325,7 +325,7 @@
             width: 100%;
             text-align: center;
         }
-        
+
         .line-selector select {
             width: 100%;
             padding: 8px;
@@ -525,7 +525,7 @@
             
             .controls-and-switch {
                 flex-shrink: 0;
-                gap: 3px;
+                gap: 2px;
             }
             
             .controls {
@@ -714,14 +714,14 @@
         
         @media (max-width: 480px) {
             .switch-container {
-                padding: 2px 4px;
+                padding: 2px 3px;
                 gap: 2px;
                 margin-bottom: 0;
             }
             
             .switch-label-left,
             .switch-label-right {
-                font-size: 0.65em;
+                font-size: 0.6em;
             }
         }
 
@@ -1305,13 +1305,13 @@
 
             .controls {
                 width: 100%;
-                gap: 2px;
+                gap: 1px;
             }
 
             .controls .btn {
-                padding: 4px 1px;
-                font-size: 0.65em;
-                min-width: 28px;
+                padding: 3px 1px;
+                font-size: 0.6em;
+                min-width: 24px;
                 border-radius: 6px;
                 transition: all 0.2s ease;
             }
@@ -1678,6 +1678,36 @@
             }
         }
         
+        /* Style spécifique pour les très petits écrans iPhone */
+        @media (max-width: 320px) {
+            .controls .btn {
+                padding: 1px 2px;
+                font-size: 7px;
+                min-width: 20px;
+                max-width: 30px;
+            }
+            
+            .switch-container {
+                padding: 1px 2px;
+                gap: 1px;
+                font-size: 0.5em;
+            }
+            
+            .switch-label-left,
+            .switch-label-right {
+                font-size: 0.5em;
+            }
+            
+            .controls {
+                gap: 1px;
+                margin: 4px 0;
+            }
+            
+            .controls-and-switch {
+                gap: 1px;
+            }
+        }
+        
         /* Responsive design pour tous les éléments de l'interface */
         @media (max-width: 1024px) {
             .game-container {
@@ -2001,17 +2031,17 @@
             }
             
             .controls {
-                gap: 3px;
-                margin: 8px 0;
+                gap: 2px;
+                margin: 6px 0;
                 flex-wrap: nowrap;
             }
             
             .controls .btn {
-                padding: 3px 4px;
-                font-size: 9px;
-                min-width: 25px;
+                padding: 2px 3px;
+                font-size: 8px;
+                min-width: 22px;
                 flex: 1;
-                max-width: 40px;
+                max-width: 35px;
                 border-radius: 6px;
                 transition: all 0.2s ease;
             }
@@ -2090,13 +2120,13 @@
             <!-- En-tête avec pion, titre, boutons et switch -->
             <div class="header-section">
                                 <div class="line-and-controls-container">
-                    <div class="line-selector">
-                        <label for="line-select">Opening line:</label>
-                        <select id="line-select">
-                            {% for i in range(lines|length) %}
-                            <option value="{{ i }}">{{ lines[i].name }}</option>
-                            {% endfor %}
-                        </select>
+                <div class="line-selector">
+                    <label for="line-select">Opening line:</label>
+                    <select id="line-select">
+                        {% for i in range(lines|length) %}
+                        <option value="{{ i }}">{{ lines[i].name }}</option>
+                        {% endfor %}
+                    </select>
                     </div>
                     
                     <div class="controls-and-switch">
@@ -2104,15 +2134,15 @@
                             <button class="btn" id="prev-line-btn">⏪</button>
                             <button class="btn" id="reset-btn">🔄</button>
                             <button class="btn" id="next-line-btn">⏩</button>
-                        </div>
-                        
-                        <div class="switch-container">
-                            <span class="switch-label-left">Learn</span>
-                            <label class="switch">
-                                <input type="checkbox" id="auto-play-switch">
-                                <span class="slider"></span>
-                            </label>
-                            <span class="switch-label-right">Drill</span>
+                </div>
+
+                <div class="switch-container">
+                    <span class="switch-label-left">Learn</span>
+                    <label class="switch">
+                        <input type="checkbox" id="auto-play-switch">
+                        <span class="slider"></span>
+                    </label>
+                    <span class="switch-label-right">Drill</span>
                         </div>
                     </div>
                 </div>
@@ -3246,7 +3276,7 @@
                 lines: lines,
                 orientation: orientation
             });
-            
+
             // Vérifier l'orientation
             console.log('Orientation définie:', orientation);
             console.log('Type d\'orientation:', typeof orientation);
@@ -3764,8 +3794,8 @@
                                 return `https://unpkg.com/chessboardjs@1.0.0/img/chesspieces/wikipedia/${piece.toLowerCase()}.png`;
                             };
                             board = Chessboard('myBoard', config);
-                            setupLine();
-                            $(window).resize(board.resize);
+                    setupLine();
+                    $(window).resize(board.resize);
                         } else {
                             console.log(`Found ${pieces.length} pieces on board`);
                             // Vérifier les couleurs des pièces
