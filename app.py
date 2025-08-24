@@ -460,6 +460,9 @@ def opening_page(opening_name):
     
     orientation = 'black' if category == 'Defense' else 'white'
     
+    print(f"DEBUG opening_page: opening_name='{opening_name}', category='{category}', orientation='{orientation}'")
+    print(f"DEBUG opening_page: lines count={len(lines) if lines else 0}")
+    
     return render_template('opening.html', opening_name=opening_name, lines=lines, orientation=orientation)
 
 @app.route('/openings/settings', methods=['GET'])

@@ -3391,6 +3391,17 @@
             orientation = '{{ orientation }}'; // Assignation à la variable globale
             currentLineIndex = 0; // Initialisation de la variable globale
             
+            // DEBUG: Vérifier les données reçues
+            console.log('=== SERVER DATA DEBUG ===');
+            console.log('Raw opening_name from server:', '{{ opening_name }}');
+            console.log('Raw orientation from server:', '{{ orientation }}');
+            console.log('Raw lines from server:', '{{ lines|tojson|safe }}');
+            console.log('Parsed openingName:', openingName);
+            console.log('Parsed orientation:', orientation);
+            console.log('Parsed lines:', lines);
+            console.log('Lines length:', lines ? lines.length : 'null');
+            console.log('=== END SERVER DATA DEBUG ===');
+            
             // Vérification périodique de l'orientation (toutes les 2 secondes)
             setInterval(function() {
                 if (board && orientation) {
