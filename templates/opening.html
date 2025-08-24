@@ -2308,6 +2308,7 @@
             console.log('Orientation value:', orientation);
             console.log('Orientation type:', typeof orientation);
             console.log('Board orientation:', board ? board.orientation() : 'no board');
+            console.log('Orientation should be black for Albin Countergambit:', orientation === 'black');
             
             if (board && orientation && board.orientation() !== orientation) {
                 console.log('FORCE ORIENTATION: Changing from', board.orientation(), 'to', orientation);
@@ -2317,6 +2318,9 @@
                 return true;
             } else {
                 console.log('No orientation change needed or possible');
+                if (board && orientation) {
+                    console.log('Board and orientation exist but are the same:', board.orientation(), '===', orientation);
+                }
             }
             return false;
         }
@@ -3433,9 +3437,11 @@
             // CORRECTION RADICALE: Forcer l'orientation basée sur l'URL ET le serveur
             const urlPath = window.location.pathname;
             const urlOpeningName = decodeURIComponent(urlPath.split('/').pop());
+            console.log('=== ORIENTATION DETECTION DEBUG ===');
             console.log('URL path:', urlPath);
             console.log('Opening name from URL (decoded):', urlOpeningName);
             console.log('Opening name from server:', openingName);
+            console.log('Orientation BEFORE detection:', orientation);
             
             // Si c'est une ouverture de défense, forcer l'orientation black
             const defenseOpenings = ['Albin Countergambit', 'Sicilian Defense', 'French Defense', 'Caro-Kann Defense'];
@@ -3452,6 +3458,9 @@
                 console.log('Using WHITE ORIENTATION for attack opening:', urlOpeningName, 'or', openingName);
                 orientation = 'white';
             }
+            
+            console.log('Orientation AFTER detection:', orientation);
+            console.log('=== END ORIENTATION DETECTION DEBUG ===');
             currentLineIndex = 0; // Initialisation de la variable globale
             
             // DEBUG CRITIQUE: Vérifier les données reçues du serveur
@@ -3464,6 +3473,12 @@
             console.log('Orientation === "black":', orientation === 'black');
             console.log('Orientation === "white":', orientation === 'white');
             console.log('=== END CRITICAL DEBUG ===');
+            
+            // VÉRIFICATION FINALE: S'assurer que l'orientation est correcte
+            console.log('=== FINAL ORIENTATION CHECK ===');
+            console.log('Final orientation value:', orientation);
+            console.log('Should be black for Albin Countergambit:', orientation === 'black');
+            console.log('=== END FINAL CHECK ===');
             
             // Vérification périodique de l'orientation (toutes les 2 secondes)
             setInterval(function() {
