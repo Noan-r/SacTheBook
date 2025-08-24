@@ -460,6 +460,18 @@ def opening_page(opening_name):
     
     orientation = 'black' if category == 'Defense' else 'white'
     
+    # DEBUG CRITIQUE: Logs pour diagnostiquer l'orientation
+    print(f"=== ORIENTATION DEBUG ===")
+    print(f"Opening name: {opening_name}")
+    print(f"Category: {category}")
+    print(f"Category type: {type(category)}")
+    print(f"Category == 'Defense': {category == 'Defense'}")
+    print(f"Category == 'defense': {category == 'defense'}")
+    print(f"Category.lower() == 'defense': {category.lower() == 'defense' if category else 'None'}")
+    print(f"Calculated orientation: {orientation}")
+    print(f"Orientation type: {type(orientation)}")
+    print(f"=== END ORIENTATION DEBUG ===")
+    
     return render_template('opening.html', opening_name=opening_name, lines=lines, orientation=orientation)
 
 @app.route('/openings/settings', methods=['GET'])
@@ -863,6 +875,29 @@ def github_status():
         'repo': GITHUB_REPO,
         'branch': GITHUB_BRANCH,
         'file_path': GITHUB_FILE_PATH
+    })
+
+@app.route('/test_orientation/<opening_name>')
+def test_orientation(opening_name):
+    """Route de test pour vérifier l'orientation d'une ouverture"""
+    config.load_openings_from_json()
+    trainer = OpeningTrainer()
+    lines, category = trainer.get_opening_details(opening_name)
+    
+    if category is None:
+        return jsonify({'error': 'Opening not found'}), 404
+    
+    orientation = 'black' if category == 'Defense' else 'white'
+    
+    return jsonify({
+        'opening_name': opening_name,
+        'category': category,
+        'category_type': str(type(category)),
+        'category_lower': category.lower() if category else None,
+        'is_defense': category == 'Defense',
+        'is_defense_lower': category.lower() == 'defense' if category else False,
+        'calculated_orientation': orientation,
+        'orientation_type': str(type(orientation))
     })
 
 @app.route('/api/validate_move', methods=['POST'])

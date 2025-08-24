@@ -2321,9 +2321,29 @@
         
         // === FONCTION POUR CRÉER LE PLATEAU AVEC ORIENTATION CORRECTE ===
         function createBoardWithCorrectOrientation(config) {
+            console.log('=== CREATE BOARD WITH CORRECT ORIENTATION ===');
+            console.log('Config orientation:', config.orientation);
+            console.log('Global orientation:', orientation);
+            
+            // Forcer l'orientation dans la config avant création
+            config.orientation = orientation;
+            console.log('Forced config orientation to:', config.orientation);
+            
             const newBoard = Chessboard('myBoard', config);
             if (newBoard) {
+                console.log('Board created, forcing orientation...');
                 forceBoardOrientation();
+                
+                // Vérification immédiate
+                setTimeout(() => {
+                    console.log('Board orientation after creation:', newBoard.orientation());
+                    console.log('Expected orientation:', orientation);
+                    if (newBoard.orientation() !== orientation) {
+                        console.log('CRITICAL: Orientation mismatch, forcing again...');
+                        newBoard.orientation(orientation);
+                        newBoard.position(game.fen());
+                    }
+                }, 100);
             }
             return newBoard;
         }
@@ -3407,6 +3427,22 @@
                 console.error('Invalid orientation received:', orientation);
                 orientation = 'white'; // Fallback
             }
+            
+            // CORRECTION RADICALE: Forcer l'orientation basée sur l'URL
+            const urlPath = window.location.pathname;
+            const openingName = urlPath.split('/').pop();
+            console.log('URL path:', urlPath);
+            console.log('Opening name from URL:', openingName);
+            
+            // Si c'est une ouverture de défense, forcer l'orientation black
+            const defenseOpenings = ['Albin Countergambit', 'Sicilian Defense', 'French Defense', 'Caro-Kann Defense'];
+            if (defenseOpenings.some(defense => openingName.includes(defense))) {
+                console.log('FORCING BLACK ORIENTATION for defense opening:', openingName);
+                orientation = 'black';
+            } else {
+                console.log('Using WHITE ORIENTATION for attack opening:', openingName);
+                orientation = 'white';
+            }
             currentLineIndex = 0; // Initialisation de la variable globale
             
             // DEBUG CRITIQUE: Vérifier les données reçues du serveur
@@ -4132,7 +4168,9 @@
             
             // Vérifier l'orientation
             const orientationOk = orientation === 'white' || orientation === 'black';
-            $('#orientation-status').text(`Orientation: ${orientation} (${typeof orientation})`)
+            const urlPath = window.location.pathname;
+            const openingName = urlPath.split('/').pop();
+            $('#orientation-status').text(`Orientation: ${orientation} (${typeof orientation}) - URL: ${openingName}`)
                 .removeClass('ok error warning')
                 .addClass(orientationOk ? 'ok' : 'error');
             
