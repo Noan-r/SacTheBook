@@ -3430,19 +3430,26 @@
                 orientation = 'white'; // Fallback
             }
             
-            // CORRECTION RADICALE: Forcer l'orientation basée sur l'URL
+            // CORRECTION RADICALE: Forcer l'orientation basée sur l'URL ET le serveur
             const urlPath = window.location.pathname;
-            const urlOpeningName = urlPath.split('/').pop();
+            const urlOpeningName = decodeURIComponent(urlPath.split('/').pop());
             console.log('URL path:', urlPath);
-            console.log('Opening name from URL:', urlOpeningName);
+            console.log('Opening name from URL (decoded):', urlOpeningName);
+            console.log('Opening name from server:', openingName);
             
             // Si c'est une ouverture de défense, forcer l'orientation black
             const defenseOpenings = ['Albin Countergambit', 'Sicilian Defense', 'French Defense', 'Caro-Kann Defense'];
-            if (defenseOpenings.some(defense => urlOpeningName.includes(defense))) {
-                console.log('FORCING BLACK ORIENTATION for defense opening:', urlOpeningName);
+            const isDefenseFromURL = defenseOpenings.some(defense => urlOpeningName.includes(defense));
+            const isDefenseFromServer = defenseOpenings.some(defense => openingName.includes(defense));
+            console.log('Is defense opening (URL)?', isDefenseFromURL);
+            console.log('Is defense opening (server)?', isDefenseFromServer);
+            console.log('Checking against defenses:', defenseOpenings);
+            
+            if (isDefenseFromURL || isDefenseFromServer) {
+                console.log('FORCING BLACK ORIENTATION for defense opening:', urlOpeningName, 'or', openingName);
                 orientation = 'black';
             } else {
-                console.log('Using WHITE ORIENTATION for attack opening:', urlOpeningName);
+                console.log('Using WHITE ORIENTATION for attack opening:', urlOpeningName, 'or', openingName);
                 orientation = 'white';
             }
             currentLineIndex = 0; // Initialisation de la variable globale
@@ -4171,7 +4178,7 @@
             // Vérifier l'orientation
             const orientationOk = orientation === 'white' || orientation === 'black';
             const urlPath = window.location.pathname;
-            const urlOpeningName = urlPath.split('/').pop();
+            const urlOpeningName = decodeURIComponent(urlPath.split('/').pop());
             $('#orientation-status').text(`Orientation: ${orientation} (${typeof orientation}) - URL: ${urlOpeningName}`)
                 .removeClass('ok error warning')
                 .addClass(orientationOk ? 'ok' : 'error');
