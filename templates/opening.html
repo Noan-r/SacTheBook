@@ -50,7 +50,7 @@
         
         .header {
             text-align: center;
-            padding: 20px 0 10px 0; /* Plus de marge en haut, moins en bas */
+            padding: 15px 0 8px 0; /* Réduit pour maximiser l'échiquier */
             flex-shrink: 0;
         }
         
@@ -64,7 +64,7 @@
         /* Mobile header adjustments */
         @media (max-width: 768px) {
             .header {
-                padding: 15px 0 8px 0; /* Plus de marge en haut sur mobile */
+                padding: 12px 0 6px 0; /* Réduit pour maximiser l'échiquier */
             }
             .header h1 {
                 font-size: 1.6em;
@@ -73,7 +73,7 @@
         
         @media (max-width: 480px) {
             .header {
-                padding: 12px 0 6px 0; /* Plus de marge en haut sur petit mobile */
+                padding: 10px 0 5px 0; /* Réduit pour maximiser l'échiquier */
             }
             .header h1 {
                 font-size: 1.1em;
@@ -150,6 +150,7 @@
             gap: 15px;
             width: 100%;
             order: 3; /* Garantit que cette section reste après l'échiquier */
+            margin-bottom: 15px; /* Marge en bas de la page */
         }
         
         .board-section {
@@ -163,24 +164,24 @@
         /* Mobile info-section adjustments */
         @media (max-width: 768px) {
             .info-section {
-                padding: 15px;
+                padding: 12px;
                 min-width: 280px;
                 max-width: 100%;
                 height: auto;
-                min-height: 150px;
-                max-height: 200px;
+                min-height: 140px;
+                max-height: 180px;
                 overflow: hidden;
             }
         }
         
         @media (max-width: 480px) {
             .info-section {
-                padding: 10px;
+                padding: 8px;
                 min-width: 280px;
                 max-width: 100%;
                 height: auto;
-                min-height: 120px;
-                max-height: 150px;
+                min-height: 110px;
+                max-height: 130px;
                 font-size: 13px;
                 overflow: hidden;
             }
@@ -1225,8 +1226,8 @@
             
             .unified-section {
                 max-width: 700px;
-                padding: 2px 20px;
-                gap: 4px;
+                padding: 1px 20px;
+                gap: 3px;
                 width: calc(100% - 40px);
                 margin: 0px 20px 0 20px; /* Marge minimale sur tablette */
             }
@@ -1286,8 +1287,8 @@
             
             .unified-section {
                 max-width: 550px;
-                padding: 1px 15px;
-                gap: 3px;
+                padding: 0px 15px;
+                gap: 2px;
                 width: calc(100% - 30px);
                 margin: 0px 15px 0 15px; /* Marge minimale sur mobile */
             }
@@ -1336,16 +1337,17 @@
             align-items: center;
             justify-content: center;
             width: 100%;
-            margin: 3px 0;
+            margin: 2px 0;
+            flex: 1; /* Prend tout l'espace disponible */
         }
         
         #myBoard {
-            width: min(75vh, 75vw);
-            height: min(75vh, 75vw);
-            max-width: 500px;
-            max-height: 500px;
-            min-width: 320px;
-            min-height: 320px;
+            width: min(85vh, 85vw);
+            height: min(85vh, 85vw);
+            max-width: 600px;
+            max-height: 600px;
+            min-width: 350px;
+            min-height: 350px;
             margin: 0 auto;
             border-radius: 16px;
             box-shadow: 0 4px 24px rgba(75,46,25,0.10);
@@ -1355,23 +1357,23 @@
         /* Mobile board adjustments */
         @media (max-width: 768px) {
             #myBoard {
-                width: min(85vw, 70vh);
-                height: min(85vw, 70vh);
-                max-width: 450px;
-                max-height: 450px;
-                min-width: 280px;
-                min-height: 280px;
+                width: min(90vw, 75vh);
+                height: min(90vw, 75vh);
+                max-width: 500px;
+                max-height: 500px;
+                min-width: 300px;
+                min-height: 300px;
             }
         }
         
         @media (max-width: 480px) {
             #myBoard {
-                width: min(70vw, 50vh);
-                height: min(70vw, 50vh);
-                max-width: 280px;
-                max-height: 280px;
-                min-width: 200px;
-                min-height: 200px;
+                width: min(85vw, 65vh);
+                height: min(85vw, 65vh);
+                max-width: 320px;
+                max-height: 320px;
+                min-width: 250px;
+                min-height: 250px;
             }
         }
         
