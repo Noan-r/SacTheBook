@@ -481,13 +481,102 @@
         
         /* Mode paysage (landscape) */
         @media (max-width: 480px) and (orientation: landscape) {
+            .info-section {
+                padding: 4px 8px;
+                min-height: 60px;
+                max-height: 80px;
+                overflow: hidden;
+            }
+            
+            .header-section {
+                flex-direction: row;
+                align-items: center;
+                justify-content: center;
+                gap: 4px;
+                margin-bottom: 4px;
+            }
+            
             .line-and-controls-container {
                 flex-direction: row;
                 align-items: center;
                 justify-content: center;
-                gap: 8px;
+                gap: 4px;
                 width: 100%;
-                flex-wrap: wrap;
+                flex-wrap: nowrap;
+            }
+            
+            .line-selector {
+                flex: 1;
+                min-width: 0;
+                margin-bottom: 0;
+                max-width: 150px;
+            }
+            
+            .line-selector select {
+                font-size: 10px;
+                padding: 3px 4px;
+                margin-bottom: 0;
+            }
+            
+            .line-selector label {
+                font-size: 9px;
+                margin-bottom: 1px;
+            }
+            
+            .controls-and-switch {
+                flex-shrink: 0;
+                gap: 3px;
+            }
+            
+            .controls {
+                display: flex;
+                gap: 2px;
+                margin: 0;
+                flex-shrink: 0;
+            }
+            
+            .controls .btn {
+                padding: 3px 1px;
+                font-size: 0.6em;
+                min-width: 25px;
+            }
+            
+            .switch-container {
+                padding: 2px 3px;
+                gap: 2px;
+                font-size: 0.6em;
+            }
+            
+            .switch-label-left,
+            .switch-label-right {
+                font-size: 0.6em;
+            }
+        }
+        
+        /* Mode paysage pour écrans plus larges */
+        @media (min-width: 481px) and (orientation: landscape) {
+            .info-section {
+                padding: 6px 12px;
+                min-height: 80px;
+                max-height: 100px;
+                overflow: hidden;
+            }
+            
+            .header-section {
+                flex-direction: row;
+                align-items: center;
+                justify-content: center;
+                gap: 6px;
+                margin-bottom: 6px;
+            }
+            
+            .line-and-controls-container {
+                flex-direction: row;
+                align-items: center;
+                justify-content: center;
+                gap: 6px;
+                width: 100%;
+                flex-wrap: nowrap;
             }
             
             .line-selector {
@@ -510,7 +599,7 @@
             
             .controls-and-switch {
                 flex-shrink: 0;
-                gap: 5px;
+                gap: 6px;
             }
             
             .controls {
@@ -521,81 +610,20 @@
             }
             
             .controls .btn {
-                padding: 4px 2px;
-                font-size: 0.7em;
+                padding: 5px 3px;
+                font-size: 0.75em;
                 min-width: 30px;
             }
             
             .switch-container {
-                padding: 3px 5px;
+                padding: 4px 6px;
                 gap: 3px;
-                font-size: 0.7em;
+                font-size: 0.75em;
             }
             
-            .header-section {
-                flex-direction: column;
-                align-items: center;
-                gap: 6px;
-            }
-        }
-        
-        /* Mode paysage pour écrans plus larges */
-        @media (min-width: 481px) and (orientation: landscape) {
-            .line-and-controls-container {
-                flex-direction: row;
-                align-items: center;
-                justify-content: center;
-                gap: 10px;
-                width: 100%;
-                flex-wrap: wrap;
-            }
-            
-            .line-selector {
-                flex: 1;
-                min-width: 0;
-                margin-bottom: 0;
-                max-width: 250px;
-            }
-            
-            .line-selector select {
-                font-size: 13px;
-                padding: 8px;
-                margin-bottom: 0;
-            }
-            
-            .line-selector label {
-                font-size: 12px;
-                margin-bottom: 4px;
-            }
-            
-            .controls-and-switch {
-                flex-shrink: 0;
-                gap: 8px;
-            }
-            
-            .controls {
-                display: flex;
-                gap: 4px;
-                margin: 0;
-                flex-shrink: 0;
-            }
-            
-            .controls .btn {
-                padding: 6px 4px;
-                font-size: 0.8em;
-                min-width: 35px;
-            }
-            
-            .switch-container {
-                padding: 5px 7px;
-                gap: 4px;
-                font-size: 0.8em;
-            }
-            
-            .header-section {
-                flex-direction: column;
-                align-items: center;
-                gap: 8px;
+            .switch-label-left,
+            .switch-label-right {
+                font-size: 0.75em;
             }
         }
 
@@ -614,18 +642,26 @@
         
         /* Optimisation pour afficher le switch sur la même ligne quand l'espace le permet */
         @media (min-width: 600px) {
+            .info-section {
+                padding: 8px 15px;
+                min-height: 100px;
+                max-height: 120px;
+                overflow: hidden;
+            }
+            
             .header-section {
                 flex-direction: row;
                 align-items: center;
                 justify-content: center;
-                gap: 15px;
+                gap: 10px;
+                margin-bottom: 8px;
             }
             
             .line-and-controls-container {
                 flex-direction: row;
                 align-items: center;
                 justify-content: center;
-                gap: 15px;
+                gap: 10px;
                 width: auto;
                 flex-wrap: nowrap;
             }
@@ -641,13 +677,13 @@
                 flex-direction: row;
                 align-items: center;
                 justify-content: center;
-                gap: 15px;
+                gap: 10px;
             }
             
             .switch-container {
                 flex-shrink: 0;
                 margin-bottom: 0;
-                padding: 8px 12px;
+                padding: 6px 10px;
             }
         }
         
