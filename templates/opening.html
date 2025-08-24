@@ -153,6 +153,11 @@
             margin-bottom: 15px; /* Marge en bas de la page */
         }
         
+        /* Marge forcée pour tous les écrans */
+        .game-container {
+            padding-bottom: 15px;
+        }
+        
         .board-section {
             order: 2; /* Garantit que l'échiquier reste au milieu */
         }
@@ -662,6 +667,11 @@
                 margin-bottom: 20px; /* Marge en bas pour les écrans larges */
             }
             
+            /* Marge spécifique pour les grands écrans */
+            .game-container {
+                padding-bottom: 20px;
+            }
+            
             .header-section {
                 flex-direction: row;
                 align-items: center;
@@ -697,6 +707,17 @@
                 flex-shrink: 0;
                 margin-bottom: 0;
                 padding: 6px 10px;
+            }
+        }
+        
+        /* Très grands écrans */
+        @media (min-width: 1200px) {
+            .bottom-section {
+                margin-bottom: 30px; /* Marge plus importante pour les très grands écrans */
+            }
+            
+            .game-container {
+                padding-bottom: 30px;
             }
         }
         
