@@ -460,9 +460,6 @@ def opening_page(opening_name):
     
     orientation = 'black' if category == 'Defense' else 'white'
     
-    print(f"DEBUG opening_page: opening_name='{opening_name}', category='{category}', orientation='{orientation}'")
-    print(f"DEBUG opening_page: lines count={len(lines) if lines else 0}")
-    
     return render_template('opening.html', opening_name=opening_name, lines=lines, orientation=orientation)
 
 @app.route('/openings/settings', methods=['GET'])
@@ -804,8 +801,8 @@ def delete_variation():
 def delete_opening():
     # Accepte JSON ou form classique
     if request.is_json:
-        data = request.get_json()
-        category = data.get('category')
+    data = request.get_json()
+    category = data.get('category')
         name = data.get('name')
     else:
         category = request.form.get('category')
@@ -1483,7 +1480,7 @@ if __name__ == '__main__':
     print("=" * 50)
     
     try:
-        app.run(host=config.HOST, port=config.PORT, debug=config.DEBUG) 
+    app.run(host=config.HOST, port=config.PORT, debug=config.DEBUG) 
     except Exception as e:
         print(f"❌ Erreur lors du démarrage: {e}")
         input("Appuyez sur Entrée pour continuer...") 

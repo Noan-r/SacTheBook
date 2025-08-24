@@ -2187,8 +2187,8 @@
         <div style="margin-top: 5px; font-size: 10px;">
             <button onclick="toggleDiagnostic()" style="background: #333; color: white; border: none; padding: 2px 4px; border-radius: 3px; font-size: 10px;">Masquer</button>
         </div>
-    </div>
-
+                </div>
+                
     <div class="game-container">
         <div class="unified-section">
             <!-- En-tête avec pion, titre, boutons et switch -->
@@ -2301,11 +2301,20 @@
         
         // === FONCTION GLOBALE POUR FORCER L'ORIENTATION ===
         function forceBoardOrientation() {
+            console.log('=== FORCE BOARD ORIENTATION DEBUG ===');
+            console.log('Board exists:', !!board);
+            console.log('Orientation value:', orientation);
+            console.log('Orientation type:', typeof orientation);
+            console.log('Board orientation:', board ? board.orientation() : 'no board');
+            
             if (board && orientation && board.orientation() !== orientation) {
                 console.log('FORCE ORIENTATION: Changing from', board.orientation(), 'to', orientation);
                 board.orientation(orientation);
                 board.position(game.fen());
+                console.log('Orientation changed successfully');
                 return true;
+            } else {
+                console.log('No orientation change needed or possible');
             }
             return false;
         }
@@ -3389,18 +3398,27 @@
             openingName = '{{ opening_name }}'; // Assignation à la variable globale
             lines = JSON.parse('{{ lines|tojson|safe }}'); // Assignation à la variable globale
             orientation = '{{ orientation }}'; // Assignation à la variable globale
+            
+            // CORRECTION CRITIQUE: Nettoyer et valider l'orientation
+            if (orientation && typeof orientation === 'string') {
+                orientation = orientation.trim().toLowerCase();
+                console.log('Orientation cleaned:', orientation);
+            } else {
+                console.error('Invalid orientation received:', orientation);
+                orientation = 'white'; // Fallback
+            }
             currentLineIndex = 0; // Initialisation de la variable globale
             
-            // DEBUG: Vérifier les données reçues
-            console.log('=== SERVER DATA DEBUG ===');
-            console.log('Raw opening_name from server:', '{{ opening_name }}');
+            // DEBUG CRITIQUE: Vérifier les données reçues du serveur
+            console.log('=== CRITICAL ORIENTATION DEBUG ===');
             console.log('Raw orientation from server:', '{{ orientation }}');
-            console.log('Raw lines from server:', '{{ lines|tojson|safe }}');
-            console.log('Parsed openingName:', openingName);
+            console.log('Raw opening_name from server:', '{{ opening_name }}');
             console.log('Parsed orientation:', orientation);
-            console.log('Parsed lines:', lines);
-            console.log('Lines length:', lines ? lines.length : 'null');
-            console.log('=== END SERVER DATA DEBUG ===');
+            console.log('Orientation type:', typeof orientation);
+            console.log('Orientation length:', orientation ? orientation.length : 'null');
+            console.log('Orientation === "black":', orientation === 'black');
+            console.log('Orientation === "white":', orientation === 'white');
+            console.log('=== END CRITICAL DEBUG ===');
             
             // Vérification périodique de l'orientation (toutes les 2 secondes)
             setInterval(function() {
@@ -3516,7 +3534,7 @@
             if (board && !board.draggable) {
                 console.log('MOBILE FIX: Re-enabling board draggable');
                 board.draggable = true;
-            }
+                }
                 
                 // PREMOVE: Si ce n'est pas le tour du joueur, activer le mode pre-move
                 if ((orientation === 'black' && game.turn() === 'w') || (orientation === 'white' && game.turn() === 'b')) {
@@ -3962,8 +3980,8 @@
                             };
                             board = Chessboard('myBoard', config);
                             forceBoardOrientation();
-                            setupLine();
-                            $(window).resize(board.resize);
+                    setupLine();
+                    $(window).resize(board.resize);
                         } else {
                             console.log(`Found ${pieces.length} pieces on board`);
                             // Vérifier les couleurs des pièces
@@ -4114,7 +4132,7 @@
             
             // Vérifier l'orientation
             const orientationOk = orientation === 'white' || orientation === 'black';
-            $('#orientation-status').text(`Orientation: ${orientation}`)
+            $('#orientation-status').text(`Orientation: ${orientation} (${typeof orientation})`)
                 .removeClass('ok error warning')
                 .addClass(orientationOk ? 'ok' : 'error');
             
