@@ -2373,6 +2373,11 @@
                 console.warn('orientation not yet initialized, skipping setup');
             }
             board.position(game.fen());
+            // S'assurer que l'orientation est correcte
+            if (board.orientation() !== orientation) {
+                console.log('Fixing board orientation from', board.orientation(), 'to', orientation);
+                board.orientation(orientation);
+            }
             // S'assurer que le drag-and-drop est activé pour le nouveau jeu
             board.draggable = true;
             updateStatus();
@@ -3241,6 +3246,12 @@
                 lines: lines,
                 orientation: orientation
             });
+            
+            // Vérifier l'orientation
+            console.log('Orientation définie:', orientation);
+            console.log('Type d\'orientation:', typeof orientation);
+            console.log('Orientation est black?', orientation === 'black');
+            console.log('Orientation est white?', orientation === 'white');
 
             // Check that data is valid
             if (!lines || lines.length === 0) {
@@ -3728,12 +3739,15 @@
             };
 
             console.log('Creating board with config:', config);
+            console.log('Board orientation will be:', orientation);
+            console.log('Board orientation type:', typeof orientation);
             
             try {
                 board = Chessboard('myBoard', config);
                 
                 if (board) {
                     console.log('Board created successfully');
+                    console.log('Board orientation after creation:', board.orientation());
                     setupLine();
                     $(window).resize(board.resize);
                     
