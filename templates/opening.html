@@ -2403,18 +2403,10 @@
                 console.warn('orientation not yet initialized, skipping setup');
             }
             board.position(game.fen());
-            console.log('=== SETUP LINE ORIENTATION DIAGNOSTIC ===');
-            console.log('Board orientation before fix:', board.orientation());
-            console.log('Expected orientation:', orientation);
-            console.log('Orientation types - board:', typeof board.orientation(), 'expected:', typeof orientation);
             
             // S'assurer que l'orientation est correcte
             if (board.orientation() !== orientation) {
-                console.log('Fixing board orientation from', board.orientation(), 'to', orientation);
                 board.orientation(orientation);
-                console.log('Board orientation after fix:', board.orientation());
-            } else {
-                console.log('Board orientation already correct');
             }
             // S'assurer que le drag-and-drop est activé pour le nouveau jeu
             board.draggable = true;
@@ -3279,17 +3271,7 @@
             orientation = '{{ orientation }}'; // Assignation à la variable globale
             currentLineIndex = 0; // Initialisation de la variable globale
 
-            console.log('Variables initialisées:', {
-                openingName: openingName,
-                lines: lines,
-                orientation: orientation
-            });
 
-            // Vérifier l'orientation
-            console.log('Orientation définie:', orientation);
-            console.log('Type d\'orientation:', typeof orientation);
-            console.log('Orientation est black?', orientation === 'black');
-            console.log('Orientation est white?', orientation === 'white');
 
             // Check that data is valid
             if (!lines || lines.length === 0) {
@@ -3345,12 +3327,6 @@
 
             // Event handling functions
             function onDragStart(source, piece) {
-                console.log('=== DRAG START DIAGNOSTIC ===');
-                console.log('Drag start:', source, piece, 'drillMode:', drillMode);
-                console.log('Orientation:', orientation, 'Type:', typeof orientation);
-                console.log('Game turn:', game.turn());
-                console.log('Board orientation:', board ? board.orientation() : 'board not available');
-                
                 // Empêcher le drag avec le clic droit
                 if (event && event.button === 2) {
                     return false;
@@ -3364,13 +3340,8 @@
                 const pieceColor = piece.charAt(0); // 'w' ou 'b'
                 const currentPlayerColor = orientation === 'white' ? 'w' : 'b';
                 
-                console.log('Piece color:', pieceColor, 'Current player color:', currentPlayerColor);
-                console.log('Orientation === white:', orientation === 'white');
-                console.log('Orientation === black:', orientation === 'black');
-                
                 // Si la pièce n'appartient pas au joueur actuel, empêcher le drag
                 if (pieceColor !== currentPlayerColor) {
-                    console.log('Cannot drag opponent piece:', piece, 'current player:', currentPlayerColor);
                     return false;
                 }
                 
@@ -3764,13 +3735,7 @@
         
 
 
-            // Configuration de l'échiquier avec thème de pièces alternatif
-            // Fonction pour mapper les noms de pièces vers les fichiers corrects
-            function getPieceImage(piece) {
-                // Convertir les majuscules en minuscules pour correspondre aux fichiers CDN
-                return `https://cdn.jsdelivr.net/npm/chessboardjs@1.0.0/img/chesspieces/wikipedia/${piece.toLowerCase()}.png`;
-            }
-            
+            // Configuration simple et fiable de l'échiquier
             var config = {
                 draggable: true,
                 position: 'start',
@@ -3778,56 +3743,18 @@
                 onDrop: onDrop,
                 onSnapEnd: onSnapEnd,
                 orientation: orientation,
-                pieceTheme: getPieceImage,
+                pieceTheme: '/static/img/chesspieces/wikipedia/{piece}.png',
                 showNotation: true,
                 dropOffBoard: 'snapback',
                 sparePieces: false
             };
 
-            console.log('Creating board with config:', config);
-            console.log('Board orientation will be:', orientation);
-            console.log('Board orientation type:', typeof orientation);
-            
             try {
                 board = Chessboard('myBoard', config);
                 
                 if (board) {
-                    console.log('Board created successfully');
-                    console.log('Board orientation after creation:', board.orientation());
-                    console.log('=== BOARD CREATION DIAGNOSTIC ===');
-                    console.log('Expected orientation:', orientation);
-                    console.log('Board orientation matches expected:', board.orientation() === orientation);
-                    
                     setupLine();
                     $(window).resize(board.resize);
-                    
-                    // Tester si les pièces CDN se chargent
-                    testCDNImages();
-                    
-                    // Vérifier si les pièces s'affichent après un délai
-                    setTimeout(function() {
-                        const pieces = $('.square-55d63 img');
-                        if (pieces.length === 0) {
-                            console.log('No pieces visible, forcing reload');
-                            board.destroy();
-                            config.pieceTheme = function(piece) {
-                                return `https://unpkg.com/chessboardjs@1.0.0/img/chesspieces/wikipedia/${piece.toLowerCase()}.png`;
-                            };
-                            board = Chessboard('myBoard', config);
-                    setupLine();
-                    $(window).resize(board.resize);
-                        } else {
-                            console.log(`Found ${pieces.length} pieces on board`);
-                            // Vérifier les couleurs des pièces
-                            pieces.each(function() {
-                                const src = $(this).attr('src');
-                                console.log('Piece src:', src);
-                            });
-                            
-                            // Diagnostic complet des pièces et du drag
-                            diagnosePiecesAndDrag();
-                        }
-                    }, 2000);
                 } else {
                     console.error('Failed to create board');
                 }
@@ -3835,126 +3762,9 @@
                 console.error('Error creating board:', error);
             }
             
-            // Fonction pour tester si les pièces CDN se chargent
-            function testCDNImages() {
-                const testPiece = 'wp';
-                const cdnUrl = `https://cdn.jsdelivr.net/npm/chessboardjs@1.0.0/img/chesspieces/wikipedia/${testPiece}.png`;
-                const img = new Image();
-                
-                img.onload = function() {
-                    console.log('CDN images working, using CDN');
-                };
-                
-                img.onerror = function() {
-                    console.log('CDN images failed, trying alternative CDN');
-                    // Essayer un CDN alternatif avec fonction de mapping
-                    config.pieceTheme = function(piece) {
-                        return `https://unpkg.com/chessboardjs@1.0.0/img/chesspieces/wikipedia/${piece.toLowerCase()}.png`;
-                    };
-                    if (board) {
-                        board.destroy();
-                        board = Chessboard('myBoard', config);
-                        setupLine();
-                        $(window).resize(board.resize);
-                        
-                        // Tester le CDN alternatif
-                        testAlternativeCDN();
-                    }
-                };
-                
-                img.src = cdnUrl;
-            }
+
             
-            // Fonction pour tester le CDN alternatif
-            function testAlternativeCDN() {
-                const testPiece = 'wp';
-                const altCdnUrl = `https://unpkg.com/chessboardjs@1.0.0/img/chesspieces/wikipedia/${testPiece}.png`;
-                const img = new Image();
-                
-                img.onload = function() {
-                    console.log('Alternative CDN working');
-                };
-                
-                img.onerror = function() {
-                    console.log('Alternative CDN failed, using local files');
-                    // En dernier recours, utiliser les fichiers locaux avec mapping
-                    config.pieceTheme = function(piece) {
-                        return `/static/img/chesspieces/wikipedia/${piece.toLowerCase()}.png`;
-                    };
-                    if (board) {
-                        board.destroy();
-                        board = Chessboard('myBoard', config);
-                        setupLine();
-                        $(window).resize(board.resize);
-                        
-                        // Tester les fichiers locaux
-                        testLocalFiles();
-                    }
-                };
-                
-                img.src = altCdnUrl;
-            }
-            
-            // Fonction pour tester les fichiers locaux
-            function testLocalFiles() {
-                const testPiece = 'wp';
-                const localUrl = `/static/img/chesspieces/wikipedia/${testPiece}.png`;
-                const img = new Image();
-                
-                img.onload = function() {
-                    console.log('Local files working');
-                };
-                
-                img.onerror = function() {
-                    console.log('Local files failed, using fallback CDN');
-                    // Dernier recours : utiliser un autre CDN avec mapping
-                    config.pieceTheme = function(piece) {
-                        return `https://chessboardjs.com/img/chesspieces/wikipedia/${piece.toLowerCase()}.png`;
-                    };
-                    if (board) {
-                        board.destroy();
-                        board = Chessboard('myBoard', config);
-                        setupLine();
-                        $(window).resize(board.resize);
-                    }
-                };
-                
-                img.src = localUrl;
-            }
-            
-            // Fonction de diagnostic pour vérifier les pièces et leur draggabilité
-            function diagnosePiecesAndDrag() {
-                console.log('=== PIECES AND DRAG DIAGNOSTIC ===');
-                console.log('Current orientation:', orientation);
-                console.log('Board orientation:', board ? board.orientation() : 'board not available');
-                console.log('Game turn:', game.turn());
-                
-                // Vérifier les pièces visibles
-                const pieces = $('.square-55d63 img');
-                console.log('Total pieces found:', pieces.length);
-                
-                // Vérifier les pièces par couleur
-                let whitePieces = 0;
-                let blackPieces = 0;
-                
-                pieces.each(function() {
-                    const src = $(this).attr('src');
-                    if (src.includes('w')) {
-                        whitePieces++;
-                    } else if (src.includes('b')) {
-                        blackPieces++;
-                    }
-                    console.log('Piece src:', src);
-                });
-                
-                console.log('White pieces visible:', whitePieces);
-                console.log('Black pieces visible:', blackPieces);
-                
-                // Vérifier la position du jeu
-                console.log('Game FEN:', game.fen());
-                console.log('Expected player color:', orientation === 'white' ? 'w' : 'b');
-                console.log('Current game turn:', game.turn());
-            }
+
             
             // Variables pour la sélection de pièce
             var selectedPiece = null;
