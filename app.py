@@ -6,6 +6,7 @@ import config
 import json
 import re
 import os
+import time
 from whitenoise import WhiteNoise
 import requests
 from github import Github
@@ -116,7 +117,7 @@ else:
     print("Aucun token GitHub configuré - synchronisation désactivée")
 
 def sync_to_github():
-    """Synchronise les données locales vers GitHub"""
+    """Synchronise les données locales vers GitHub avec gestion des conflits"""
     if not github_client:
         return {'success': False, 'error': 'GitHub non configuré'}
     
@@ -126,69 +127,104 @@ def sync_to_github():
         
         # Lire le fichier JSON local
         with open('data/openings.json', 'r', encoding='utf-8') as f:
-            content = f.read()
+            local_content = f.read()
         
-        # Calculer le hash du contenu
-        content_hash = hashlib.sha256(content.encode()).hexdigest()
+        # Calculer le hash du contenu local
+        local_hash = hashlib.sha256(local_content.encode()).hexdigest()
         
         # Récupérer le repo
         repo = github_client.get_repo(GITHUB_REPO)
         
         try:
-            # Essayer de récupérer le fichier existant
+            # Récupérer le fichier GitHub
             file = repo.get_contents(GITHUB_FILE_PATH, ref=GITHUB_BRANCH)
-            current_sha = file.sha
+            github_content = base64.b64decode(file.content).decode('utf-8')
+            github_hash = hashlib.sha256(github_content.encode()).hexdigest()
             
             # Vérifier si le contenu a changé
-            if file.content == base64.b64encode(content.encode()).decode():
-                return {'success': True, 'message': 'Aucun changement détecté'}
+            if local_hash == github_hash:
+                return {'success': True, 'message': 'Aucun changement détecté', 'status': 'no_changes'}
             
-            # Mettre à jour le fichier
-            commit_message = f"Sync openings data - {content_hash[:8]}"
-            repo.update_file(
-                GITHUB_FILE_PATH,
-                commit_message,
-                content,
-                current_sha,
-                branch=GITHUB_BRANCH
-            )
-            
-            return {'success': True, 'message': 'Données synchronisées vers GitHub'}
+            # Vérifier s'il y a des modifications locales non sauvegardées
+            if local_hash != github_hash:
+                # Créer une sauvegarde locale avant synchronisation
+                backup_path = f'data/openings_backup_{int(time.time())}.json'
+                with open(backup_path, 'w', encoding='utf-8') as f:
+                    f.write(local_content)
+                
+                # Mettre à jour le fichier GitHub
+                commit_message = f"Sync openings data - {local_hash[:8]} - {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
+                repo.update_file(
+                    GITHUB_FILE_PATH,
+                    commit_message,
+                    local_content,
+                    file.sha,
+                    branch=GITHUB_BRANCH
+                )
+                
+                print(f"DEBUG: Synchronisation vers GitHub réussie. Backup créé: {backup_path}")
+                return {
+                    'success': True, 
+                    'message': 'Données synchronisées vers GitHub', 
+                    'status': 'synced',
+                    'backup_created': backup_path,
+                    'local_hash': local_hash[:8],
+                    'github_hash': github_hash[:8]
+                }
             
         except Exception as e:
             if "Not Found" in str(e):
                 # Le fichier n'existe pas, le créer
-                commit_message = f"Initial sync openings data - {content_hash[:8]}"
+                commit_message = f"Initial sync openings data - {local_hash[:8]} - {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
                 repo.create_file(
                     GITHUB_FILE_PATH,
                     commit_message,
-                    content,
+                    local_content,
                     branch=GITHUB_BRANCH
                 )
-                return {'success': True, 'message': 'Fichier créé sur GitHub'}
+                return {'success': True, 'message': 'Fichier créé sur GitHub', 'status': 'created'}
             else:
                 raise e
                 
     except Exception as e:
         print(f"Erreur lors de la synchronisation GitHub: {e}")
-        return {'success': False, 'error': str(e)}
+        return {'success': False, 'error': str(e), 'status': 'error'}
 
 def sync_from_github():
-    """Synchronise les données depuis GitHub vers local"""
+    """Synchronise les données depuis GitHub vers local avec gestion des conflits"""
     if not github_client:
         return {'success': False, 'error': 'GitHub non configuré'}
     
     try:
+        # Lire le contenu local actuel
+        try:
+            with open('data/openings.json', 'r', encoding='utf-8') as f:
+                local_content = f.read()
+            local_hash = hashlib.sha256(local_content.encode()).hexdigest()
+        except FileNotFoundError:
+            local_content = ""
+            local_hash = ""
+        
         # Récupérer le repo
         repo = github_client.get_repo(GITHUB_REPO)
         
         # Récupérer le fichier depuis GitHub
         file = repo.get_contents(GITHUB_FILE_PATH, ref=GITHUB_BRANCH)
-        content = base64.b64decode(file.content).decode('utf-8')
+        github_content = base64.b64decode(file.content).decode('utf-8')
+        github_hash = hashlib.sha256(github_content.encode()).hexdigest()
         
-        # Sauvegarder localement
+        # Vérifier s'il y a des modifications locales non sauvegardées
+        if local_hash and local_hash != github_hash:
+            # Créer une sauvegarde des modifications locales
+            backup_path = f'data/openings_local_backup_{int(time.time())}.json'
+            with open(backup_path, 'w', encoding='utf-8') as f:
+                f.write(local_content)
+            
+            print(f"DEBUG: Modifications locales détectées. Backup créé: {backup_path}")
+        
+        # Sauvegarder le contenu GitHub localement
         with open('data/openings.json', 'w', encoding='utf-8') as f:
-            f.write(content)
+            f.write(github_content)
         
         # Recharger les données en mémoire
         config.load_openings_from_json()
@@ -199,11 +235,18 @@ def sync_from_github():
         
         print(f"DEBUG: Synchronisation depuis GitHub réussie. Trainer recréé avec {len(trainer.get_openings_by_category())} catégories")
         
-        return {'success': True, 'message': 'Données synchronisées depuis GitHub'}
+        return {
+            'success': True, 
+            'message': 'Données synchronisées depuis GitHub',
+            'status': 'synced',
+            'local_hash': local_hash[:8] if local_hash else 'none',
+            'github_hash': github_hash[:8],
+            'backup_created': backup_path if local_hash and local_hash != github_hash else None
+        }
         
     except Exception as e:
         print(f"Erreur lors de la synchronisation depuis GitHub: {e}")
-        return {'success': False, 'error': str(e)}
+        return {'success': False, 'error': str(e), 'status': 'error'}
 
 # Configuration pour les fichiers statiques avec en-têtes optimisés
 @app.after_request
@@ -865,12 +908,42 @@ def delete_opening():
 def sync_to_github_route():
     """Synchronise les données locales vers GitHub"""
     result = sync_to_github()
+    
+    # Ajouter des informations supplémentaires
+    if result.get('success'):
+        # Vérifier l'état après synchronisation
+        status_result = sync_status()
+        if hasattr(status_result, 'json'):
+            status_data = status_result.json
+        else:
+            status_data = {}
+        
+        result.update({
+            'sync_status': status_data.get('status'),
+            'timestamp': datetime.now().isoformat()
+        })
+    
     return jsonify(result)
 
 @app.route('/openings/settings/sync_from_github', methods=['POST'])
 def sync_from_github_route():
     """Synchronise les données depuis GitHub vers local"""
     result = sync_from_github()
+    
+    # Ajouter des informations supplémentaires
+    if result.get('success'):
+        # Vérifier l'état après synchronisation
+        status_result = sync_status()
+        if hasattr(status_result, 'json'):
+            status_data = status_result.json
+        else:
+            status_data = {}
+        
+        result.update({
+            'sync_status': status_data.get('status'),
+            'timestamp': datetime.now().isoformat()
+        })
+    
     return jsonify(result)
 
 @app.route('/openings/settings/github_status', methods=['GET'])
@@ -910,6 +983,119 @@ def test_sync_status():
             'local_file_size': 0,
             'trainer_categories': 0,
             'config_categories': 0
+        })
+
+@app.route('/restore_backup/<filename>', methods=['POST'])
+def restore_backup(filename):
+    """Restaure une sauvegarde spécifique"""
+    try:
+        backup_path = os.path.join('data', filename)
+        if not os.path.exists(backup_path):
+            return jsonify({'success': False, 'error': 'Sauvegarde non trouvée'}), 404
+        
+        # Lire la sauvegarde
+        with open(backup_path, 'r', encoding='utf-8') as f:
+            backup_content = f.read()
+        
+        # Créer une sauvegarde de l'état actuel
+        current_backup = f'data/restore_backup_{int(time.time())}.json'
+        try:
+            with open('data/openings.json', 'r', encoding='utf-8') as f:
+                current_content = f.read()
+            with open(current_backup, 'w', encoding='utf-8') as f:
+                f.write(current_content)
+        except FileNotFoundError:
+            pass
+        
+        # Restaurer la sauvegarde
+        with open('data/openings.json', 'w', encoding='utf-8') as f:
+            f.write(backup_content)
+        
+        # Recharger les données
+        config.load_openings_from_json()
+        global trainer
+        trainer = OpeningTrainer()
+        
+        return jsonify({
+            'success': True,
+            'message': f'Sauvegarde {filename} restaurée',
+            'backup_restored': filename,
+            'current_backup': current_backup if os.path.exists(current_backup) else None
+        })
+        
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@app.route('/sync_status', methods=['GET'])
+def sync_status():
+    """Vérifie l'état de synchronisation entre local et GitHub"""
+    if not github_client:
+        return jsonify({
+            'github_configured': False,
+            'status': 'github_not_configured'
+        })
+    
+    try:
+        # Lire le contenu local
+        try:
+            with open('data/openings.json', 'r', encoding='utf-8') as f:
+                local_content = f.read()
+            local_hash = hashlib.sha256(local_content.encode()).hexdigest()
+        except FileNotFoundError:
+            local_content = ""
+            local_hash = ""
+        
+        # Récupérer le contenu GitHub
+        try:
+            repo = github_client.get_repo(GITHUB_REPO)
+            file = repo.get_contents(GITHUB_FILE_PATH, ref=GITHUB_BRANCH)
+            github_content = base64.b64decode(file.content).decode('utf-8')
+            github_hash = hashlib.sha256(github_content.encode()).hexdigest()
+            github_available = True
+        except Exception as e:
+            github_content = ""
+            github_hash = ""
+            github_available = False
+            github_error = str(e)
+        
+        # Déterminer l'état de synchronisation
+        if not local_hash and not github_hash:
+            status = 'both_empty'
+        elif not local_hash:
+            status = 'local_empty'
+        elif not github_hash:
+            status = 'github_empty'
+        elif local_hash == github_hash:
+            status = 'synced'
+        else:
+            status = 'out_of_sync'
+        
+        # Vérifier les sauvegardes existantes
+        backup_files = []
+        if os.path.exists('data'):
+            for file in os.listdir('data'):
+                if file.startswith('openings_backup_') or file.startswith('openings_local_backup_'):
+                    backup_files.append(file)
+        
+        return jsonify({
+            'github_configured': True,
+            'github_available': github_available,
+            'status': status,
+            'local_hash': local_hash[:8] if local_hash else None,
+            'github_hash': github_hash[:8] if github_hash else None,
+            'local_size': len(local_content),
+            'github_size': len(github_content),
+            'backup_files': backup_files,
+            'last_check': datetime.now().isoformat(),
+            'github_error': github_error if not github_available else None
+        })
+        
+    except Exception as e:
+        return jsonify({
+            'github_configured': True,
+            'status': 'error',
+            'error': str(e),
+            'last_check': datetime.now().isoformat()
         })
 
 @app.route('/test_orientation/<opening_name>')
