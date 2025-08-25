@@ -222,6 +222,15 @@
             .bottom-section.drill-mode {
                 margin-bottom: 20px;
             }
+            
+            /* Même règles pour le mode learn */
+            .game-container:not(.drill-mode) {
+                padding-bottom: 20px;
+            }
+            
+            .bottom-section:not(.drill-mode) {
+                margin-bottom: 20px;
+            }
         }
         
         @media (max-width: 480px) {
@@ -232,9 +241,18 @@
             .bottom-section.drill-mode {
                 margin-bottom: 15px;
             }
+            
+            /* Même règles pour le mode learn */
+            .game-container:not(.drill-mode) {
+                padding-bottom: 15px;
+            }
+            
+            .bottom-section:not(.drill-mode) {
+                margin-bottom: 15px;
+            }
         }
         
-        /* Limitation de taille pour les écrans très larges */
+        /* Limitation de taille pour les écrans très larges (applicable aux deux modes) */
         @media (min-width: 1200px) {
             .unified-section {
                 max-width: min(800px, 70vw);
@@ -255,6 +273,12 @@
                 height: min(65vh, 65vw);
                 max-width: 400px;
                 max-height: 400px;
+            }
+            
+            /* Ajustements spécifiques pour le mode learn */
+            .info-section:not(.drill-mode) {
+                min-height: 120px;
+                max-height: 140px;
             }
         }
         
@@ -279,9 +303,15 @@
                 max-width: 350px;
                 max-height: 350px;
             }
+            
+            /* Ajustements spécifiques pour le mode learn */
+            .info-section:not(.drill-mode) {
+                min-height: 100px;
+                max-height: 120px;
+            }
         }
         
-        /* Ajustements basés sur la hauteur de l'écran */
+        /* Ajustements basés sur la hauteur de l'écran (applicable aux deux modes) */
         @media (max-height: 600px) {
             .header h1 {
                 font-size: 1.4em;
@@ -295,6 +325,13 @@
             .unified-section {
                 gap: 4px;
                 padding: 2px 20px;
+            }
+            
+            /* Ajustements spécifiques pour le mode learn */
+            .info-section:not(.drill-mode) {
+                min-height: 80px;
+                max-height: 100px;
+                padding: 8px;
             }
         }
         
@@ -311,6 +348,13 @@
             .unified-section {
                 gap: 2px;
                 padding: 1px 15px;
+            }
+            
+            /* Ajustements spécifiques pour le mode learn */
+            .info-section:not(.drill-mode) {
+                min-height: 60px;
+                max-height: 80px;
+                padding: 6px;
             }
         }
         
@@ -332,6 +376,15 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+        }
+        
+        /* Marges spécifiques pour le mode learn (même que drill) */
+        .game-container:not(.drill-mode) {
+            padding-bottom: 25px; /* Même espace que le mode drill */
+        }
+        
+        .bottom-section:not(.drill-mode) {
+            margin-bottom: 25px; /* Même espace que le mode drill */
         }
         
         /* Style pour les points de highlight des coups légaux */
@@ -3694,6 +3747,12 @@
                     resetGame();
                 }
                 
+                // Ajuster les marges et la taille après le changement de mode
+                setTimeout(function() {
+                    adjustBoardSize();
+                    adjustMarginsForMode();
+                }, 100);
+                
                 // Met à jour l'affichage après le changement de mode
                 updateNavigationButtons();
             });
@@ -4791,15 +4850,43 @@
                     'max-height': optimalSize + 'px'
                 });
                 
-                console.log('Board size adjusted to:', optimalSize + 'px (height-based)');
+                // Ajuster les marges selon le mode (drill ou learn)
+                const isDrillMode = $('.game-container').hasClass('drill-mode');
+                const marginBottom = isDrillMode ? '25px' : '25px'; // Même marge pour les deux modes
+                
+                $('.bottom-section').css('margin-bottom', marginBottom);
+                $('.game-container').css('padding-bottom', marginBottom);
+                
+                console.log('Board size adjusted to:', optimalSize + 'px (height-based, mode:', isDrillMode ? 'drill' : 'learn', ')');
             }
         }
         
+        // Fonction pour ajuster les marges selon le mode
+        function adjustMarginsForMode() {
+            const isDrillMode = $('.game-container').hasClass('drill-mode');
+            
+            if (isDrillMode) {
+                $('.game-container').addClass('drill-mode');
+                $('.bottom-section').addClass('drill-mode');
+            } else {
+                $('.game-container').removeClass('drill-mode');
+                $('.bottom-section').removeClass('drill-mode');
+            }
+            
+            console.log('Marges ajustées pour le mode:', isDrillMode ? 'drill' : 'learn');
+        }
+        
         // Ajuster la taille au chargement et au redimensionnement
-        $(window).on('resize', adjustBoardSize);
+        $(window).on('resize', function() {
+            adjustBoardSize();
+            adjustMarginsForMode();
+        });
         
         // Ajuster après un délai pour s'assurer que tout est chargé
-        setTimeout(adjustBoardSize, 500);
+        setTimeout(function() {
+            adjustBoardSize();
+            adjustMarginsForMode();
+        }, 500);
     </script>
 </body>
 </html>
