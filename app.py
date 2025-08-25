@@ -193,6 +193,12 @@ def sync_from_github():
         # Recharger les données en mémoire
         config.load_openings_from_json()
         
+        # Recréer l'instance trainer globale avec les nouvelles données
+        global trainer
+        trainer = OpeningTrainer()
+        
+        print(f"DEBUG: Synchronisation depuis GitHub réussie. Trainer recréé avec {len(trainer.get_openings_by_category())} catégories")
+        
         return {'success': True, 'message': 'Données synchronisées depuis GitHub'}
         
     except Exception as e:
@@ -876,6 +882,35 @@ def github_status():
         'branch': GITHUB_BRANCH,
         'file_path': GITHUB_FILE_PATH
     })
+
+@app.route('/test_sync_status', methods=['GET'])
+def test_sync_status():
+    """Route de test pour vérifier l'état de la synchronisation"""
+    try:
+        # Vérifier le fichier local
+        with open('data/openings.json', 'r', encoding='utf-8') as f:
+            local_content = f.read()
+        
+        # Vérifier le trainer
+        trainer_categories = len(trainer.get_openings_by_category()) if trainer else 0
+        
+        # Vérifier config
+        config_categories = len(config.OPENINGS) if hasattr(config, 'OPENINGS') else 0
+        
+        return jsonify({
+            'local_file_size': len(local_content),
+            'trainer_categories': trainer_categories,
+            'config_categories': config_categories,
+            'trainer_available': trainer is not None,
+            'config_available': hasattr(config, 'OPENINGS')
+        })
+    except Exception as e:
+        return jsonify({
+            'error': str(e),
+            'local_file_size': 0,
+            'trainer_categories': 0,
+            'config_categories': 0
+        })
 
 @app.route('/test_orientation/<opening_name>')
 def test_orientation(opening_name):
