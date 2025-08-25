@@ -1553,4 +1553,4 @@ if __name__ == '__main__':
         app.run(host=config.HOST, port=config.PORT, debug=config.DEBUG) 
     except Exception as e:
         print(f"❌ Erreur lors du démarrage: {e}")
-        input("Appuyez sur Entrée pour continuer...") 
+        input("Appuyez sur Entrée pour continuer...")
