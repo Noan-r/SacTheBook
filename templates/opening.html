@@ -1248,7 +1248,7 @@
             border: 2px solid #F47C20;
             border-radius: 20px;
             padding: 3px 30px;
-            max-width: 900px;
+            max-width: 800px; /* Réduit pour éviter les éléments trop gros */
             width: calc(100% - 60px);
             margin: 1px 30px 0 30px; /* Marge minimale */
             display: flex;
@@ -1264,6 +1264,40 @@
         .unified-section.drill-mode,
         .unified-section:not(.drill-mode) {
             margin-top: 2px !important; /* Écart fixe et petit */
+        }
+        
+        /* Ajustements pour les écrans larges */
+        @media (min-width: 1200px) {
+            .unified-section {
+                max-width: 700px; /* Encore plus réduit sur très grands écrans */
+                padding: 3px 25px;
+            }
+            
+            .header h1 {
+                font-size: 1.8em; /* Réduit sur grands écrans */
+            }
+            
+            .controls .btn {
+                padding: 12px 20px;
+                font-size: 0.9em; /* Réduit sur grands écrans */
+            }
+        }
+        
+        /* Ajustements pour les écrans très larges */
+        @media (min-width: 1400px) {
+            .unified-section {
+                max-width: 600px; /* Encore plus réduit sur très très grands écrans */
+                padding: 3px 20px;
+            }
+            
+            .header h1 {
+                font-size: 1.6em; /* Encore plus réduit */
+            }
+            
+            .controls .btn {
+                padding: 10px 18px;
+                font-size: 0.85em; /* Encore plus réduit */
+            }
         }
         
         /* Ajustements pour tous les écrans */
@@ -1288,7 +1322,7 @@
             }
             
             .unified-section {
-                max-width: 700px;
+                max-width: 600px; /* Réduit pour tablette */
                 padding: 0px 20px;
                 gap: 2px;
                 width: calc(100% - 40px);
@@ -1319,12 +1353,12 @@
             }
             
             #myBoard {
-                width: min(75vw, 60vh);
-                height: min(75vw, 60vh);
-                max-width: 400px;
-                max-height: 400px;
-                min-width: 250px;
-                min-height: 250px;
+                width: min(70vw, 55vh); /* Réduit pour tablette */
+                height: min(70vw, 55vh); /* Réduit pour tablette */
+                max-width: 350px; /* Réduit pour tablette */
+                max-height: 350px; /* Réduit pour tablette */
+                min-width: 240px;
+                min-height: 240px;
             }
         }
         
@@ -1349,7 +1383,7 @@
             }
             
             .unified-section {
-                max-width: 550px;
+                max-width: 400px; /* Réduit pour mobile */
                 padding: 0px 15px;
                 gap: 1px;
                 width: calc(100% - 30px);
@@ -1386,12 +1420,12 @@
             }
             
             #myBoard {
-                width: min(90vw, 75vh);
-                height: min(90vw, 75vh);
-                max-width: 350px;
-                max-height: 350px;
-                min-width: 220px;
-                min-height: 220px;
+                width: min(80vw, 60vh); /* Réduit pour mobile */
+                height: min(80vw, 60vh); /* Réduit pour mobile */
+                max-width: 300px; /* Réduit pour mobile */
+                max-height: 300px; /* Réduit pour mobile */
+                min-width: 200px;
+                min-height: 200px;
             }
         }
         
@@ -4696,10 +4730,22 @@
                 const bottomHeight = bottomSection.outerHeight(true);
                 const availableHeight = containerHeight - headerHeight - bottomHeight - 40; // 40px de marge
                 
-                // Calculer la taille optimale de l'échiquier
-                const maxSize = Math.min(availableHeight, window.innerWidth * 0.8);
-                const minSize = 220; // Taille minimale
-                const optimalSize = Math.max(minSize, Math.min(maxSize, 500)); // Limite à 500px max
+                // Calculer la taille optimale de l'échiquier selon la largeur d'écran
+                let maxSize;
+                if (window.innerWidth >= 1400) {
+                    maxSize = Math.min(availableHeight, 400); // Limite pour très très grands écrans
+                } else if (window.innerWidth >= 1200) {
+                    maxSize = Math.min(availableHeight, 450); // Limite pour très grands écrans
+                } else if (window.innerWidth >= 768) {
+                    maxSize = Math.min(availableHeight, 400); // Limite pour écrans moyens
+                } else if (window.innerWidth >= 480) {
+                    maxSize = Math.min(availableHeight, 350); // Limite pour tablettes
+                } else {
+                    maxSize = Math.min(availableHeight, 300); // Limite pour mobile
+                }
+                
+                const minSize = 200; // Taille minimale réduite
+                const optimalSize = Math.max(minSize, Math.min(maxSize, 450)); // Limite maximale réduite
                 
                 // Appliquer la taille calculée
                 board.css({
@@ -4709,7 +4755,7 @@
                     'max-height': optimalSize + 'px'
                 });
                 
-                console.log('Board size adjusted to:', optimalSize + 'px');
+                console.log('Board size adjusted to:', optimalSize + 'px', 'for screen width:', window.innerWidth);
             }
         }
         
