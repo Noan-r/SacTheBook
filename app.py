@@ -607,9 +607,21 @@ def add_opening():
         
         if opening_added:
             print(f"DEBUG: Ouverture '{name}' confirmée dans la structure")
-            response = {'success': True}
+            response = {
+                'success': True,
+                'message': f'Ouverture "{name}" ajoutée avec succès',
+                'opening': {
+                    'category': category,
+                    'name': name.strip()
+                },
+                'timestamp': datetime.now().isoformat()
+            }
             if github_result:
                 response['github_sync'] = github_result
+                if github_result.get('success'):
+                    response['message'] += ' et synchronisée avec GitHub'
+                else:
+                    response['message'] += ' (erreur de synchronisation GitHub)'
             return jsonify(response)
         else:
             print(f"DEBUG: ERREUR - Ouverture '{name}' non trouvée après ajout")
@@ -955,6 +967,28 @@ def github_status():
         'branch': GITHUB_BRANCH,
         'file_path': GITHUB_FILE_PATH
     })
+
+@app.route('/openings/settings/get_openings', methods=['GET'])
+def get_openings():
+    """Retourne les ouvertures mises à jour"""
+    try:
+        # Recharger les données depuis le fichier
+        config.load_openings_from_json()
+        
+        # Recréer l'instance trainer avec les données mises à jour
+        global trainer
+        trainer = OpeningTrainer()
+        
+        return jsonify({
+            'success': True,
+            'openings': config.OPENINGS,
+            'timestamp': datetime.now().isoformat()
+        })
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
 
 @app.route('/test_sync_status', methods=['GET'])
 def test_sync_status():

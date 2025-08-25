@@ -515,7 +515,86 @@
                     }, 100);
                 });
             });
+            
+            // Vérifier périodiquement l'état de synchronisation
+            checkSyncStatus();
         });
+        
+        // Fonction pour vérifier l'état de synchronisation
+        function checkSyncStatus() {
+            fetch('/sync_status', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.github_configured && data.status === 'out_of_sync') {
+                    console.log('⚠️ Synchronisation requise:', data);
+                    // Afficher une notification discrète
+                    showSyncNotification();
+                }
+            })
+            .catch(error => {
+                console.log('Erreur lors de la vérification de synchronisation:', error);
+            });
+        }
+        
+        // Fonction pour afficher une notification de synchronisation
+        function showSyncNotification() {
+            const notification = document.createElement('div');
+            notification.innerHTML = `
+                <div style="
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: #FF9800;
+                    color: white;
+                    padding: 15px 20px;
+                    border-radius: 8px;
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                    z-index: 10000;
+                    font-size: 14px;
+                    max-width: 300px;
+                    animation: slideIn 0.3s ease-out;
+                ">
+                    <strong>🔄 Synchronisation requise</strong><br>
+                    Des modifications sont disponibles sur GitHub
+                    <button onclick="this.parentElement.remove()" style="
+                        background: none;
+                        border: none;
+                        color: white;
+                        font-size: 18px;
+                        cursor: pointer;
+                        float: right;
+                        margin-left: 10px;
+                    ">×</button>
+                </div>
+            `;
+            
+            // Ajouter l'animation CSS si elle n'existe pas
+            if (!document.querySelector('#sync-notification-style')) {
+                const style = document.createElement('style');
+                style.id = 'sync-notification-style';
+                style.textContent = `
+                    @keyframes slideIn {
+                        from { transform: translateX(100%); opacity: 0; }
+                        to { transform: translateX(0); opacity: 1; }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+            
+            document.body.appendChild(notification);
+            
+            // Supprimer automatiquement après 10 secondes
+            setTimeout(() => {
+                if (notification.parentElement) {
+                    notification.remove();
+                }
+            }, 10000);
+        }
     </script>
 </body>
 </html> 
