@@ -150,12 +150,12 @@
             gap: 10px; /* Réduit l'espace entre les éléments */
             width: 100%;
             order: 3; /* Garantit que cette section reste après l'échiquier */
-            margin-bottom: 15px; /* Marge en bas de la page */
+            margin-bottom: 20px; /* Marge en bas de la page - augmentée */
         }
         
         /* Marge forcée pour tous les écrans */
         .game-container {
-            padding-bottom: 15px;
+            padding-bottom: 20px; /* Augmentée pour garantir l'espace */
         }
         
         .board-section {
@@ -202,6 +202,36 @@
             display: block;
             margin: 20px 0;
             min-height: 220px; /* Hauteur ajustée pour un bon équilibre */
+        }
+        
+        /* Marges spécifiques pour le mode drill */
+        .game-container.drill-mode {
+            padding-bottom: 25px; /* Plus d'espace en mode drill */
+        }
+        
+        .bottom-section.drill-mode {
+            margin-bottom: 25px; /* Plus d'espace en mode drill */
+        }
+        
+        /* Marges spécifiques pour le mode drill sur mobile */
+        @media (max-width: 768px) {
+            .game-container.drill-mode {
+                padding-bottom: 20px;
+            }
+            
+            .bottom-section.drill-mode {
+                margin-bottom: 20px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .game-container.drill-mode {
+                padding-bottom: 15px;
+            }
+            
+            .bottom-section.drill-mode {
+                margin-bottom: 15px;
+            }
         }
         
         .info-section.drill-mode .drill-counter h3 {
@@ -1375,12 +1405,12 @@
         }
         
         #myBoard {
-            width: min(80vh, 80vw);
-            height: min(80vh, 80vw);
-            max-width: 550px;
-            max-height: 550px;
-            min-width: 320px;
-            min-height: 320px;
+            width: min(75vh, 75vw); /* Réduit pour laisser plus d'espace */
+            height: min(75vh, 75vw); /* Réduit pour laisser plus d'espace */
+            max-width: 500px; /* Réduit pour laisser plus d'espace */
+            max-height: 500px; /* Réduit pour laisser plus d'espace */
+            min-width: 300px;
+            min-height: 300px;
             margin: 0 auto;
             border-radius: 16px;
             box-shadow: 0 4px 24px rgba(75,46,25,0.10);
@@ -1390,23 +1420,23 @@
         /* Mobile board adjustments */
         @media (max-width: 768px) {
             #myBoard {
-                width: min(90vw, 75vh);
-                height: min(90vw, 75vh);
-                max-width: 500px;
-                max-height: 500px;
-                min-width: 300px;
-                min-height: 300px;
+                width: min(85vw, 70vh); /* Réduit pour laisser plus d'espace */
+                height: min(85vw, 70vh); /* Réduit pour laisser plus d'espace */
+                max-width: 450px; /* Réduit pour laisser plus d'espace */
+                max-height: 450px; /* Réduit pour laisser plus d'espace */
+                min-width: 280px;
+                min-height: 280px;
             }
         }
         
         @media (max-width: 480px) {
             #myBoard {
-                width: min(85vw, 65vh);
-                height: min(85vw, 65vh);
-                max-width: 320px;
-                max-height: 320px;
-                min-width: 250px;
-                min-height: 250px;
+                width: min(80vw, 60vh); /* Réduit pour laisser plus d'espace */
+                height: min(80vw, 60vh); /* Réduit pour laisser plus d'espace */
+                max-width: 300px; /* Réduit pour laisser plus d'espace */
+                max-height: 300px; /* Réduit pour laisser plus d'espace */
+                min-width: 220px;
+                min-height: 220px;
             }
         }
         
@@ -3562,6 +3592,8 @@
                     drillSuccessiveOpenings = 0;
                     drillCurrentOpeningComplete = false;
                     $('.info-section').addClass('drill-mode');
+                    $('.game-container').addClass('drill-mode');
+                    $('.bottom-section').addClass('drill-mode');
                     $('#drill-counter').addClass('show');
                     $('#hint-zone').removeClass('show');
                     // Mettre à jour l'affichage du score immédiatement (même si best score = 0)
@@ -3572,6 +3604,8 @@
                 } else {
                     // Mode Learn
                     $('.info-section').removeClass('drill-mode');
+                    $('.game-container').removeClass('drill-mode');
+                    $('.bottom-section').removeClass('drill-mode');
                     $('#drill-counter').removeClass('show');
                     $('#hint-zone').addClass('show');
                     // S'assurer que le best score est masqué
@@ -4555,6 +4589,8 @@
                 // Mode Drill au démarrage
                 console.log('Initializing in Drill mode');
                 $('.info-section').addClass('drill-mode');
+                $('.game-container').addClass('drill-mode');
+                $('.bottom-section').addClass('drill-mode');
                 $('#drill-counter').addClass('show');
                 $('#hint-zone').removeClass('show');
                 // Mettre à jour l'affichage du score immédiatement (même si best score = 0)
@@ -4563,6 +4599,8 @@
                 // Mode Learn au démarrage
                 console.log('Initializing in Learn mode');
                 $('.info-section').removeClass('drill-mode');
+                $('.game-container').removeClass('drill-mode');
+                $('.bottom-section').removeClass('drill-mode');
                 $('#drill-counter').removeClass('show');
                 $('#hint-zone').addClass('show');
                 // S'assurer que le best score est masqué dès le démarrage
@@ -4644,6 +4682,42 @@
             console.log('drillOpeningDeck length:', drillOpeningDeck.length);
             console.log('========================');
         }
+        
+        // Fonction pour ajuster dynamiquement la taille de l'échiquier
+        function adjustBoardSize() {
+            const board = $('#myBoard');
+            const container = $('.game-container');
+            const headerSection = $('.header-section');
+            const bottomSection = $('.bottom-section');
+            
+            if (board.length && container.length) {
+                const containerHeight = container.height();
+                const headerHeight = headerSection.outerHeight(true);
+                const bottomHeight = bottomSection.outerHeight(true);
+                const availableHeight = containerHeight - headerHeight - bottomHeight - 40; // 40px de marge
+                
+                // Calculer la taille optimale de l'échiquier
+                const maxSize = Math.min(availableHeight, window.innerWidth * 0.8);
+                const minSize = 220; // Taille minimale
+                const optimalSize = Math.max(minSize, Math.min(maxSize, 500)); // Limite à 500px max
+                
+                // Appliquer la taille calculée
+                board.css({
+                    'width': optimalSize + 'px',
+                    'height': optimalSize + 'px',
+                    'max-width': optimalSize + 'px',
+                    'max-height': optimalSize + 'px'
+                });
+                
+                console.log('Board size adjusted to:', optimalSize + 'px');
+            }
+        }
+        
+        // Ajuster la taille au chargement et au redimensionnement
+        $(window).on('resize', adjustBoardSize);
+        
+        // Ajuster après un délai pour s'assurer que tout est chargé
+        setTimeout(adjustBoardSize, 500);
     </script>
 </body>
 </html>
