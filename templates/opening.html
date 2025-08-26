@@ -2480,20 +2480,39 @@
         var soundEnabled = true;
         var audioFiles = {};
         
-        // === FONCTION SIMPLIFIÉE POUR DÉFINIR L'ORIENTATION ===
+        // === FONCTION AGGRESSIVE POUR DÉFINIR L'ORIENTATION ===
         function setBoardOrientation() {
             if (board && orientation) {
+                // FORCER L'ORIENTATION MULTIPLES FOIS
                 board.orientation(orientation);
-                console.log('Board orientation set to:', orientation);
+                board.orientation(orientation);
+                board.orientation(orientation);
                 
-                // Force l'orientation sur mobile
+                console.log('Board orientation FORCED to:', orientation);
+                
+                // Force agressive sur mobile
                 if ('ontouchstart' in window) {
+                    // Vérifications multiples
                     setTimeout(() => {
                         if (board && board.orientation() !== orientation) {
                             board.orientation(orientation);
-                            console.log('Mobile: Forced orientation to:', orientation);
+                            console.log('Mobile: Aggressive orientation fix 1');
                         }
-                    }, 100);
+                    }, 50);
+                    
+                    setTimeout(() => {
+                        if (board && board.orientation() !== orientation) {
+                            board.orientation(orientation);
+                            console.log('Mobile: Aggressive orientation fix 2');
+                        }
+                    }, 150);
+                    
+                    setTimeout(() => {
+                        if (board && board.orientation() !== orientation) {
+                            board.orientation(orientation);
+                            console.log('Mobile: Aggressive orientation fix 3');
+                        }
+                    }, 300);
                 }
             }
         }
@@ -2502,13 +2521,29 @@
         function createBoard(config) {
             console.log('Creating board with orientation:', orientation);
             
-            // S'assurer que l'orientation est correcte dans la config
+            // FORCER L'ORIENTATION DANS LA CONFIG
             config.orientation = orientation;
             
             const newBoard = Chessboard('myBoard', config);
             if (newBoard) {
                 console.log('Board created successfully');
-                setBoardOrientation();
+                
+                // FORCER L'ORIENTATION IMMÉDIATEMENT
+                newBoard.orientation(orientation);
+                
+                // Vérification immédiate
+                if (newBoard.orientation() !== orientation) {
+                    console.log('CRITICAL: Orientation mismatch, forcing again...');
+                    newBoard.orientation(orientation);
+                }
+                
+                // Force supplémentaire sur mobile
+                if ('ontouchstart' in window) {
+                    setTimeout(() => {
+                        newBoard.orientation(orientation);
+                        console.log('Mobile: Board orientation forced to:', orientation);
+                    }, 50);
+                }
             }
             return newBoard;
         }
@@ -2694,15 +2729,23 @@
             
             // CORRECTION MOBILE: Forcer l'orientation et le drag sur mobile
             if ('ontouchstart' in window) {
-                console.log('MOBILE FIX: Applying mobile-specific fixes');
+                console.log('MOBILE FIX: Applying aggressive mobile fixes');
                 board.orientation(orientation);
                 board.draggable = true;
                 
-                // Forcer la mise à jour de l'affichage
+                // Forcer la mise à jour de l'affichage avec vérifications multiples
                 setTimeout(function() {
                     board.position(game.fen());
                     board.orientation(orientation);
+                }, 50);
+                
+                setTimeout(function() {
+                    board.orientation(orientation);
                 }, 100);
+                
+                setTimeout(function() {
+                    board.orientation(orientation);
+                }, 200);
             }
             
             // Définir l'orientation du plateau après un délai
@@ -3580,20 +3623,36 @@
                 orientation = 'white'; // Fallback
             }
             
-            // CORRECTION RADICALE: Forcer l'orientation basée sur l'URL ET le serveur
+            // CORRECTION RADICALE: Forcer l'orientation basée sur le nom de l'ouverture
             const urlPath = window.location.pathname;
             const urlOpeningName = decodeURIComponent(urlPath.split('/').pop());
-            // Utiliser directement l'orientation du serveur
-            console.log('Server orientation:', orientation);
+            
+            // DÉFINITION DÉFINITIVE DE L'ORIENTATION
+            const defenseOpenings = ['Albin Countergambit', 'Sicilian Defense', 'French Defense', 'Caro-Kann Defense'];
+            const isDefense = defenseOpenings.some(defense => 
+                urlOpeningName.includes(defense) || openingName.includes(defense)
+            );
+            
+            // FORCER L'ORIENTATION DÉFINITIVEMENT
+            orientation = isDefense ? 'black' : 'white';
+            console.log('ORIENTATION FORCÉE:', orientation, 'pour:', urlOpeningName);
             currentLineIndex = 0; // Initialisation de la variable globale
             
 
             
-            // Vérification périodique de l'orientation (plus fréquente sur mobile)
-            const checkInterval = 'ontouchstart' in window ? 2000 : 5000;
+            // Vérification périodique de l'orientation (très agressive sur mobile)
+            const checkInterval = 'ontouchstart' in window ? 1000 : 5000;
             setInterval(function() {
-                if (board && orientation && board.orientation() !== orientation) {
-                    setBoardOrientation();
+                if (board && orientation) {
+                    if (board.orientation() !== orientation) {
+                        console.log('PERIODIC FIX: Orientation mismatch detected');
+                        setBoardOrientation();
+                    }
+                    
+                    // Force supplémentaire sur mobile
+                    if ('ontouchstart' in window) {
+                        board.orientation(orientation);
+                    }
                 }
             }, checkInterval);
 
@@ -4109,10 +4168,18 @@
                         const pieces = $('.square-55d63 img');
                         console.log(`Found ${pieces.length} pieces on board`);
                         
-                        // Force l'orientation sur mobile
+                        // Force l'orientation sur mobile de manière agressive
                         if ('ontouchstart' in window && board && orientation) {
                             board.orientation(orientation);
                             console.log('Mobile: Initial orientation forced to:', orientation);
+                            
+                            // Vérifications supplémentaires
+                            setTimeout(() => {
+                                if (board.orientation() !== orientation) {
+                                    board.orientation(orientation);
+                                    console.log('Mobile: Secondary orientation fix');
+                                }
+                            }, 500);
                         }
                     }, 1000);
                 } else {
@@ -4387,6 +4454,14 @@
             });
 
             console.log('Initialization complete');
+            
+            // FORCER L'ORIENTATION AU DÉMARRAGE SUR MOBILE
+            if ('ontouchstart' in window && board && orientation) {
+                setTimeout(() => {
+                    board.orientation(orientation);
+                    console.log('Mobile: Startup orientation forced to:', orientation);
+                }, 100);
+            }
             
             // Initialiser le compteur Drill si on est en mode Drill au démarrage
             if (drillMode) {
