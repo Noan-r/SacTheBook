@@ -75,15 +75,6 @@
                 }
             ],
             "best_score": 1
-        },
-        {
-            "name": "bbb",
-            "variations": [
-                {
-                    "name": "#1 bbb",
-                    "pgn": "1. e4 e5 2. d4"
-                }
-            ]
         }
     ],
     "Defense": [
