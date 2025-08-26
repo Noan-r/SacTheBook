@@ -826,7 +826,7 @@
             {% for opening in openings if opening.category == 'Defense' %}
                 <div class="opening-block defense" id="opening-{{ opening.name.replace(' ', '_') }}">
                                             <button type="button" class="delete-opening-btn" title="Delete opening" data-category="Defense" data-name="{{ opening.name }}">✕</button>
-                    <div class="opening-title"><span style="font-size:1.2em; margin-right:6px;">♟</span>{{ opening.name }}</div>
+                    <div class="opening-title">{{ opening.name }}</div>
                     <div class="variation-list">
                         {% for var in opening.variations %}
                             <div class="variation-item" data-var-title="{{ var.name }}" data-var-pgn="{{ var.pgn }}">
