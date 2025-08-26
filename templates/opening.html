@@ -2752,6 +2752,7 @@
         
         // Fonctions globales critiques
         function setupLine() {
+            console.log('🔧 SETUP LINE START');
             isLineComplete = false;
             game.reset();
             currentMoveIndex = 0;
@@ -2766,34 +2767,34 @@
             
             if (orientation === 'black') {
                 // Pour les noirs, on doit jouer le premier coup des blancs pour être en défense
-                console.log('SETUP: Black orientation detected, need to play first white move');
-                console.log('SETUP: Lines available:', lines ? lines.length : 'null');
-                console.log('SETUP: Current line index:', currentLineIndex);
-                console.log('SETUP: Current line:', lines ? lines[currentLineIndex] : 'null');
-                console.log('SETUP: Current line moves:', lines && lines[currentLineIndex] ? lines[currentLineIndex].moves : 'null');
-                console.log('SETUP: Current move index:', currentMoveIndex);
+                console.log('🔧 BLACK ORIENTATION DETECTED');
+                console.log('🔧 Lines available:', lines ? lines.length : 'null');
+                console.log('🔧 Current line index:', currentLineIndex);
+                console.log('🔧 Current line:', lines ? lines[currentLineIndex] : 'null');
+                console.log('🔧 Current line moves:', lines && lines[currentLineIndex] ? lines[currentLineIndex].moves : 'null');
+                console.log('🔧 Current move index:', currentMoveIndex);
                 
                 if (lines && lines[currentLineIndex] && lines[currentLineIndex].moves && lines[currentLineIndex].moves.length > 0) {
                     const move = lines[currentLineIndex].moves[currentMoveIndex];
-                    console.log('SETUP: Playing first white move for defense:', move);
-                    console.log('SETUP: Move SAN:', move.san);
+                    console.log('🔧 PLAYING FIRST WHITE MOVE:', move);
+                    console.log('🔧 Move SAN:', move.san);
                     game.move(move.san);
                     currentMoveIndex++;
-                    console.log('SETUP: First move played, current move index:', currentMoveIndex);
+                    console.log('🔧 FIRST MOVE PLAYED, current move index:', currentMoveIndex);
                 } else {
-                    console.error('SETUP: No moves available for defense setup!');
+                    console.error('🔧 NO MOVES AVAILABLE FOR DEFENSE SETUP!');
                 }
             } else if (orientation === 'white') {
                 // Pour les blancs, on commence avec la position initiale
-                console.log('SETUP: White orientation - starting with initial position');
+                console.log('🔧 WHITE ORIENTATION - starting with initial position');
             } else if (orientation === null) {
-                console.warn('SETUP: orientation not yet initialized, skipping setup');
+                console.warn('🔧 ORIENTATION NOT YET INITIALIZED, skipping setup');
             }
             
             // CRITIQUE: Appliquer la position APRÈS avoir joué le premier coup
-            console.log('Applying board position with FEN:', game.fen());
-            console.log('Game turn after setup:', game.turn());
-            console.log('Expected turn for orientation', orientation, ':', orientation === 'black' ? 'b' : 'w');
+            console.log('🔧 APPLYING BOARD POSITION with FEN:', game.fen());
+            console.log('🔧 Game turn after setup:', game.turn());
+            console.log('🔧 Expected turn for orientation', orientation, ':', orientation === 'black' ? 'b' : 'w');
             board.position(game.fen());
             
             // CRITIQUE: S'assurer que l'orientation est correcte AVANT de continuer
@@ -2808,10 +2809,10 @@
             // CRITIQUE: Vérifier que le tour est correct
             const expectedTurn = orientation === 'black' ? 'b' : 'w';
             if (game.turn() !== expectedTurn) {
-                console.log('CRITICAL: Turn mismatch! Expected:', expectedTurn, 'Got:', game.turn());
-                console.log('This means the first move was not played correctly');
+                console.log('🔧 CRITICAL: Turn mismatch! Expected:', expectedTurn, 'Got:', game.turn());
+                console.log('🔧 This means the first move was not played correctly');
             } else {
-                console.log('Turn is correct:', game.turn());
+                console.log('🔧 Turn is correct:', game.turn());
             }
             
             // CORRECTION MOBILE: Forcer l'orientation et le drag sur mobile
@@ -2862,6 +2863,8 @@
             if (drillMode) {
                 updateDrillStatus();
             }
+            
+            console.log('🔧 SETUP LINE COMPLETE');
         }
         
         function removeCheckmateHashtag() {
