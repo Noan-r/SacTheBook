@@ -3779,11 +3779,56 @@
                 return;
             }
 
-            // Initialisation de l'affichage après que lines soit définie
-            initializeDisplay();
+            // CRÉER LE PLATEAU APRÈS AVOIR CALCULÉ L'ORIENTATION
+            console.log('🚀 CRÉATION DU PLATEAU APRÈS CALCUL ORIENTATION');
             
-            // Met à jour les boutons de navigation après l'initialisation
-            updateNavigationButtons();
+            // Configuration du plateau avec l'orientation calculée
+            var config = {
+                draggable: true,
+                position: 'start',
+                onDragStart: onDragStart,
+                onDrop: onDrop,
+                onSnapEnd: onSnapEnd,
+                orientation: orientation,
+                pieceTheme: getPieceImage,
+                showNotation: true,
+                dropOffBoard: 'snapback',
+                sparePieces: false
+            };
+            
+            // FORCER LE DRAG & DROP SUR MOBILE
+            if ('ontouchstart' in window) {
+                config.draggable = true;
+                console.log('🚀 Mobile: Config draggable forced to true');
+            }
+
+            console.log('🚀 Creating board with config:', config);
+            console.log('🚀 Board orientation will be:', orientation);
+            
+            try {
+                board = createBoard(config);
+                
+                if (board) {
+                    console.log('🚀 Board created successfully');
+                    console.log('🚀 Board orientation after creation:', board.orientation());
+                    
+                    // Initialisation de l'affichage après que le plateau soit créé
+                    initializeDisplay();
+                    
+                    // Met à jour les boutons de navigation après l'initialisation
+                    updateNavigationButtons();
+                    
+                    // Définir l'orientation du plateau
+                    setBoardOrientation();
+                    
+                    setupLine();
+                    $(window).resize(board.resize);
+                } else {
+                    console.error('🚀 Failed to create board');
+                }
+            } catch (error) {
+                console.error('🚀 Error creating board:', error);
+            }
             
             console.log('All variables initialized - ready for drill mode if needed');
             
@@ -4243,86 +4288,6 @@
             // Fonction simplifiée pour les pièces
             function getPieceImage(piece) {
                 return `/static/img/chesspieces/wikipedia/${piece.toLowerCase()}.png`;
-            }
-            
-            var config = {
-                draggable: true,
-                position: 'start',
-                onDragStart: onDragStart,
-                onDrop: onDrop,
-                onSnapEnd: onSnapEnd,
-                orientation: orientation,
-                pieceTheme: getPieceImage,
-                showNotation: true,
-                dropOffBoard: 'snapback',
-                sparePieces: false
-            };
-            
-            // FORCER LE DRAG & DROP SUR MOBILE
-            if ('ontouchstart' in window) {
-                config.draggable = true;
-                console.log('Mobile: Config draggable forced to true');
-            }
-
-            console.log('Creating board with config:', config);
-            console.log('Board orientation will be:', orientation);
-            console.log('Board orientation type:', typeof orientation);
-            
-            try {
-                board = createBoard(config);
-                
-                if (board) {
-                    console.log('Board created successfully');
-                    console.log('Board orientation after creation:', board.orientation());
-                    console.log('=== BOARD CREATION DIAGNOSTIC ===');
-                    console.log('Expected orientation:', orientation);
-                    console.log('Board orientation matches expected:', board.orientation() === orientation);
-                    
-                    // Définir l'orientation du plateau
-                    setBoardOrientation();
-                    
-                    setupLine();
-                    $(window).resize(board.resize);
-                    
-                    // Vérifier que les pièces se chargent et forcer l'orientation sur mobile
-                    setTimeout(function() {
-                        const pieces = $('.square-55d63 img');
-                        console.log(`Found ${pieces.length} pieces on board`);
-                        
-                        // Force l'orientation sur mobile de manière agressive
-                        if ('ontouchstart' in window && board && orientation) {
-                            const currentOrientation = board.orientation();
-                            board.orientation(orientation);
-                            console.log('Mobile: Initial orientation forced from', currentOrientation, 'to:', orientation);
-                            
-                            // Vérifications supplémentaires multiples
-                            setTimeout(() => {
-                                if (board.orientation() !== orientation) {
-                                    board.orientation(orientation);
-                                    console.log('Mobile: Secondary orientation fix');
-                                }
-                            }, 500);
-                            
-                            setTimeout(() => {
-                                if (board.orientation() !== orientation) {
-                                    board.orientation(orientation);
-                                    console.log('Mobile: Tertiary orientation fix');
-                                }
-                            }, 1000);
-                            
-                            setTimeout(() => {
-                                if (board.orientation() !== orientation) {
-                                    board.orientation(orientation);
-                                    console.log('Mobile: Final orientation fix');
-                                }
-                            }, 2000);
-                        }
-                    }, 1000);
-                } else {
-                    console.error('Failed to create board');
-                }
-            } catch (error) {
-                console.error('Error creating board:', error);
             }
             
 
