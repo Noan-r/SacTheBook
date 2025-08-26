@@ -797,7 +797,10 @@
                 <span class="btn-text">⬇️ Sync from GitHub</span>
                 <span class="loading-spinner" style="display: none;">⏳</span>
             </button>
-    </div>
+            <button type="button" class="btn github-btn" id="debug-github" style="background: #666; position: relative; padding: 6px 12px; font-size: 0.85em;">
+                <span class="btn-text">🔧 Debug GitHub</span>
+            </button>
+        </div>
     </div>
     
     <div class="container">
@@ -1735,6 +1738,11 @@
                 playButtonSound();
                 syncFromGitHub(this);
             });
+            
+            document.getElementById('debug-github').addEventListener('click', function() {
+                playButtonSound();
+                debugGitHub();
+            });
         }
         
         function showLoadingState(button) {
@@ -1919,6 +1927,61 @@
                     </div>
                 `;
                 container.appendChild(categoryDiv);
+            });
+        }
+        
+        // Fonction pour debug GitHub
+        function debugGitHub() {
+            console.log('🔧 Debug GitHub...');
+            
+            fetch('/render_debug', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('🔧 Debug GitHub result:', data);
+                
+                // Afficher les informations de debug
+                let debugMessage = '🔧 Debug GitHub:\n\n';
+                
+                // Variables d'environnement
+                debugMessage += '📋 Variables d\'environnement:\n';
+                Object.keys(data.environment_variables).forEach(key => {
+                    const env = data.environment_variables[key];
+                    debugMessage += `  ${key}: ${env.exists ? '✅' : '❌'} ${env.value}\n`;
+                });
+                
+                // Statut GitHub
+                debugMessage += '\n🔗 Statut GitHub:\n';
+                Object.keys(data.github_status).forEach(key => {
+                    const status = data.github_status[key];
+                    debugMessage += `  ${key}: ${status ? '✅' : '❌'}\n`;
+                });
+                
+                // Test de connexion
+                if (data.github_test) {
+                    debugMessage += '\n🌐 Test de connexion:\n';
+                    if (data.github_test.success) {
+                        debugMessage += `  ✅ Connexion réussie\n`;
+                        debugMessage += `  Repository: ${data.github_test.repo_full_name}\n`;
+                        debugMessage += `  Branche par défaut: ${data.github_test.default_branch}\n`;
+                    } else {
+                        debugMessage += `  ❌ Erreur de connexion: ${data.github_test.error}\n`;
+                    }
+                }
+                
+                // Afficher dans une alerte pour le moment
+                alert(debugMessage);
+                
+                // Afficher aussi dans la console
+                console.log('🔧 Debug message:', debugMessage);
+            })
+            .catch(error => {
+                console.error('Erreur lors du debug GitHub:', error);
+                alert('Erreur lors du debug GitHub: ' + error.message);
             });
         }
         

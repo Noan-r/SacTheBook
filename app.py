@@ -119,7 +119,16 @@ else:
 def sync_to_github():
     """Synchronise les données locales vers GitHub avec gestion des conflits"""
     if not github_client:
-        return {'success': False, 'error': 'GitHub non configuré'}
+        error_msg = 'GitHub non configuré'
+        if not GITHUB_TOKEN:
+            error_msg += ' - Token GitHub manquant'
+        if not GITHUB_REPO:
+            error_msg += ' - Repository GitHub non spécifié'
+        return {'success': False, 'error': error_msg, 'debug_info': {
+            'token_configured': bool(GITHUB_TOKEN),
+            'repo_configured': bool(GITHUB_REPO),
+            'client_initialized': github_client is not None
+        }}
     
     try:
         # Recharger les données locales
@@ -193,7 +202,16 @@ def sync_to_github():
 def sync_from_github():
     """Synchronise les données depuis GitHub vers local avec gestion des conflits"""
     if not github_client:
-        return {'success': False, 'error': 'GitHub non configuré'}
+        error_msg = 'GitHub non configuré'
+        if not GITHUB_TOKEN:
+            error_msg += ' - Token GitHub manquant'
+        if not GITHUB_REPO:
+            error_msg += ' - Repository GitHub non spécifié'
+        return {'success': False, 'error': error_msg, 'debug_info': {
+            'token_configured': bool(GITHUB_TOKEN),
+            'repo_configured': bool(GITHUB_REPO),
+            'client_initialized': github_client is not None
+        }}
     
     try:
         # Lire le contenu local actuel
@@ -965,7 +983,16 @@ def github_status():
         'github_configured': github_client is not None,
         'repo': GITHUB_REPO,
         'branch': GITHUB_BRANCH,
-        'file_path': GITHUB_FILE_PATH
+        'file_path': GITHUB_FILE_PATH,
+        'token_configured': bool(GITHUB_TOKEN),
+        'token_length': len(GITHUB_TOKEN) if GITHUB_TOKEN else 0,
+        'environment': os.environ.get('RENDER', 'local'),
+        'debug_info': {
+            'github_token_env': 'GITHUB_TOKEN' in os.environ,
+            'github_repo_env': 'GITHUB_REPO' in os.environ,
+            'github_branch_env': 'GITHUB_BRANCH' in os.environ,
+            'github_file_path_env': 'GITHUB_FILE_PATH' in os.environ
+        }
     })
 
 @app.route('/openings/settings/get_openings', methods=['GET'])
@@ -988,6 +1015,80 @@ def get_openings():
         return jsonify({
             'success': False,
             'error': str(e)
+        }), 500
+
+@app.route('/render_debug', methods=['GET'])
+def render_debug():
+    """Route de diagnostic pour Render"""
+    try:
+        # Vérifier les variables d'environnement
+        env_vars = {
+            'GITHUB_TOKEN': {
+                'exists': 'GITHUB_TOKEN' in os.environ,
+                'value': '***' if os.environ.get('GITHUB_TOKEN') else 'None',
+                'length': len(os.environ.get('GITHUB_TOKEN', ''))
+            },
+            'GITHUB_REPO': {
+                'exists': 'GITHUB_REPO' in os.environ,
+                'value': os.environ.get('GITHUB_REPO', 'Not set')
+            },
+            'GITHUB_BRANCH': {
+                'exists': 'GITHUB_BRANCH' in os.environ,
+                'value': os.environ.get('GITHUB_BRANCH', 'Not set')
+            },
+            'GITHUB_FILE_PATH': {
+                'exists': 'GITHUB_FILE_PATH' in os.environ,
+                'value': os.environ.get('GITHUB_FILE_PATH', 'Not set')
+            },
+            'RENDER': {
+                'exists': 'RENDER' in os.environ,
+                'value': os.environ.get('RENDER', 'Not set')
+            }
+        }
+        
+        # Vérifier l'état du client GitHub
+        github_status = {
+            'client_initialized': github_client is not None,
+            'token_configured': bool(GITHUB_TOKEN),
+            'repo_configured': bool(GITHUB_REPO),
+            'branch_configured': bool(GITHUB_BRANCH),
+            'file_path_configured': bool(GITHUB_FILE_PATH)
+        }
+        
+        # Tester la connexion GitHub si configuré
+        github_test = None
+        if github_client and GITHUB_TOKEN:
+            try:
+                repo = github_client.get_repo(GITHUB_REPO)
+                github_test = {
+                    'success': True,
+                    'repo_name': repo.name,
+                    'repo_full_name': repo.full_name,
+                    'default_branch': repo.default_branch
+                }
+            except Exception as e:
+                github_test = {
+                    'success': False,
+                    'error': str(e)
+                }
+        
+        return jsonify({
+            'environment_variables': env_vars,
+            'github_status': github_status,
+            'github_test': github_test,
+            'current_config': {
+                'GITHUB_TOKEN': '***' if GITHUB_TOKEN else 'None',
+                'GITHUB_REPO': GITHUB_REPO,
+                'GITHUB_BRANCH': GITHUB_BRANCH,
+                'GITHUB_FILE_PATH': GITHUB_FILE_PATH
+            },
+            'timestamp': datetime.now().isoformat()
+        })
+        
+    except Exception as e:
+        return jsonify({
+            'error': str(e),
+            'timestamp': datetime.now().isoformat()
         }), 500
 
 @app.route('/test_sync_status', methods=['GET'])

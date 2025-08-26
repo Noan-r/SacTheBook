@@ -78,12 +78,7 @@
         },
         {
             "name": "aaa",
-            "variations": [
-                {
-                    "name": "#1 aaa",
-                    "pgn": "1. e4"
-                }
-            ]
+            "variations": []
         }
     ],
     "Defense": [
