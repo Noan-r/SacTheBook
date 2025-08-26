@@ -239,7 +239,7 @@
             }
             
             .bottom-section.drill-mode {
-                margin-bottom: 15px;
+            margin-bottom: 15px;
             }
             
             /* Même règles pour le mode learn */
@@ -2329,43 +2329,7 @@
             }
         }
         
-        /* Panneau de diagnostic pour mobile */
-        .mobile-diagnostic {
-            position: fixed;
-            top: 10px;
-            right: 10px;
-            background: rgba(0, 0, 0, 0.8);
-            color: white;
-            padding: 10px;
-            border-radius: 8px;
-            font-size: 12px;
-            z-index: 9999;
-            max-width: 200px;
-            display: none;
-        }
-        
-        .mobile-diagnostic.show {
-            display: block;
-        }
-        
-        .mobile-diagnostic .status {
-            margin: 2px 0;
-            padding: 2px 4px;
-            border-radius: 3px;
-        }
-        
-        .mobile-diagnostic .status.ok {
-            background: rgba(0, 255, 0, 0.3);
-        }
-        
-        .mobile-diagnostic .status.error {
-            background: rgba(255, 0, 0, 0.3);
-        }
-        
-        .mobile-diagnostic .status.warning {
-            background: rgba(255, 255, 0, 0.3);
-            color: black;
-        }
+
         
         /* Amélioration des événements tactiles */
         .square-55d63 {
@@ -2398,18 +2362,7 @@
         <h1>{{ opening_name.replace('_', ' ').title() }}</h1>
     </div>
     
-    <!-- Panneau de diagnostic mobile -->
-    <div class="mobile-diagnostic" id="mobile-diagnostic">
-        <div style="font-weight: bold; margin-bottom: 5px;">📱 Diagnostic Mobile</div>
-        <div class="status" id="orientation-status">Orientation: ...</div>
-        <div class="status" id="board-status">Plateau: ...</div>
-        <div class="status" id="pieces-status">Pièces: ...</div>
-        <div class="status" id="drag-status">Drag: ...</div>
-        <div class="status" id="touch-status">Touch: ...</div>
-        <div style="margin-top: 5px; font-size: 10px;">
-            <button onclick="toggleDiagnostic()" style="background: #333; color: white; border: none; padding: 2px 4px; border-radius: 3px; font-size: 10px;">Masquer</button>
-        </div>
-                </div>
+
                 
     <div class="game-container">
         <div class="unified-section">
@@ -2527,55 +2480,25 @@
         var soundEnabled = true;
         var audioFiles = {};
         
-        // === FONCTION GLOBALE POUR FORCER L'ORIENTATION ===
-        function forceBoardOrientation() {
-            console.log('=== FORCE BOARD ORIENTATION DEBUG ===');
-            console.log('Board exists:', !!board);
-            console.log('Orientation value:', orientation);
-            console.log('Orientation type:', typeof orientation);
-            console.log('Board orientation:', board ? board.orientation() : 'no board');
-            console.log('Orientation should be black for Albin Countergambit:', orientation === 'black');
-            
-            if (board && orientation && board.orientation() !== orientation) {
-                console.log('FORCE ORIENTATION: Changing from', board.orientation(), 'to', orientation);
+        // === FONCTION SIMPLIFIÉE POUR DÉFINIR L'ORIENTATION ===
+        function setBoardOrientation() {
+            if (board && orientation) {
                 board.orientation(orientation);
-                board.position(game.fen());
-                console.log('Orientation changed successfully');
-                return true;
-            } else {
-                console.log('No orientation change needed or possible');
-                if (board && orientation) {
-                    console.log('Board and orientation exist but are the same:', board.orientation(), '===', orientation);
-                }
+                console.log('Board orientation set to:', orientation);
             }
-            return false;
         }
         
-        // === FONCTION POUR CRÉER LE PLATEAU AVEC ORIENTATION CORRECTE ===
-        function createBoardWithCorrectOrientation(config) {
-            console.log('=== CREATE BOARD WITH CORRECT ORIENTATION ===');
-            console.log('Config orientation:', config.orientation);
-            console.log('Global orientation:', orientation);
+        // === FONCTION SIMPLIFIÉE POUR CRÉER LE PLATEAU ===
+        function createBoard(config) {
+            console.log('Creating board with orientation:', orientation);
             
-            // Forcer l'orientation dans la config avant création
+            // S'assurer que l'orientation est correcte dans la config
             config.orientation = orientation;
-            console.log('Forced config orientation to:', config.orientation);
             
             const newBoard = Chessboard('myBoard', config);
             if (newBoard) {
-                console.log('Board created, forcing orientation...');
-                forceBoardOrientation();
-                
-                // Vérification immédiate
-                setTimeout(() => {
-                    console.log('Board orientation after creation:', newBoard.orientation());
-                    console.log('Expected orientation:', orientation);
-                    if (newBoard.orientation() !== orientation) {
-                        console.log('CRITICAL: Orientation mismatch, forcing again...');
-                        newBoard.orientation(orientation);
-                        newBoard.position(game.fen());
-                    }
-                }, 100);
+                console.log('Board created successfully');
+                setBoardOrientation();
             }
             return newBoard;
         }
@@ -2583,19 +2506,11 @@
           // Initialiser l'API Web Audio
           function initAudio() {
               try {
-                  // Sur mobile, on doit attendre une interaction utilisateur
-                  if (audioContext && audioContext.state === 'suspended') {
-                      audioContext.resume().then(() => {
-                          console.log('Audio context resumed');
-                      });
-                      return;
-                  }
-                  
                   audioContext = new (window.AudioContext || window.webkitAudioContext)();
                   console.log('Audio context initialized');
                   loadAudioFiles();
               } catch (e) {
-                  console.warn('Web Audio API not supported:', e);
+                  console.warn('Audio not supported:', e);
                   soundEnabled = false;
               }
           }
@@ -2605,14 +2520,9 @@
               if (!audioContext) {
                   initAudio();
               } else if (audioContext.state === 'suspended') {
-                  audioContext.resume().then(() => {
-                      console.log('Audio context resumed after user interaction');
-                  }).catch(e => {
-                      console.warn('Failed to resume audio context:', e);
-                  });
+                  audioContext.resume();
               }
               
-              // Forcer l'initialisation des fichiers audio
               if (Object.keys(audioFiles).length === 0) {
                   loadAudioFiles();
               }
@@ -2781,14 +2691,14 @@
                 // Forcer la mise à jour de l'affichage
                 setTimeout(function() {
                     board.position(game.fen());
-                    updateMobileDiagnostic();
+    
                 }, 100);
             }
             
-            // CORRECTION CRITIQUE: Forcer l'orientation après un délai pour s'assurer qu'elle est appliquée
+            // Définir l'orientation du plateau après un délai
             setTimeout(function() {
-                forceBoardOrientation();
-            }, 500);
+                setBoardOrientation();
+            }, 100);
             // S'assurer que le drag-and-drop est activé pour le nouveau jeu
             board.draggable = true;
             updateStatus();
@@ -3706,12 +3616,12 @@
             console.log('Should be black for Albin Countergambit:', orientation === 'black');
             console.log('=== END FINAL CHECK ===');
             
-            // Vérification périodique de l'orientation (toutes les 2 secondes)
+            // Vérification périodique de l'orientation (toutes les 5 secondes)
             setInterval(function() {
-                if (board && orientation) {
-                    forceBoardOrientation();
+                if (board && orientation && board.orientation() !== orientation) {
+                    setBoardOrientation();
                 }
-            }, 2000);
+            }, 5000);
 
             console.log('Variables initialisées:', {
                 openingName: openingName,
@@ -3789,12 +3699,6 @@
 
             // Event handling functions
             function onDragStart(source, piece) {
-                console.log('=== DRAG START DIAGNOSTIC ===');
-                console.log('Drag start:', source, piece, 'drillMode:', drillMode);
-                console.log('Orientation:', orientation, 'Type:', typeof orientation);
-                console.log('Game turn:', game.turn());
-                console.log('Board orientation:', board ? board.orientation() : 'board not available');
-                
                 // Empêcher le drag avec le clic droit
                 if (event && event.button === 2) {
                     return false;
@@ -3804,61 +3708,31 @@
                     return false;
                 }
                 
-                // CORRECTION MOBILE: Vérifier si la pièce appartient au joueur actuel
-                const pieceColor = piece.charAt(0); // 'w' ou 'b'
+                // Vérifier si la pièce appartient au joueur actuel
+                const pieceColor = piece.charAt(0);
                 const currentPlayerColor = orientation === 'white' ? 'w' : 'b';
                 
-                console.log('Piece color:', pieceColor, 'Current player color:', currentPlayerColor);
-                console.log('Orientation === white:', orientation === 'white');
-                console.log('Orientation === black:', orientation === 'black');
-                
-                // CORRECTION MOBILE: Permettre le drag de toutes les pièces du joueur
-                // même si ce n'est pas son tour (pour la sélection)
                 if (pieceColor !== currentPlayerColor) {
-                    console.log('Cannot drag opponent piece:', piece, 'current player:', currentPlayerColor);
                     return false;
                 }
                 
-                // CORRECTION MOBILE: Toujours permettre la sélection de pièce
-                // même si ce n'est pas le tour du joueur
-                console.log('Allowing piece selection for:', piece);
-                
-                            // Mettre à jour le diagnostic
-            updateMobileDiagnostic();
-            
-            // CORRECTION MOBILE: Forcer l'activation du drag si nécessaire
-            if (board && !board.draggable) {
-                console.log('MOBILE FIX: Re-enabling board draggable');
-                board.draggable = true;
+                // Gestion de la sélection
+                if (!window.pendingPromotion) {
+                    selectedPiece = source;
+                    removeGreySquares();
+                    
+                    // Obtenir la liste des coups possibles pour cette pièce
+                    const moves = game.moves({
+                        square: source,
+                        verbose: true
+                    });
+                    
+                    // Highlight les cases de destination possibles
+                    for (const move of moves) {
+                        greySquare(move.to);
+                    }
                 }
                 
-                // PREMOVE: Si ce n'est pas le tour du joueur, activer le mode pre-move
-                if ((orientation === 'black' && game.turn() === 'w') || (orientation === 'white' && game.turn() === 'b')) {
-                    console.log('Activating premove mode - orientation:', orientation, 'turn:', game.turn());
-                    premoveMode = true;
-                    premoveSource = source;
-                    return true; // Permettre le drag pour sélectionner la pièce
-                }
-                
-                            // Gestion de la sélection lors du drag (seulement si pas en mode premove)
-            if (!premoveMode && !window.pendingPromotion) {
-                selectedPiece = source;
-                removeGreySquares();
-                
-                // Obtenir la liste des coups possibles pour cette pièce
-                const moves = game.moves({
-                    square: source,
-                    verbose: true
-                });
-                
-                // Highlight les cases de destination possibles
-                for (const move of moves) {
-                    greySquare(move.to);
-                }
-            }
-                
-                premoveMode = false;
-                premoveSource = null;
                 return true;
             }
 
@@ -4222,11 +4096,9 @@
         
 
 
-            // Configuration de l'échiquier avec thème de pièces alternatif
-            // Fonction pour mapper les noms de pièces vers les fichiers corrects
+            // Fonction simplifiée pour les pièces
             function getPieceImage(piece) {
-                // Convertir les majuscules en minuscules pour correspondre aux fichiers CDN
-                return `https://cdn.jsdelivr.net/npm/chessboardjs@1.0.0/img/chesspieces/wikipedia/${piece.toLowerCase()}.png`;
+                return `/static/img/chesspieces/wikipedia/${piece.toLowerCase()}.png`;
             }
             
             var config = {
@@ -4247,7 +4119,7 @@
             console.log('Board orientation type:', typeof orientation);
             
             try {
-                board = createBoardWithCorrectOrientation(config);
+                board = createBoard(config);
                 
                 if (board) {
                     console.log('Board created successfully');
@@ -4256,40 +4128,17 @@
                     console.log('Expected orientation:', orientation);
                     console.log('Board orientation matches expected:', board.orientation() === orientation);
                     
-                    // CORRECTION CRITIQUE: Forcer l'orientation immédiatement après création
-                    forceBoardOrientation();
+                    // Définir l'orientation du plateau
+                    setBoardOrientation();
                     
                     setupLine();
                     $(window).resize(board.resize);
                     
-                    // Tester si les pièces CDN se chargent
-                    testCDNImages();
-                    
-                    // Vérifier si les pièces s'affichent après un délai
+                    // Vérifier que les pièces se chargent
                     setTimeout(function() {
                         const pieces = $('.square-55d63 img');
-                        if (pieces.length === 0) {
-                            console.log('No pieces visible, forcing reload');
-                            board.destroy();
-                            config.pieceTheme = function(piece) {
-                                return `https://unpkg.com/chessboardjs@1.0.0/img/chesspieces/wikipedia/${piece.toLowerCase()}.png`;
-                            };
-                            board = Chessboard('myBoard', config);
-                            forceBoardOrientation();
-                    setupLine();
-                    $(window).resize(board.resize);
-                        } else {
-                            console.log(`Found ${pieces.length} pieces on board`);
-                            // Vérifier les couleurs des pièces
-                            pieces.each(function() {
-                                const src = $(this).attr('src');
-                                console.log('Piece src:', src);
-                            });
-                            
-                            // Diagnostic complet des pièces et du drag
-                            diagnosePiecesAndDrag();
-                        }
-                    }, 2000);
+                        console.log(`Found ${pieces.length} pieces on board`);
+                    }, 1000);
                 } else {
                     console.error('Failed to create board');
                 }
@@ -4297,92 +4146,7 @@
                 console.error('Error creating board:', error);
             }
             
-            // Fonction pour tester si les pièces CDN se chargent
-            function testCDNImages() {
-                const testPiece = 'wp';
-                const cdnUrl = `https://cdn.jsdelivr.net/npm/chessboardjs@1.0.0/img/chesspieces/wikipedia/${testPiece}.png`;
-                const img = new Image();
-                
-                img.onload = function() {
-                    console.log('CDN images working, using CDN');
-                };
-                
-                img.onerror = function() {
-                    console.log('CDN images failed, trying alternative CDN');
-                    // Essayer un CDN alternatif avec fonction de mapping
-                    config.pieceTheme = function(piece) {
-                        return `https://unpkg.com/chessboardjs@1.0.0/img/chesspieces/wikipedia/${piece.toLowerCase()}.png`;
-                    };
-                    if (board) {
-                        board.destroy();
-                        board = Chessboard('myBoard', config);
-                        setupLine();
-                        $(window).resize(board.resize);
-                        
-                        // Tester le CDN alternatif
-                        testAlternativeCDN();
-                    }
-                };
-                
-                img.src = cdnUrl;
-            }
-            
-            // Fonction pour tester le CDN alternatif
-            function testAlternativeCDN() {
-                const testPiece = 'wp';
-                const altCdnUrl = `https://unpkg.com/chessboardjs@1.0.0/img/chesspieces/wikipedia/${testPiece}.png`;
-                const img = new Image();
-                
-                img.onload = function() {
-                    console.log('Alternative CDN working');
-                };
-                
-                img.onerror = function() {
-                    console.log('Alternative CDN failed, using local files');
-                    // En dernier recours, utiliser les fichiers locaux avec mapping
-                    config.pieceTheme = function(piece) {
-                        return `/static/img/chesspieces/wikipedia/${piece.toLowerCase()}.png`;
-                    };
-                    if (board) {
-                        board.destroy();
-                        board = Chessboard('myBoard', config);
-                        setupLine();
-                        $(window).resize(board.resize);
-                        
-                        // Tester les fichiers locaux
-                        testLocalFiles();
-                    }
-                };
-                
-                img.src = altCdnUrl;
-            }
-            
-            // Fonction pour tester les fichiers locaux
-            function testLocalFiles() {
-                const testPiece = 'wp';
-                const localUrl = `/static/img/chesspieces/wikipedia/${testPiece}.png`;
-                const img = new Image();
-                
-                img.onload = function() {
-                    console.log('Local files working');
-                };
-                
-                img.onerror = function() {
-                    console.log('Local files failed, using fallback CDN');
-                    // Dernier recours : utiliser un autre CDN avec mapping
-                    config.pieceTheme = function(piece) {
-                        return `https://chessboardjs.com/img/chesspieces/wikipedia/${piece.toLowerCase()}.png`;
-                    };
-                    if (board) {
-                        board.destroy();
-                        board = Chessboard('myBoard', config);
-                        setupLine();
-                        $(window).resize(board.resize);
-                    }
-                };
-                
-                img.src = localUrl;
-            }
+
             
                     // Fonction de diagnostic pour vérifier les pièces et leur draggabilité
         function diagnosePiecesAndDrag() {
@@ -4417,73 +4181,10 @@
             console.log('Expected player color:', orientation === 'white' ? 'w' : 'b');
             console.log('Current game turn:', game.turn());
             
-            // Mettre à jour le panneau de diagnostic mobile
-            updateMobileDiagnostic();
+
         }
         
-        // Fonction pour mettre à jour le panneau de diagnostic mobile
-        function updateMobileDiagnostic() {
-            const diagnostic = $('#mobile-diagnostic');
-            if (diagnostic.length === 0) return;
-            
-            // Vérifier l'orientation
-            const orientationOk = orientation === 'white' || orientation === 'black';
-            const urlPath = window.location.pathname;
-            const urlOpeningName = decodeURIComponent(urlPath.split('/').pop());
-            $('#orientation-status').text(`Orientation: ${orientation} (${typeof orientation}) - URL: ${urlOpeningName}`)
-                .removeClass('ok error warning')
-                .addClass(orientationOk ? 'ok' : 'error');
-            
-            // Vérifier le plateau
-            const boardOk = board && board.orientation() === orientation;
-            $('#board-status').text(`Plateau: ${board ? board.orientation() : 'N/A'}`)
-                .removeClass('ok error warning')
-                .addClass(boardOk ? 'ok' : 'error');
-            
-            // Vérifier les pièces
-            const pieces = $('.square-55d63 img');
-            const piecesOk = pieces.length > 0;
-            $('#pieces-status').text(`Pièces: ${pieces.length} trouvées`)
-                .removeClass('ok error warning')
-                .addClass(piecesOk ? 'ok' : 'error');
-            
-            // Vérifier le drag
-            const dragOk = board && board.draggable;
-            $('#drag-status').text(`Drag: ${dragOk ? 'Activé' : 'Désactivé'}`)
-                .removeClass('ok error warning')
-                .addClass(dragOk ? 'ok' : 'error');
-            
-            // Vérifier les événements tactiles
-            const touchOk = 'ontouchstart' in window;
-            $('#touch-status').text(`Touch: ${touchOk ? 'Supporté' : 'Non supporté'}`)
-                .removeClass('ok error warning')
-                .addClass(touchOk ? 'ok' : 'warning');
-        }
-        
-        // Fonction pour afficher/masquer le diagnostic
-        function toggleDiagnostic() {
-            const diagnostic = $('#mobile-diagnostic');
-            diagnostic.toggleClass('show');
-        }
-        
-        // Afficher le diagnostic sur mobile
-        if ('ontouchstart' in window) {
-            $('#mobile-diagnostic').addClass('show');
-            
-            // CORRECTION MOBILE: Forcer la réinitialisation du plateau après un délai
-            setTimeout(function() {
-                if (board && board.orientation() !== orientation) {
-                    console.log('MOBILE FIX: Forcing board orientation correction');
-                    board.orientation(orientation);
-                    updateMobileDiagnostic();
-                }
-            }, 1000);
-            
-            // CORRECTION MOBILE: Vérifier périodiquement l'état du plateau
-            setInterval(function() {
-                updateMobileDiagnostic();
-            }, 2000);
-        }
+
             
             // Variables pour la sélection de pièce
             var selectedPiece = null;
@@ -4492,40 +4193,41 @@
             var isDragging = false;
             var dragStartSquare = null;
             
-            // CORRECTION MOBILE: Amélioration des événements tactiles
-            $('#myBoard').on('mousedown touchstart', '.square-55d63', function(e) {
-                e.preventDefault(); // Empêcher le comportement par défaut sur mobile
-                e.stopPropagation(); // Empêcher la propagation
-                
-                // Initialiser l'audio sur la première interaction
+            // Événements tactiles séparés pour mobile
+            $('#myBoard').on('touchstart', '.square-55d63', function(e) {
+                e.preventDefault();
                 initAudioOnUserInteraction();
-                
-                // Ignorer le clic droit
-                if (e.type === 'mousedown' && e.button === 2) {
-                    return;
-                }
                 
                 const square = $(this).attr('data-square');
                 if (square) {
                     isDragging = false;
                     dragStartSquare = square;
                     
-                    // CORRECTION MOBILE: Réduire le délai pour les événements tactiles
-                    if (e.type === 'touchstart') {
-                        setTimeout(() => {
-                            if (dragStartSquare === square) {
-                                isDragging = true;
-                                console.log('Touch drag started for square:', square);
-                            }
-                        }, 100); // Délai réduit pour plus de réactivité
-                    }
+                    // Délai court pour détecter le drag
+                    setTimeout(() => {
+                        if (dragStartSquare === square) {
+                            isDragging = true;
+                        }
+                    }, 50);
+                }
+            });
+            
+            // Événements souris séparés pour desktop
+            $('#myBoard').on('mousedown', '.square-55d63', function(e) {
+                if (e.button === 2) return; // Ignorer le clic droit
+                
+                initAudioOnUserInteraction();
+                
+                const square = $(this).attr('data-square');
+                if (square) {
+                    isDragging = false;
+                    dragStartSquare = square;
                 }
             });
             
             // Détecter le mouvement (drag)
             $('#myBoard').on('mousemove touchmove', '.square-55d63', function(e) {
-                e.preventDefault(); // Empêcher le scroll sur mobile
-                e.stopPropagation(); // Empêcher la propagation
+                e.preventDefault();
                 
                 if (dragStartSquare) {
                     isDragging = true;
@@ -4534,8 +4236,7 @@
             
             // Gérer les clics simples (sans drag)
             $('#myBoard').on('click touchend', '.square-55d63', function(e) {
-                e.preventDefault(); // Empêcher le comportement par défaut sur mobile
-                e.stopPropagation(); // Empêcher la propagation
+                e.preventDefault();
                 
                 // Ignorer le clic droit
                 if (e.type === 'click' && e.button === 2) {
