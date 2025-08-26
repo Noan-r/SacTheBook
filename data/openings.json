@@ -75,6 +75,10 @@
                 }
             ],
             "best_score": 1
+        },
+        {
+            "name": "bbb",
+            "variations": []
         }
     ],
     "Defense": [
