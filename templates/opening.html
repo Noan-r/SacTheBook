@@ -2442,10 +2442,13 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <script>
+        console.log('🚀 SCRIPT LOADED - JavaScript is running!');
+        
         // SCRIPT RADICAL POUR MOBILE - FORCER L'ORIENTATION IMMÉDIATEMENT
         (function() {
+            console.log('🚀 RADICAL SCRIPT STARTING');
             if ('ontouchstart' in window) {
-                console.log('MOBILE DETECTED - Applying radical orientation fix');
+                console.log('🚀 MOBILE DETECTED - Applying radical orientation fix');
                 
                 // Attendre que le DOM soit prêt
                 if (document.readyState === 'loading') {
