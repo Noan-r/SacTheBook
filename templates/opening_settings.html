@@ -122,7 +122,7 @@
         }
         .backbtn {
             display: inline-block;
-            background: #F47C20;
+            background: rgba(244, 124, 32, 0.5);
             color: #fff;
             font-weight: 700;
             font-size: 1.15em;
@@ -171,7 +171,7 @@
         }
         }
         .backbtn:hover {
-            background: #B23A2B;
+            background: rgba(244, 124, 32, 1);
             color: #fff;
             transform: scale(1.06);
         }
@@ -809,7 +809,7 @@
             {% for opening in openings if opening.category == 'Attack' %}
                 <div class="opening-block" id="opening-{{ opening.name.replace(' ', '_') }}">
                                             <button type="button" class="delete-opening-btn" title="Delete opening" data-category="Attack" data-name="{{ opening.name }}">✕</button>
-                    <div class="opening-title"><span style="font-size:1.2em; margin-right:6px;">♙</span>{{ opening.name }}</div>
+                    <div class="opening-title">{{ opening.name }}</div>
                     <div class="variation-list">
                         {% for var in opening.variations %}
                             <div class="variation-item" data-var-title="{{ var.name }}" data-var-pgn="{{ var.pgn }}">
@@ -1042,7 +1042,7 @@
                         const newPgn = item.querySelector('.edit-pgn').value;
                         // Trouver le nom de l'ouverture et la catégorie
                         const block = item.closest('.opening-block');
-                        const openingName = block.querySelector('.opening-title').textContent.replace(/^\s*[♙♟]\s*/, '').trim();
+                        const openingName = block.querySelector('.opening-title').textContent.trim();
                         // Déterminer la catégorie en regardant si le bloc a la classe 'defense'
                         const category = block.classList.contains('defense') ? 'Defense' : 'Attack';
                         // Utiliser l'index stocké dans l'attribut data
@@ -1114,7 +1114,7 @@
                         playButtonSound();
                         // Trouver le nom de l'ouverture et la catégorie
                         const block = item.closest('.opening-block');
-                        const openingName = block.querySelector('.opening-title').textContent.replace(/^\s*[♙♟]\s*/, '').trim();
+                        const openingName = block.querySelector('.opening-title').textContent.trim();
                         const category = block.classList.contains('defense') ? 'Defense' : 'Attack';
                         const idx = parseInt(item.getAttribute('data-variation-index'));
                         
@@ -1172,13 +1172,9 @@
                     if (block.classList.contains('defense')) {
                         category = 'Defense';
                     } else {
-                        // Vérifier l'icône comme fallback
-                        const titleElement = block.querySelector('.opening-title');
-                        if (titleElement && titleElement.textContent.includes('♟')) {
-                            category = 'Defense';
-                        }
+
                     }
-                    const name = block.querySelector('.opening-title').textContent.replace(/^\s*[♙♟]\s*/, '').trim();
+                    const name = block.querySelector('.opening-title').textContent.trim();
                     console.log('DEBUG Frontend - Category:', category);
                     console.log('DEBUG Frontend - Name:', name);
                     console.log('DEBUG Frontend - Full title text:', block.querySelector('.opening-title').textContent);

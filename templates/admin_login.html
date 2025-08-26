@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -165,7 +165,7 @@
     <div class="login-container">
         <img src="/static/SacTheBook_Icon.png" alt="SacTheBook" class="logo">
         <h1>Administration</h1>
-        <p class="subtitle">Accès sécurisé aux paramètres</p>
+        <p class="subtitle">Secure access to settings</p>
 
         {% if error %}
         <div class="error">
@@ -175,37 +175,37 @@
 
         <form method="POST">
             <div class="form-group">
-                <label for="password">Mot de passe administrateur</label>
+                <label for="password">Administrator password</label>
                 <input type="password" id="password" name="password" required autocomplete="current-password">
             </div>
-            <button type="submit" class="btn">Se connecter</button>
+            <button type="submit" class="btn">Login</button>
         </form>
 
         <div class="back-link">
-            <a href="/">← Retour à l'accueil</a>
+            <a href="/">← Back to home</a>
         </div>
 
         <div class="security-note">
-            <strong>🔒 Sécurité :</strong> Cette page est protégée par mot de passe. 
-            Seul l'administrateur peut modifier les ouvertures et paramètres.
+            <strong>🔒 Security:</strong> This page is password protected. 
+            Only the administrator can modify openings and settings.
         </div>
     </div>
 
     <script>
-        // Focus automatique sur le champ mot de passe
+        // Auto-focus on password field
         document.getElementById('password').focus();
 
-        // Empêcher la soumission avec Entrée si le champ est vide
+        // Prevent submission with Enter if field is empty
         document.getElementById('password').addEventListener('keypress', function(e) {
             if (e.key === 'Enter' && !this.value.trim()) {
                 e.preventDefault();
             }
         });
 
-        // Animation de chargement sur le bouton
+        // Loading animation on button
         document.querySelector('form').addEventListener('submit', function() {
             const btn = document.querySelector('.btn');
-            btn.textContent = 'Connexion...';
+            btn.textContent = 'Connecting...';
             btn.disabled = true;
         });
     </script>
