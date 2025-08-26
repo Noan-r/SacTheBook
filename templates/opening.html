@@ -2782,6 +2782,8 @@
             
             // CRITIQUE: Appliquer la position APRÈS avoir joué le premier coup
             console.log('Applying board position with FEN:', game.fen());
+            console.log('Game turn after setup:', game.turn());
+            console.log('Expected turn for orientation', orientation, ':', orientation === 'black' ? 'b' : 'w');
             board.position(game.fen());
             
             // CRITIQUE: S'assurer que l'orientation est correcte AVANT de continuer
@@ -2791,6 +2793,15 @@
                 console.log('Board orientation after fix:', board.orientation());
             } else {
                 console.log('Board orientation already correct:', board.orientation());
+            }
+            
+            // CRITIQUE: Vérifier que le tour est correct
+            const expectedTurn = orientation === 'black' ? 'b' : 'w';
+            if (game.turn() !== expectedTurn) {
+                console.log('CRITICAL: Turn mismatch! Expected:', expectedTurn, 'Got:', game.turn());
+                console.log('This means the first move was not played correctly');
+            } else {
+                console.log('Turn is correct:', game.turn());
             }
             
             // CORRECTION MOBILE: Forcer l'orientation et le drag sur mobile
@@ -3853,12 +3864,14 @@
 
             function onDrop(source, target) {
                 console.log('Drop:', source, target);
+                console.log('Orientation:', orientation, 'Game turn:', game.turn());
                 
                 // Supprimer le highlight des coups légaux
                 removeGreySquares();
                 
                 // PREMOVE: Si ce n'est pas le tour du joueur, stocker le pre-move
                 if ((orientation === 'black' && game.turn() === 'w') || (orientation === 'white' && game.turn() === 'b')) {
+                    console.log('PREMOVE: Not player turn, storing premove');
                     setPreMove(source, target);
                     return 'snapback';
                 }
