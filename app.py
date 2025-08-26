@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify, redirect, url_for, make_response, send_from_directory
+from flask import Flask, render_template, request, jsonify, redirect, url_for, make_response, send_from_directory, session
 import chess
 import chess.pgn
 from io import StringIO
@@ -20,8 +20,27 @@ load_dotenv()
 
 app = Flask(__name__, static_folder='static', static_url_path='/static')
 
+# Configuration de sécurité
+ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD', 'SacTheBook2024!')
+ADMIN_SESSION_KEY = 'admin_authenticated'
+app.secret_key = os.environ.get('SECRET_KEY', 'SacTheBookSecretKey2024!')
+
 # Configuration pour servir les fichiers statiques de manière plus robuste
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
+
+# Fonctions de sécurité
+def require_admin_auth(f):
+    """Décorateur pour protéger les routes admin"""
+    def decorated_function(*args, **kwargs):
+        if not session.get(ADMIN_SESSION_KEY, False):
+            return redirect(url_for('admin_login'))
+        return f(*args, **kwargs)
+    decorated_function.__name__ = f.__name__
+    return decorated_function
+
+def is_admin_authenticated():
+    """Vérifie si l'utilisateur est authentifié comme admin"""
+    return session.get(ADMIN_SESSION_KEY, False)
 
 # Route spécifique pour les images des pièces d'échecs
 @app.route('/static/img/chesspieces/wikipedia/<filename>')
@@ -541,7 +560,28 @@ def opening_page(opening_name):
     
     return render_template('opening.html', opening_name=opening_name, lines=lines, orientation=orientation)
 
+# Routes de sécurité pour l'administration
+@app.route('/admin/login', methods=['GET', 'POST'])
+def admin_login():
+    """Page de connexion admin"""
+    if request.method == 'POST':
+        password = request.form.get('password')
+        if password == ADMIN_PASSWORD:
+            session[ADMIN_SESSION_KEY] = True
+            return redirect(url_for('opening_settings'))
+        else:
+            return render_template('admin_login.html', error='Mot de passe incorrect')
+    
+    return render_template('admin_login.html')
+
+@app.route('/admin/logout')
+def admin_logout():
+    """Déconnexion admin"""
+    session.pop(ADMIN_SESSION_KEY, None)
+    return redirect(url_for('index'))
+
 @app.route('/openings/settings', methods=['GET'])
+@require_admin_auth
 def opening_settings():
     # Recharger les données depuis le fichier pour s'assurer qu'elles sont à jour
     config.load_openings_from_json()
@@ -562,6 +602,7 @@ def opening_settings():
     return render_template('opening_settings.html', openings=openings)
 
 @app.route('/openings/settings/add', methods=['POST'])
+@require_admin_auth
 def add_opening():
     # Accepte JSON ou form classique
     if request.is_json:
@@ -649,6 +690,7 @@ def add_opening():
         return jsonify({'error': 'Erreur lors de la sauvegarde'}), 500
 
 @app.route('/openings/settings/add_variation', methods=['POST'])
+@require_admin_auth
 def add_variation():
     # Accepte JSON ou form classique
     if request.is_json:
@@ -773,6 +815,7 @@ def add_variation():
         return jsonify({'error': 'Erreur inattendue'}), 500
 
 @app.route('/openings/settings/edit_variation', methods=['POST'])
+@require_admin_auth
 def edit_variation():
     data = request.get_json()
     category = data.get('category')
@@ -840,6 +883,7 @@ def edit_variation():
     return jsonify({'error': 'Opening not found'}), 404
 
 @app.route('/openings/settings/delete_variation', methods=['POST'])
+@require_admin_auth
 def delete_variation():
     data = request.get_json()
     category = data.get('category')
@@ -889,6 +933,7 @@ def delete_variation():
     return jsonify({'error': 'Opening not found'}), 404
 
 @app.route('/openings/settings/delete_opening', methods=['POST'])
+@require_admin_auth
 def delete_opening():
     # Accepte JSON ou form classique
     if request.is_json:
@@ -935,6 +980,7 @@ def delete_opening():
 
 # Routes de synchronisation GitHub
 @app.route('/openings/settings/sync_to_github', methods=['POST'])
+@require_admin_auth
 def sync_to_github_route():
     """Synchronise les données locales vers GitHub"""
     result = sync_to_github()
@@ -956,6 +1002,7 @@ def sync_to_github_route():
     return jsonify(result)
 
 @app.route('/openings/settings/sync_from_github', methods=['POST'])
+@require_admin_auth
 def sync_from_github_route():
     """Synchronise les données depuis GitHub vers local"""
     result = sync_from_github()
@@ -977,6 +1024,7 @@ def sync_from_github_route():
     return jsonify(result)
 
 @app.route('/openings/settings/github_status', methods=['GET'])
+@require_admin_auth
 def github_status():
     """Retourne le statut de la configuration GitHub"""
     return jsonify({
@@ -996,6 +1044,7 @@ def github_status():
     })
 
 @app.route('/openings/settings/get_openings', methods=['GET'])
+@require_admin_auth
 def get_openings():
     """Retourne les ouvertures mises à jour"""
     try:
@@ -1018,6 +1067,7 @@ def get_openings():
         }), 500
 
 @app.route('/render_debug', methods=['GET'])
+@require_admin_auth
 def render_debug():
     """Route de diagnostic pour Render"""
     try:

@@ -797,9 +797,8 @@
                 <span class="btn-text">⬇️ Sync from GitHub</span>
                 <span class="loading-spinner" style="display: none;">⏳</span>
             </button>
-            <button type="button" class="btn github-btn" id="debug-github" style="background: #666; position: relative; padding: 6px 12px; font-size: 0.85em;">
-                <span class="btn-text">🔧 Debug GitHub</span>
-            </button>
+
+            <a href="/admin/logout" class="btn" style="background: #dc3545; text-decoration: none; padding: 6px 12px; font-size: 0.85em;">🔒 Logout</a>
         </div>
     </div>
     
@@ -1739,10 +1738,7 @@
                 syncFromGitHub(this);
             });
             
-            document.getElementById('debug-github').addEventListener('click', function() {
-                playButtonSound();
-                debugGitHub();
-            });
+
         }
         
         function showLoadingState(button) {
@@ -1817,9 +1813,11 @@
                     
                     // Recharger les données sans recharger la page
                     refreshOpeningsList();
+                    showNotification('Synchronisation vers GitHub réussie', 'sync');
                 } else {
                     showErrorState(button);
                     console.error('❌ Sync to GitHub failed:', data.error);
+                    showNotification('Erreur de synchronisation vers GitHub', 'sync_error');
                 }
             })
             .catch(error => {
@@ -1858,6 +1856,7 @@
                 } else {
                     showErrorState(button);
                     console.error('❌ Sync from GitHub failed:', data.error);
+                    showNotification('Erreur de synchronisation depuis GitHub', 'sync_error');
                 }
             })
             .catch(error => {
@@ -1922,61 +1921,65 @@
             });
         }
         
-        // Fonction pour debug GitHub
-        function debugGitHub() {
-            console.log('🔧 Debug GitHub...');
-            
-            fetch('/render_debug', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log('🔧 Debug GitHub result:', data);
-                
-                // Afficher les informations de debug dans la console seulement
-                let debugMessage = '🔧 Debug GitHub:\n\n';
-                
-                // Variables d'environnement
-                debugMessage += '📋 Variables d\'environnement:\n';
-                Object.keys(data.environment_variables).forEach(key => {
-                    const env = data.environment_variables[key];
-                    debugMessage += `  ${key}: ${env.exists ? '✅' : '❌'} ${env.value}\n`;
-                });
-                
-                // Statut GitHub
-                debugMessage += '\n🔗 Statut GitHub:\n';
-                Object.keys(data.github_status).forEach(key => {
-                    const status = data.github_status[key];
-                    debugMessage += `  ${key}: ${status ? '✅' : '❌'}\n`;
-                });
-                
-                // Test de connexion
-                if (data.github_test) {
-                    debugMessage += '\n🌐 Test de connexion:\n';
-                    if (data.github_test.success) {
-                        debugMessage += `  ✅ Connexion réussie\n`;
-                        debugMessage += `  Repository: ${data.github_test.repo_full_name}\n`;
-                        debugMessage += `  Branche par défaut: ${data.github_test.default_branch}\n`;
-                    } else {
-                        debugMessage += `  ❌ Erreur de connexion: ${data.github_test.error}\n`;
-                    }
-                }
-                
-                // Afficher seulement dans la console
-                console.log('🔧 Debug message:', debugMessage);
-            })
-            .catch(error => {
-                console.error('Erreur lors du debug GitHub:', error);
-            });
-        }
+
         
-        // Fonction pour afficher des notifications (désactivée)
+        // Fonction pour afficher des notifications
         function showNotification(message, type = 'info') {
             console.log(`📢 Notification [${type}]: ${message}`);
-            // Les notifications sont désactivées pour éviter les popups
+            
+            // Afficher seulement les notifications de synchronisation
+            if (type === 'sync' || type === 'sync_error') {
+                // Créer l'élément de notification
+                const notification = document.createElement('div');
+                notification.className = `notification notification-${type}`;
+                notification.innerHTML = `
+                    <span class="notification-message">${message}</span>
+                `;
+                
+                // Ajouter les styles
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: #F47C20;
+                    color: white;
+                    padding: 12px 20px;
+                    border-radius: 8px;
+                    box-shadow: 0 4px 12px rgba(244, 124, 32, 0.3);
+                    z-index: 10000;
+                    max-width: 300px;
+                    word-wrap: break-word;
+                    animation: slideIn 0.3s ease-out;
+                    font-weight: 500;
+                `;
+                
+                // Ajouter l'animation CSS
+                const style = document.createElement('style');
+                style.textContent = `
+                    @keyframes slideIn {
+                        from { transform: translateX(100%); opacity: 0; }
+                        to { transform: translateX(0); opacity: 1; }
+                    }
+                `;
+                document.head.appendChild(style);
+                
+                // Ajouter à la page
+                document.body.appendChild(notification);
+                
+                // Supprimer après 1 seconde
+                setTimeout(() => {
+                    if (notification.parentElement) {
+                        notification.style.animation = 'slideOut 0.3s ease-in';
+                        notification.style.transform = 'translateX(100%)';
+                        notification.style.opacity = '0';
+                        setTimeout(() => {
+                            if (notification.parentElement) {
+                                notification.parentElement.removeChild(notification);
+                            }
+                        }, 300);
+                    }
+                }, 1000);
+            }
         }
     </script>
 </body>

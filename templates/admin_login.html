@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SacTheBook - Administration</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #145334;
+            background-image: 
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cg transform='rotate(15 90 90)'%3E%3Ctext x='90' y='105' font-size='60' text-anchor='middle' fill='rgba(255,255,255,0.1)'%3E♔%3C/text%3E%3C/g%3E%3C/svg%3E"),
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cg transform='rotate(-25 90 90)'%3E%3Ctext x='90' y='105' font-size='60' text-anchor='middle' fill='rgba(255,255,255,0.08)'%3E♕%3C/text%3E%3C/g%3E%3C/svg%3E"),
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cg transform='rotate(45 90 90)'%3E%3Ctext x='90' y='105' font-size='60' text-anchor='middle' fill='rgba(255,255,255,0.06)'%3E♖%3C/text%3E%3C/g%3E%3C/svg%3E"),
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cg transform='rotate(-10 90 90)'%3E%3Ctext x='90' y='105' font-size='60' text-anchor='middle' fill='rgba(255,255,255,0.09)'%3E♗%3C/text%3E%3C/g%3E%3C/svg%3E"),
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cg transform='rotate(30 90 90)'%3E%3Ctext x='90' y='105' font-size='60' text-anchor='middle' fill='rgba(255,255,255,0.07)'%3E♘%3C/text%3E%3C/g%3E%3C/svg%3E"),
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cg transform='rotate(-40 90 90)'%3E%3Ctext x='90' y='105' font-size='60' text-anchor='middle' fill='rgba(255,255,255,0.11)'%3E♙%3C/text%3E%3C/g%3E%3C/svg%3E");
+            background-size: 180px 180px, 180px 180px, 180px 180px, 180px 180px, 180px 180px, 180px 180px;
+            background-position: 40px 100px, 300px 140px, 540px 60px, 180px 370px, 440px 300px, 670px 200px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-container {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            display: block;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 24px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        input[type="password"] {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="password"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background: #F47C20;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, background 0.2s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            background: #e06a1a;
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .error {
+            background: #ffebee;
+            color: #c62828;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #c62828;
+        }
+
+        .back-link {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .back-link a {
+            color: #F47C20;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .back-link a:hover {
+            text-decoration: underline;
+        }
+
+        .security-note {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            font-size: 12px;
+            color: #666;
+            border-left: 4px solid #F47C20;
+        }
+
+        @media (max-width: 480px) {
+            body {
+                background-size: 120px 120px, 120px 120px, 120px 120px, 120px 120px, 120px 120px, 120px 120px;
+                background-position: 20px 50px, 200px 80px, 360px 30px, 120px 200px, 300px 150px, 450px 100px;
+            }
+            
+            .login-container {
+                margin: 20px;
+                padding: 30px 20px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                background-size: 150px 150px, 150px 150px, 150px 150px, 150px 150px, 150px 150px, 150px 150px;
+                background-position: 30px 80px, 250px 120px, 450px 50px, 150px 300px, 380px 250px, 580px 150px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <img src="/static/SacTheBook_Icon.png" alt="SacTheBook" class="logo">
+        <h1>Administration</h1>
+        <p class="subtitle">Accès sécurisé aux paramètres</p>
+
+        {% if error %}
+        <div class="error">
+            {{ error }}
+        </div>
+        {% endif %}
+
+        <form method="POST">
+            <div class="form-group">
+                <label for="password">Mot de passe administrateur</label>
+                <input type="password" id="password" name="password" required autocomplete="current-password">
+            </div>
+            <button type="submit" class="btn">Se connecter</button>
+        </form>
+
+        <div class="back-link">
+            <a href="/">← Retour à l'accueil</a>
+        </div>
+
+        <div class="security-note">
+            <strong>🔒 Sécurité :</strong> Cette page est protégée par mot de passe. 
+            Seul l'administrateur peut modifier les ouvertures et paramètres.
+        </div>
+    </div>
+
+    <script>
+        // Focus automatique sur le champ mot de passe
+        document.getElementById('password').focus();
+
+        // Empêcher la soumission avec Entrée si le champ est vide
+        document.getElementById('password').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !this.value.trim()) {
+                e.preventDefault();
+            }
+        });
+
+        // Animation de chargement sur le bouton
+        document.querySelector('form').addEventListener('submit', function() {
+            const btn = document.querySelector('.btn');
+            btn.textContent = 'Connexion...';
+            btn.disabled = true;
+        });
+    </script>
+</body>
+</html>
