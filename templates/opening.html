@@ -2754,23 +2754,43 @@
             
             if (orientation === 'black') {
                 // Pour les noirs, on doit jouer le premier coup des blancs pour être en défense
-                if (lines[currentLineIndex] && lines[currentLineIndex].moves.length > 0) {
+                console.log('SETUP LINE: Black orientation detected, setting up defense');
+                console.log('SETUP LINE: Lines available:', lines ? lines.length : 'null');
+                console.log('SETUP LINE: Current line index:', currentLineIndex);
+                console.log('SETUP LINE: Current line:', lines ? lines[currentLineIndex] : 'null');
+                
+                if (lines && lines[currentLineIndex] && lines[currentLineIndex].moves && lines[currentLineIndex].moves.length > 0) {
                     const move = lines[currentLineIndex].moves[currentMoveIndex];
-                    game.move(move.san);
-                    currentMoveIndex++;
-                    console.log('Black orientation: played white move for defense setup');
+                    console.log('SETUP LINE: Playing first move:', move);
+                    
+                    try {
+                        const result = game.move(move.san);
+                        console.log('SETUP LINE: Move result:', result);
+                        currentMoveIndex++;
+                        console.log('SETUP LINE: Current move index incremented to:', currentMoveIndex);
+                        console.log('SETUP LINE: Game FEN after move:', game.fen());
+                    } catch (error) {
+                        console.error('SETUP LINE: Error playing move:', error);
+                    }
+                } else {
+                    console.error('SETUP LINE: No moves available for defense setup');
                 }
             } else if (orientation === 'white') {
                 // Pour les blancs, on commence avec la position initiale
-                console.log('White orientation: starting with initial position');
+                console.log('SETUP LINE: White orientation - starting with initial position');
             } else if (orientation === null) {
-                console.warn('orientation not yet initialized, skipping setup');
+                console.warn('SETUP LINE: Orientation not yet initialized, skipping setup');
             }
             board.position(game.fen());
-            console.log('=== SETUP LINE ORIENTATION DIAGNOSTIC ===');
-            console.log('Board orientation before fix:', board.orientation());
+            console.log('=== SETUP LINE COMPLETE DIAGNOSTIC ===');
+            console.log('Game FEN:', game.fen());
+            console.log('Game turn:', game.turn());
+            console.log('Current move index:', currentMoveIndex);
+            console.log('Board orientation:', board.orientation());
             console.log('Expected orientation:', orientation);
-            console.log('Orientation types - board:', typeof board.orientation(), 'expected:', typeof orientation);
+            console.log('Lines available:', lines ? lines.length : 'null');
+            console.log('Current line moves:', lines && lines[currentLineIndex] ? lines[currentLineIndex].moves.length : 'null');
+            console.log('=== END SETUP LINE DIAGNOSTIC ===');
             
             // S'assurer que l'orientation est correcte
             if (board.orientation() !== orientation) {
@@ -3827,7 +3847,12 @@
             }
 
             function onDrop(source, target) {
+                console.log('=== DROP DIAGNOSTIC ===');
                 console.log('Drop:', source, target);
+                console.log('Game turn before move:', game.turn());
+                console.log('Orientation:', orientation);
+                console.log('Current move index:', currentMoveIndex);
+                console.log('Is line complete:', isLineComplete);
                 
                 // Supprimer le highlight des coups légaux
                 removeGreySquares();
@@ -3895,6 +3920,8 @@
                 }
                 
                 console.log('Move made:', move);
+                console.log('Game turn after move:', game.turn());
+                console.log('=== END DROP DIAGNOSTIC ===');
                 window.validateUserMove(move);
             }
 
@@ -3903,8 +3930,12 @@
             }
 
             window.validateUserMove = function(move) {
+                console.log('=== VALIDATE USER MOVE DIAGNOSTIC ===');
                 console.log('validateUserMove called - isLineComplete:', isLineComplete, 'drillMode:', drillMode);
                 console.log('Move to validate:', move);
+                console.log('Current move index:', currentMoveIndex);
+                console.log('Lines available:', lines ? lines.length : 'null');
+                console.log('Current line moves:', lines && lines[currentLineIndex] ? lines[currentLineIndex].moves.length : 'null');
                 
                 // Vérifier si c'est un coup "nul" (même case vers même case)
                 if (move.from === move.to) {
@@ -3958,8 +3989,10 @@
                         // Bloque l'échiquier pour empêcher d'autres coups directs
                         board.draggable = false;
                     
+                        console.log('Scheduling computer move in', COMPUTER_MOVE_DELAY, 'ms');
                         setTimeout(function() {
-                        window.playComputerMove();
+                            console.log('Executing computer move...');
+                            window.playComputerMove();
                         }, COMPUTER_MOVE_DELAY);
                 } else {
                     // Coup incorrect
@@ -4069,16 +4102,32 @@
             }
 
             window.playComputerMove = function() {
-                if (isLineComplete) return;
+                console.log('=== PLAY COMPUTER MOVE DIAGNOSTIC ===');
+                console.log('isLineComplete:', isLineComplete);
+                console.log('currentLineIndex:', currentLineIndex);
+                console.log('lines.length:', lines ? lines.length : 'null');
+                console.log('currentMoveIndex:', currentMoveIndex);
+                console.log('current line moves length:', lines && lines[currentLineIndex] ? lines[currentLineIndex].moves.length : 'null');
+                
+                if (isLineComplete) {
+                    console.log('Line is complete, returning');
+                    return;
+                }
                 if (currentLineIndex >= lines.length || currentMoveIndex >= lines[currentLineIndex].moves.length) {
+                    console.log('End of line reached, showing line complete');
                     window.showLineComplete();
                     return;
                 }
                 const move = lines[currentLineIndex].moves[currentMoveIndex];
+                console.log('Computer move to play:', move);
                 
                 // Analyser le mouvement pour déterminer le son à jouer
+                console.log('Executing computer move:', move.san);
                 const moveObj = game.move(move.san);
+                console.log('Move result:', moveObj);
+                
                 if (moveObj) {
+                    console.log('Computer move successful, playing sound');
                     // Jouer le son approprié selon le type de coup
                     if (moveObj.flags.includes('c')) {
                         window.playCaptureSound();
@@ -4089,10 +4138,16 @@
                     } else {
                         window.playMoveSound();
                     }
+                } else {
+                    console.error('Computer move failed!');
                 }
                 
                 board.position(game.fen());
                 currentMoveIndex++;
+                console.log('Current move index incremented to:', currentMoveIndex);
+                console.log('Game FEN after computer move:', game.fen());
+                console.log('Game turn after computer move:', game.turn());
+                console.log('=== END PLAY COMPUTER MOVE DIAGNOSTIC ===');
                 
                 // Met à jour l'indice si il est affiché
                 window.updateHintContent();
