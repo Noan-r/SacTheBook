@@ -2766,18 +2766,28 @@
             
             if (orientation === 'black') {
                 // Pour les noirs, on doit jouer le premier coup des blancs pour être en défense
+                console.log('SETUP: Black orientation detected, need to play first white move');
+                console.log('SETUP: Lines available:', lines ? lines.length : 'null');
+                console.log('SETUP: Current line index:', currentLineIndex);
+                console.log('SETUP: Current line:', lines ? lines[currentLineIndex] : 'null');
+                console.log('SETUP: Current line moves:', lines && lines[currentLineIndex] ? lines[currentLineIndex].moves : 'null');
+                console.log('SETUP: Current move index:', currentMoveIndex);
+                
                 if (lines && lines[currentLineIndex] && lines[currentLineIndex].moves && lines[currentLineIndex].moves.length > 0) {
                     const move = lines[currentLineIndex].moves[currentMoveIndex];
-                    console.log('Playing first white move for defense:', move.san);
+                    console.log('SETUP: Playing first white move for defense:', move);
+                    console.log('SETUP: Move SAN:', move.san);
                     game.move(move.san);
                     currentMoveIndex++;
-                    console.log('First move played, current move index:', currentMoveIndex);
+                    console.log('SETUP: First move played, current move index:', currentMoveIndex);
+                } else {
+                    console.error('SETUP: No moves available for defense setup!');
                 }
             } else if (orientation === 'white') {
                 // Pour les blancs, on commence avec la position initiale
-                console.log('White orientation - starting with initial position');
+                console.log('SETUP: White orientation - starting with initial position');
             } else if (orientation === null) {
-                console.warn('orientation not yet initialized, skipping setup');
+                console.warn('SETUP: orientation not yet initialized, skipping setup');
             }
             
             // CRITIQUE: Appliquer la position APRÈS avoir joué le premier coup
