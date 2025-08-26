@@ -2442,8 +2442,50 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <script>
-        // === VARIABLES GLOBALES ===
-
+        // SCRIPT RADICAL POUR MOBILE - FORCER L'ORIENTATION IMMÉDIATEMENT
+        (function() {
+            if ('ontouchstart' in window) {
+                console.log('MOBILE DETECTED - Applying radical orientation fix');
+                
+                // Attendre que le DOM soit prêt
+                if (document.readyState === 'loading') {
+                    document.addEventListener('DOMContentLoaded', forceMobileOrientation);
+                } else {
+                    forceMobileOrientation();
+                }
+                
+                function forceMobileOrientation() {
+                    // Détecter l'orientation basée sur l'URL
+                    const urlPath = window.location.pathname;
+                    const urlOpeningName = decodeURIComponent(urlPath.split('/').pop());
+                    const defenseOpenings = ['Albin Countergambit', 'Sicilian Defense', 'French Defense', 'Caro-Kann Defense'];
+                    const isDefense = defenseOpenings.some(defense => urlOpeningName.includes(defense));
+                    const forcedOrientation = isDefense ? 'black' : 'white';
+                    
+                    console.log('MOBILE RADICAL FIX: Forcing orientation to', forcedOrientation);
+                    
+                    // Créer une variable globale pour l'orientation
+                    window.MOBILE_ORIENTATION = forcedOrientation;
+                    
+                    // Forcer l'orientation toutes les 500ms pendant 5 secondes
+                    let attempts = 0;
+                    const maxAttempts = 10;
+                    const interval = setInterval(() => {
+                        attempts++;
+                        if (window.board && window.board.orientation) {
+                            window.board.orientation(forcedOrientation);
+                            console.log('MOBILE RADICAL FIX: Attempt', attempts, 'orientation forced to', forcedOrientation);
+                        }
+                        
+                        if (attempts >= maxAttempts) {
+                            clearInterval(interval);
+                            console.log('MOBILE RADICAL FIX: Completed');
+                        }
+                    }, 500);
+                }
+            }
+        })();
+        
         // === VARIABLES GLOBALES ===
         var board = null;
         var game = new Chess();
@@ -2519,29 +2561,33 @@
         
         // === FONCTION SIMPLIFIÉE POUR CRÉER LE PLATEAU ===
         function createBoard(config) {
-            console.log('Creating board with orientation:', orientation);
+            // UTILISER L'ORIENTATION FORCÉE SUR MOBILE
+            const finalOrientation = ('ontouchstart' in window && window.MOBILE_ORIENTATION) ? 
+                window.MOBILE_ORIENTATION : orientation;
+            
+            console.log('Creating board with orientation:', finalOrientation);
             
             // FORCER L'ORIENTATION DANS LA CONFIG
-            config.orientation = orientation;
+            config.orientation = finalOrientation;
             
             const newBoard = Chessboard('myBoard', config);
             if (newBoard) {
                 console.log('Board created successfully');
                 
                 // FORCER L'ORIENTATION IMMÉDIATEMENT
-                newBoard.orientation(orientation);
+                newBoard.orientation(finalOrientation);
                 
                 // Vérification immédiate
-                if (newBoard.orientation() !== orientation) {
+                if (newBoard.orientation() !== finalOrientation) {
                     console.log('CRITICAL: Orientation mismatch, forcing again...');
-                    newBoard.orientation(orientation);
+                    newBoard.orientation(finalOrientation);
                 }
                 
                 // Force supplémentaire sur mobile
                 if ('ontouchstart' in window) {
                     setTimeout(() => {
-                        newBoard.orientation(orientation);
-                        console.log('Mobile: Board orientation forced to:', orientation);
+                        newBoard.orientation(finalOrientation);
+                        console.log('Mobile: Board orientation forced to:', finalOrientation);
                     }, 50);
                 }
             }
