@@ -2768,23 +2768,29 @@
                 // Pour les noirs, on doit jouer le premier coup des blancs pour être en défense
                 if (lines && lines[currentLineIndex] && lines[currentLineIndex].moves && lines[currentLineIndex].moves.length > 0) {
                     const move = lines[currentLineIndex].moves[currentMoveIndex];
+                    console.log('Playing first white move for defense:', move.san);
                     game.move(move.san);
                     currentMoveIndex++;
+                    console.log('First move played, current move index:', currentMoveIndex);
                 }
             } else if (orientation === 'white') {
                 // Pour les blancs, on commence avec la position initiale
+                console.log('White orientation - starting with initial position');
             } else if (orientation === null) {
                 console.warn('orientation not yet initialized, skipping setup');
             }
+            
+            // CRITIQUE: Appliquer la position APRÈS avoir joué le premier coup
+            console.log('Applying board position with FEN:', game.fen());
             board.position(game.fen());
             
-            // S'assurer que l'orientation est correcte
+            // CRITIQUE: S'assurer que l'orientation est correcte AVANT de continuer
             if (board.orientation() !== orientation) {
-                console.log('Fixing board orientation from', board.orientation(), 'to', orientation);
+                console.log('CRITICAL: Fixing board orientation from', board.orientation(), 'to', orientation);
                 board.orientation(orientation);
                 console.log('Board orientation after fix:', board.orientation());
             } else {
-                console.log('Board orientation already correct');
+                console.log('Board orientation already correct:', board.orientation());
             }
             
             // CORRECTION MOBILE: Forcer l'orientation et le drag sur mobile
