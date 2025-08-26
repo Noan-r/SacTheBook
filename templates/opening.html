@@ -2485,6 +2485,16 @@
             if (board && orientation) {
                 board.orientation(orientation);
                 console.log('Board orientation set to:', orientation);
+                
+                // Force l'orientation sur mobile
+                if ('ontouchstart' in window) {
+                    setTimeout(() => {
+                        if (board && board.orientation() !== orientation) {
+                            board.orientation(orientation);
+                            console.log('Mobile: Forced orientation to:', orientation);
+                        }
+                    }, 100);
+                }
             }
         }
         
@@ -2691,7 +2701,7 @@
                 // Forcer la mise à jour de l'affichage
                 setTimeout(function() {
                     board.position(game.fen());
-    
+                    board.orientation(orientation);
                 }, 100);
             }
             
@@ -3573,55 +3583,19 @@
             // CORRECTION RADICALE: Forcer l'orientation basée sur l'URL ET le serveur
             const urlPath = window.location.pathname;
             const urlOpeningName = decodeURIComponent(urlPath.split('/').pop());
-            console.log('=== ORIENTATION DETECTION DEBUG ===');
-            console.log('URL path:', urlPath);
-            console.log('Opening name from URL (decoded):', urlOpeningName);
-            console.log('Opening name from server:', openingName);
-            console.log('Orientation BEFORE detection:', orientation);
-            
-            // Si c'est une ouverture de défense, forcer l'orientation black
-            const defenseOpenings = ['Albin Countergambit', 'Sicilian Defense', 'French Defense', 'Caro-Kann Defense'];
-            const isDefenseFromURL = defenseOpenings.some(defense => urlOpeningName.includes(defense));
-            const isDefenseFromServer = defenseOpenings.some(defense => openingName.includes(defense));
-            console.log('Is defense opening (URL)?', isDefenseFromURL);
-            console.log('Is defense opening (server)?', isDefenseFromServer);
-            console.log('Checking against defenses:', defenseOpenings);
-            
-            if (isDefenseFromURL || isDefenseFromServer) {
-                console.log('FORCING BLACK ORIENTATION for defense opening:', urlOpeningName, 'or', openingName);
-                orientation = 'black';
-            } else {
-                console.log('Using WHITE ORIENTATION for attack opening:', urlOpeningName, 'or', openingName);
-                orientation = 'white';
-            }
-            
-            console.log('Orientation AFTER detection:', orientation);
-            console.log('=== END ORIENTATION DETECTION DEBUG ===');
+            // Utiliser directement l'orientation du serveur
+            console.log('Server orientation:', orientation);
             currentLineIndex = 0; // Initialisation de la variable globale
             
-            // DEBUG CRITIQUE: Vérifier les données reçues du serveur
-            console.log('=== CRITICAL ORIENTATION DEBUG ===');
-            console.log('Raw orientation from server:', '{{ orientation }}');
-            console.log('Raw opening_name from server:', '{{ opening_name }}');
-            console.log('Parsed orientation:', orientation);
-            console.log('Orientation type:', typeof orientation);
-            console.log('Orientation length:', orientation ? orientation.length : 'null');
-            console.log('Orientation === "black":', orientation === 'black');
-            console.log('Orientation === "white":', orientation === 'white');
-            console.log('=== END CRITICAL DEBUG ===');
+
             
-            // VÉRIFICATION FINALE: S'assurer que l'orientation est correcte
-            console.log('=== FINAL ORIENTATION CHECK ===');
-            console.log('Final orientation value:', orientation);
-            console.log('Should be black for Albin Countergambit:', orientation === 'black');
-            console.log('=== END FINAL CHECK ===');
-            
-            // Vérification périodique de l'orientation (toutes les 5 secondes)
+            // Vérification périodique de l'orientation (plus fréquente sur mobile)
+            const checkInterval = 'ontouchstart' in window ? 2000 : 5000;
             setInterval(function() {
                 if (board && orientation && board.orientation() !== orientation) {
                     setBoardOrientation();
                 }
-            }, 5000);
+            }, checkInterval);
 
             console.log('Variables initialisées:', {
                 openingName: openingName,
@@ -3629,11 +3603,7 @@
                 orientation: orientation
             });
 
-            // Vérifier l'orientation
-            console.log('Orientation définie:', orientation);
-            console.log('Type d\'orientation:', typeof orientation);
-            console.log('Orientation est black?', orientation === 'black');
-            console.log('Orientation est white?', orientation === 'white');
+
 
             // Check that data is valid
             if (!lines || lines.length === 0) {
@@ -4134,10 +4104,16 @@
                     setupLine();
                     $(window).resize(board.resize);
                     
-                    // Vérifier que les pièces se chargent
+                    // Vérifier que les pièces se chargent et forcer l'orientation sur mobile
                     setTimeout(function() {
                         const pieces = $('.square-55d63 img');
                         console.log(`Found ${pieces.length} pieces on board`);
+                        
+                        // Force l'orientation sur mobile
+                        if ('ontouchstart' in window && board && orientation) {
+                            board.orientation(orientation);
+                            console.log('Mobile: Initial orientation forced to:', orientation);
+                        }
                     }, 1000);
                 } else {
                     console.error('Failed to create board');
