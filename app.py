@@ -544,18 +544,18 @@ def opening_page(opening_name):
     if category is None:
         return "Opening not found", 404
     
-    orientation = 'black' if category == 'Defense' else 'white'
+    # DÉFINITION ROBUSTE DE L'ORIENTATION
+    defense_openings = ['Albin Countergambit', 'Sicilian Defense', 'French Defense', 'Caro-Kann Defense']
+    is_defense = any(defense in opening_name for defense in defense_openings) or category == 'Defense'
+    
+    orientation = 'black' if is_defense else 'white'
     
     # DEBUG CRITIQUE: Logs pour diagnostiquer l'orientation
     print(f"=== ORIENTATION DEBUG ===")
     print(f"Opening name: {opening_name}")
     print(f"Category: {category}")
-    print(f"Category type: {type(category)}")
-    print(f"Category == 'Defense': {category == 'Defense'}")
-    print(f"Category == 'defense': {category == 'defense'}")
-    print(f"Category.lower() == 'defense': {category.lower() == 'defense' if category else 'None'}")
+    print(f"Is defense opening: {is_defense}")
     print(f"Calculated orientation: {orientation}")
-    print(f"Orientation type: {type(orientation)}")
     print(f"=== END ORIENTATION DEBUG ===")
     
     return render_template('opening.html', opening_name=opening_name, lines=lines, orientation=orientation)
