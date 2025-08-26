@@ -2578,12 +2578,24 @@
             // FORCER L'ORIENTATION DANS LA CONFIG
             config.orientation = finalOrientation;
             
+            // FORCER LE DRAG & DROP SUR MOBILE
+            if ('ontouchstart' in window) {
+                config.draggable = true;
+                console.log('Mobile: Forcing draggable = true');
+            }
+            
             const newBoard = Chessboard('myBoard', config);
             if (newBoard) {
                 console.log('Board created successfully');
                 
                 // FORCER L'ORIENTATION IMMÉDIATEMENT
                 newBoard.orientation(finalOrientation);
+                
+                // FORCER LE DRAG & DROP IMMÉDIATEMENT SUR MOBILE
+                if ('ontouchstart' in window) {
+                    newBoard.draggable = true;
+                    console.log('Mobile: Board draggable forced to true');
+                }
                 
                 // Vérification immédiate
                 if (newBoard.orientation() !== finalOrientation) {
@@ -2595,7 +2607,8 @@
                 if ('ontouchstart' in window) {
                     setTimeout(() => {
                         newBoard.orientation(finalOrientation);
-                        console.log('Mobile: Board orientation forced to:', finalOrientation);
+                        newBoard.draggable = true;
+                        console.log('Mobile: Board orientation and draggable forced to:', finalOrientation, 'true');
                     }, 50);
                 }
             }
@@ -2811,15 +2824,24 @@
                 setTimeout(function() {
                     board.position(game.fen());
                     board.orientation(orientation);
+                    board.draggable = true;
                 }, 50);
                 
                 setTimeout(function() {
                     board.orientation(orientation);
+                    board.draggable = true;
                 }, 100);
                 
                 setTimeout(function() {
                     board.orientation(orientation);
+                    board.draggable = true;
                 }, 200);
+                
+                // Force supplémentaire pour le drag & drop
+                setTimeout(function() {
+                    board.draggable = true;
+                    console.log('MOBILE: Final draggable check:', board.draggable);
+                }, 500);
             }
             
             // Définir l'orientation du plateau après un délai
@@ -3809,8 +3831,15 @@
 
             // Event handling functions
             function onDragStart(source, piece) {
+                console.log('=== DRAG START DIAGNOSTIC ===');
+                console.log('Drag start:', source, piece);
+                console.log('Orientation:', orientation);
+                console.log('Game turn:', game.turn());
+                console.log('Board draggable:', board ? board.draggable : 'board not available');
+                
                 // Empêcher le drag avec le clic droit
                 if (event && event.button === 2) {
+                    console.log('Right click prevented');
                     return false;
                 }
                 
@@ -3822,7 +3851,10 @@
                 const pieceColor = piece.charAt(0);
                 const currentPlayerColor = orientation === 'white' ? 'w' : 'b';
                 
+                console.log('Piece color:', pieceColor, 'Current player color:', currentPlayerColor);
+                
                 if (pieceColor !== currentPlayerColor) {
+                    console.log('Wrong piece color, drag prevented');
                     return false;
                 }
                 
@@ -3843,6 +3875,8 @@
                     }
                 }
                 
+                console.log('Drag start allowed');
+                console.log('=== END DRAG START DIAGNOSTIC ===');
                 return true;
             }
 
@@ -4258,6 +4292,12 @@
                 dropOffBoard: 'snapback',
                 sparePieces: false
             };
+            
+            // FORCER LE DRAG & DROP SUR MOBILE
+            if ('ontouchstart' in window) {
+                config.draggable = true;
+                console.log('Mobile: Config draggable forced to true');
+            }
 
             console.log('Creating board with config:', config);
             console.log('Board orientation will be:', orientation);
