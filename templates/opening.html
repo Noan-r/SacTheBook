@@ -2462,6 +2462,9 @@
                     const isDefense = defenseOpenings.some(defense => urlOpeningName.includes(defense));
                     const forcedOrientation = isDefense ? 'black' : 'white';
                     
+                    console.log('MOBILE RADICAL FIX: URL path:', urlPath);
+                    console.log('MOBILE RADICAL FIX: URL opening name:', urlOpeningName);
+                    console.log('MOBILE RADICAL FIX: Is defense:', isDefense);
                     console.log('MOBILE RADICAL FIX: Forcing orientation to', forcedOrientation);
                     
                     // Créer une variable globale pour l'orientation
@@ -2472,9 +2475,14 @@
                     const maxAttempts = 10;
                     const interval = setInterval(() => {
                         attempts++;
+                        console.log('MOBILE RADICAL FIX: Attempt', attempts, '- Board exists:', !!window.board);
+                        
                         if (window.board && window.board.orientation) {
+                            const currentOrientation = window.board.orientation();
                             window.board.orientation(forcedOrientation);
-                            console.log('MOBILE RADICAL FIX: Attempt', attempts, 'orientation forced to', forcedOrientation);
+                            console.log('MOBILE RADICAL FIX: Attempt', attempts, 'orientation changed from', currentOrientation, 'to', forcedOrientation);
+                        } else {
+                            console.log('MOBILE RADICAL FIX: Attempt', attempts, '- Board not ready yet');
                         }
                         
                         if (attempts >= maxAttempts) {
@@ -3669,7 +3677,7 @@
                 orientation = 'white'; // Fallback
             }
             
-            // CORRECTION RADICALE: Forcer l'orientation basée sur le nom de l'ouverture
+            // CORRECTION RADICALE: Utiliser l'orientation du serveur ET forcer si nécessaire
             const urlPath = window.location.pathname;
             const urlOpeningName = decodeURIComponent(urlPath.split('/').pop());
             
@@ -3682,6 +3690,13 @@
             // FORCER L'ORIENTATION DÉFINITIVEMENT
             orientation = isDefense ? 'black' : 'white';
             console.log('ORIENTATION FORCÉE:', orientation, 'pour:', urlOpeningName);
+            console.log('ORIENTATION DU SERVEUR:', '{{ orientation }}');
+            
+            // FORCER L'ORIENTATION SUR MOBILE IMMÉDIATEMENT
+            if ('ontouchstart' in window) {
+                window.MOBILE_ORIENTATION = orientation;
+                console.log('MOBILE: Orientation forcée à', orientation);
+            }
             currentLineIndex = 0; // Initialisation de la variable globale
             
 
@@ -4216,16 +4231,31 @@
                         
                         // Force l'orientation sur mobile de manière agressive
                         if ('ontouchstart' in window && board && orientation) {
+                            const currentOrientation = board.orientation();
                             board.orientation(orientation);
-                            console.log('Mobile: Initial orientation forced to:', orientation);
+                            console.log('Mobile: Initial orientation forced from', currentOrientation, 'to:', orientation);
                             
-                            // Vérifications supplémentaires
+                            // Vérifications supplémentaires multiples
                             setTimeout(() => {
                                 if (board.orientation() !== orientation) {
                                     board.orientation(orientation);
                                     console.log('Mobile: Secondary orientation fix');
                                 }
                             }, 500);
+                            
+                            setTimeout(() => {
+                                if (board.orientation() !== orientation) {
+                                    board.orientation(orientation);
+                                    console.log('Mobile: Tertiary orientation fix');
+                                }
+                            }, 1000);
+                            
+                            setTimeout(() => {
+                                if (board.orientation() !== orientation) {
+                                    board.orientation(orientation);
+                                    console.log('Mobile: Final orientation fix');
+                                }
+                            }, 2000);
                         }
                     }, 1000);
                 } else {
@@ -4504,9 +4534,18 @@
             // FORCER L'ORIENTATION AU DÉMARRAGE SUR MOBILE
             if ('ontouchstart' in window && board && orientation) {
                 setTimeout(() => {
+                    const currentOrientation = board.orientation();
                     board.orientation(orientation);
-                    console.log('Mobile: Startup orientation forced to:', orientation);
+                    console.log('Mobile: Startup orientation forced from', currentOrientation, 'to:', orientation);
                 }, 100);
+                
+                // Force supplémentaire après 1 seconde
+                setTimeout(() => {
+                    if (board && board.orientation() !== orientation) {
+                        board.orientation(orientation);
+                        console.log('Mobile: Delayed startup orientation fix');
+                    }
+                }, 1000);
             }
             
             // Initialiser le compteur Drill si on est en mode Drill au démarrage
