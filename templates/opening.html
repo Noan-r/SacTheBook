@@ -2536,37 +2536,60 @@
         // === FONCTION AGGRESSIVE POUR DÉFINIR L'ORIENTATION ===
         function setBoardOrientation() {
             if (board && orientation) {
+                console.log('🚀 setBoardOrientation called with orientation:', orientation);
+                
                 // FORCER L'ORIENTATION MULTIPLES FOIS
                 board.orientation(orientation);
                 board.orientation(orientation);
                 board.orientation(orientation);
                 
-                console.log('Board orientation FORCED to:', orientation);
+                console.log('🚀 Board orientation FORCED to:', orientation);
+                console.log('🚀 Actual board orientation:', board.orientation());
                 
                 // Force agressive sur mobile
                 if ('ontouchstart' in window) {
-                    // Vérifications multiples
+                    console.log('🚀 Mobile detected - applying aggressive fixes');
+                    
+                    // Vérifications multiples avec logs détaillés
                     setTimeout(() => {
                         if (board && board.orientation() !== orientation) {
+                            console.log('🚀 Mobile: Fix 1 - orientation was', board.orientation(), 'forcing to', orientation);
                             board.orientation(orientation);
-                            console.log('Mobile: Aggressive orientation fix 1');
+                        } else {
+                            console.log('🚀 Mobile: Fix 1 - orientation already correct:', board.orientation());
                         }
                     }, 50);
                     
                     setTimeout(() => {
                         if (board && board.orientation() !== orientation) {
+                            console.log('🚀 Mobile: Fix 2 - orientation was', board.orientation(), 'forcing to', orientation);
                             board.orientation(orientation);
-                            console.log('Mobile: Aggressive orientation fix 2');
+                        } else {
+                            console.log('🚀 Mobile: Fix 2 - orientation already correct:', board.orientation());
                         }
                     }, 150);
                     
                     setTimeout(() => {
                         if (board && board.orientation() !== orientation) {
+                            console.log('🚀 Mobile: Fix 3 - orientation was', board.orientation(), 'forcing to', orientation);
                             board.orientation(orientation);
-                            console.log('Mobile: Aggressive orientation fix 3');
+                        } else {
+                            console.log('🚀 Mobile: Fix 3 - orientation already correct:', board.orientation());
                         }
                     }, 300);
+                    
+                    setTimeout(() => {
+                        if (board && board.orientation() !== orientation) {
+                            console.log('🚀 Mobile: Fix 4 - orientation was', board.orientation(), 'forcing to', orientation);
+                            board.orientation(orientation);
+                        } else {
+                            console.log('🚀 Mobile: Fix 4 - orientation already correct:', board.orientation());
+                        }
+                    }, 500);
                 }
+            } else {
+                console.log('🚀 setBoardOrientation: board or orientation not available');
+                console.log('🚀 board:', !!board, 'orientation:', orientation);
             }
         }
         
@@ -2576,7 +2599,7 @@
             const finalOrientation = ('ontouchstart' in window && window.MOBILE_ORIENTATION) ? 
                 window.MOBILE_ORIENTATION : orientation;
             
-            console.log('Creating board with orientation:', finalOrientation);
+            console.log('🚀 Creating board with orientation:', finalOrientation);
             
             // FORCER L'ORIENTATION DANS LA CONFIG
             config.orientation = finalOrientation;
@@ -2584,35 +2607,51 @@
             // FORCER LE DRAG & DROP SUR MOBILE
             if ('ontouchstart' in window) {
                 config.draggable = true;
-                console.log('Mobile: Forcing draggable = true');
+                console.log('🚀 Mobile: Forcing draggable = true');
             }
             
             const newBoard = Chessboard('myBoard', config);
             if (newBoard) {
-                console.log('Board created successfully');
+                console.log('🚀 Board created successfully');
                 
-                // FORCER L'ORIENTATION IMMÉDIATEMENT
+                // FORCER L'ORIENTATION IMMÉDIATEMENT APRÈS CRÉATION
                 newBoard.orientation(finalOrientation);
+                console.log('🚀 Orientation forced immediately to:', finalOrientation);
                 
                 // FORCER LE DRAG & DROP IMMÉDIATEMENT SUR MOBILE
                 if ('ontouchstart' in window) {
                     newBoard.draggable = true;
-                    console.log('Mobile: Board draggable forced to true');
+                    console.log('🚀 Mobile: Board draggable forced to true');
                 }
                 
-                // Vérification immédiate
-                if (newBoard.orientation() !== finalOrientation) {
-                    console.log('CRITICAL: Orientation mismatch, forcing again...');
+                // Vérification immédiate et correction si nécessaire
+                const actualOrientation = newBoard.orientation();
+                if (actualOrientation !== finalOrientation) {
+                    console.log('🚀 CRITICAL: Orientation mismatch detected!');
+                    console.log('🚀 Expected:', finalOrientation, 'Got:', actualOrientation);
                     newBoard.orientation(finalOrientation);
+                    console.log('🚀 Orientation corrected to:', newBoard.orientation());
+                } else {
+                    console.log('🚀 Orientation is correct:', actualOrientation);
                 }
                 
-                // Force supplémentaire sur mobile
+                // Force supplémentaire sur mobile avec délais multiples
                 if ('ontouchstart' in window) {
                     setTimeout(() => {
                         newBoard.orientation(finalOrientation);
                         newBoard.draggable = true;
-                        console.log('Mobile: Board orientation and draggable forced to:', finalOrientation, 'true');
+                        console.log('🚀 Mobile: 50ms delay - orientation forced to:', finalOrientation);
                     }, 50);
+                    
+                    setTimeout(() => {
+                        newBoard.orientation(finalOrientation);
+                        console.log('🚀 Mobile: 100ms delay - orientation forced to:', finalOrientation);
+                    }, 100);
+                    
+                    setTimeout(() => {
+                        newBoard.orientation(finalOrientation);
+                        console.log('🚀 Mobile: 200ms delay - orientation forced to:', finalOrientation);
+                    }, 200);
                 }
             }
             return newBoard;
