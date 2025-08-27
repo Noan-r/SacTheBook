@@ -2442,13 +2442,16 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <script>
-        console.log('🚀 SCRIPT LOADED - JavaScript is running!');
+        console.log('🚨🚨🚨 SCRIPT STARTING - JavaScript is running! 🚨🚨🚨');
+        console.log('🚨 User Agent:', navigator.userAgent);
+        console.log('🚨 Touch support:', 'ontouchstart' in window);
+        console.log('🚨 Document ready state:', document.readyState);
         
         // SCRIPT RADICAL POUR MOBILE - FORCER L'ORIENTATION IMMÉDIATEMENT
         (function() {
-            console.log('🚀 RADICAL SCRIPT STARTING');
+            console.log('🚨🚨🚨 RADICAL SCRIPT STARTING 🚨🚨🚨');
             if ('ontouchstart' in window) {
-                console.log('🚀 MOBILE DETECTED - Applying radical orientation fix');
+                console.log('🚨🚨🚨 MOBILE DETECTED - Applying radical orientation fix 🚨🚨🚨');
                 
                 // Attendre que le DOM soit prêt
                 if (document.readyState === 'loading') {
@@ -2458,12 +2461,19 @@
                 }
                 
                 function forceMobileOrientation() {
+                    console.log('🚨🚨🚨 forceMobileOrientation called 🚨🚨🚨');
+                    
                     // Détecter l'orientation basée sur l'URL
                     const urlPath = window.location.pathname;
                     const urlOpeningName = decodeURIComponent(urlPath.split('/').pop());
                     const defenseOpenings = ['Albin Countergambit', 'Sicilian Defense', 'French Defense', 'Caro-Kann Defense'];
                     const isDefense = defenseOpenings.some(defense => urlOpeningName.includes(defense));
                     const forcedOrientation = isDefense ? 'black' : 'white';
+                    
+                    console.log('🚨 URL path:', urlPath);
+                    console.log('🚨 URL opening name:', urlOpeningName);
+                    console.log('🚨 Is defense:', isDefense);
+                    console.log('🚨 Forced orientation:', forcedOrientation);
                     
                     console.log('MOBILE RADICAL FIX: URL path:', urlPath);
                     console.log('MOBILE RADICAL FIX: URL opening name:', urlOpeningName);
