@@ -2794,7 +2794,10 @@
         
         // Fonctions globales critiques
         function setupLine() {
-            console.log('🔧 SETUP LINE START');
+            console.log('🚀🚀🚀 SETUP LINE START 🚀🚀🚀');
+            console.log('🚀 Orientation at setup:', orientation);
+            console.log('🚀 Board exists:', !!board);
+            console.log('🚀 Lines available:', lines ? lines.length : 'null');
             isLineComplete = false;
             game.reset();
             currentMoveIndex = 0;
@@ -2809,22 +2812,25 @@
             
             if (orientation === 'black') {
                 // Pour les noirs, on doit jouer le premier coup des blancs pour être en défense
-                console.log('🔧 BLACK ORIENTATION DETECTED');
-                console.log('🔧 Lines available:', lines ? lines.length : 'null');
-                console.log('🔧 Current line index:', currentLineIndex);
-                console.log('🔧 Current line:', lines ? lines[currentLineIndex] : 'null');
-                console.log('🔧 Current line moves:', lines && lines[currentLineIndex] ? lines[currentLineIndex].moves : 'null');
-                console.log('🔧 Current move index:', currentMoveIndex);
+                console.log('🚀🚀🚀 BLACK ORIENTATION DETECTED 🚀🚀🚀');
+                console.log('🚀 Lines available:', lines ? lines.length : 'null');
+                console.log('🚀 Current line index:', currentLineIndex);
+                console.log('🚀 Current line:', lines ? lines[currentLineIndex] : 'null');
+                console.log('🚀 Current line moves:', lines && lines[currentLineIndex] ? lines[currentLineIndex].moves : 'null');
+                console.log('🚀 Current move index:', currentMoveIndex);
                 
                 if (lines && lines[currentLineIndex] && lines[currentLineIndex].moves && lines[currentLineIndex].moves.length > 0) {
                     const move = lines[currentLineIndex].moves[currentMoveIndex];
-                    console.log('🔧 PLAYING FIRST WHITE MOVE:', move);
-                    console.log('🔧 Move SAN:', move.san);
+                    console.log('🚀🚀🚀 PLAYING FIRST WHITE MOVE 🚀🚀🚀');
+                    console.log('🚀 Move object:', move);
+                    console.log('🚀 Move SAN:', move.san);
                     game.move(move.san);
                     currentMoveIndex++;
-                    console.log('🔧 FIRST MOVE PLAYED, current move index:', currentMoveIndex);
+                    console.log('🚀 FIRST MOVE PLAYED, current move index:', currentMoveIndex);
+                    console.log('🚀 Game FEN after move:', game.fen());
+                    console.log('🚀 Game turn after move:', game.turn());
                 } else {
-                    console.error('🔧 NO MOVES AVAILABLE FOR DEFENSE SETUP!');
+                    console.error('🚀🚀🚀 NO MOVES AVAILABLE FOR DEFENSE SETUP! 🚀🚀🚀');
                 }
             } else if (orientation === 'white') {
                 // Pour les blancs, on commence avec la position initiale
@@ -2897,6 +2903,11 @@
             
             // Réinitialise l'état de l'indice pour la nouvelle ligne
             resetHintToDefault();
+            
+            console.log('🚀🚀🚀 SETUP LINE COMPLETE 🚀🚀🚀');
+            console.log('🚀 Final board orientation:', board.orientation());
+            console.log('🚀 Final game turn:', game.turn());
+            console.log('🚀 Final game FEN:', game.fen());
             
             // Met à jour l'indice si il est affiché
             updateHintContent();
