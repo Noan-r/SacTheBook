@@ -2818,7 +2818,12 @@
                     console.log('🚀 BLACK ORIENTATION DETECTED');
                 }
                 
-                if (lines && lines[currentLineIndex] && lines[currentLineIndex].moves && lines[currentLineIndex].moves.length > 0) {
+                // Vérifier si le premier coup blanc a déjà été joué
+                if (game.turn() === 'b') {
+                    if (!('ontouchstart' in window)) {
+                        console.log('🚀 FIRST WHITE MOVE ALREADY PLAYED - skipping');
+                    }
+                } else if (lines && lines[currentLineIndex] && lines[currentLineIndex].moves && lines[currentLineIndex].moves.length > 0) {
                     const move = lines[currentLineIndex].moves[currentMoveIndex];
                     if (!('ontouchstart' in window)) {
                         console.log('🚀 PLAYING FIRST WHITE MOVE:', move.san);
@@ -3910,6 +3915,18 @@
             console.log('🚀 Creating board with config:', config);
             console.log('🚀 Board orientation will be:', orientation);
             
+            // SOLUTION RADICALE: Jouer le premier coup blanc AVANT de créer le plateau
+            if (orientation === 'black') {
+                console.log('🚨 PRE-BOARD SETUP: Playing first white move for defense');
+                if (lines && lines[currentLineIndex] && lines[currentLineIndex].moves && lines[currentLineIndex].moves.length > 0) {
+                    const move = lines[currentLineIndex].moves[0];
+                    game.move(move.san);
+                    currentMoveIndex++;
+                    console.log('🚨 PRE-BOARD SETUP: First white move played:', move.san);
+                    console.log('🚨 PRE-BOARD SETUP: Turn after move:', game.turn());
+                }
+            }
+            
             try {
                 board = createBoard(config);
                 
@@ -3926,6 +3943,8 @@
                     // Définir l'orientation du plateau
                     setBoardOrientation();
                     
+                    // setupLine() est maintenant appelé APRÈS la création du plateau
+                    // mais le premier coup blanc a déjà été joué
                     setupLine();
                     $(window).resize(board.resize);
                 } else {
