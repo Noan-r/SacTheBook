@@ -2754,6 +2754,11 @@
                         console.log('🚨 RADICAL FIX: Turn after force:', game.turn());
                     }
                 }
+            } else if (game.turn() === 'b') {
+                // Le premier coup blanc a été joué, c'est correct
+                if (!('ontouchstart' in window)) {
+                    console.log('🚨 RADICAL FIX: Defense setup correct - black to play');
+                }
             }
             
             // Forcer l'orientation noire
@@ -2818,18 +2823,17 @@
                     console.log('🚀 BLACK ORIENTATION DETECTED');
                 }
                 
-                // Vérifier si le premier coup blanc a déjà été joué
-                if (game.turn() === 'b') {
-                    if (!('ontouchstart' in window)) {
-                        console.log('🚀 FIRST WHITE MOVE ALREADY PLAYED - skipping');
-                    }
-                } else if (lines && lines[currentLineIndex] && lines[currentLineIndex].moves && lines[currentLineIndex].moves.length > 0) {
-                    const move = lines[currentLineIndex].moves[currentMoveIndex];
+                // TOUJOURS jouer le premier coup blanc en défense
+                if (lines && lines[currentLineIndex] && lines[currentLineIndex].moves && lines[currentLineIndex].moves.length > 0) {
+                    const move = lines[currentLineIndex].moves[0]; // Premier coup
                     if (!('ontouchstart' in window)) {
                         console.log('🚀 PLAYING FIRST WHITE MOVE:', move.san);
                     }
                     game.move(move.san);
-                    currentMoveIndex++;
+                    currentMoveIndex = 1; // Passer au deuxième coup
+                    if (!('ontouchstart' in window)) {
+                        console.log('🚀 FIRST WHITE MOVE PLAYED - Turn is now:', game.turn());
+                    }
                 } else {
                     console.error('🚀 NO MOVES AVAILABLE FOR DEFENSE SETUP!');
                 }
@@ -2881,7 +2885,7 @@
             // CRITIQUE: Correction automatique si le tour est incorrect
             if (orientation === 'black' && game.turn() === 'w') {
                 if (!('ontouchstart' in window)) {
-                    console.log('🚨 AUTO-FIX: Playing first white move for defense');
+                    console.log('🚨 AUTO-FIX: White to play in defense - playing first move');
                 }
                 // Rejouer le premier coup blanc si nécessaire
                 if (lines && lines[currentLineIndex] && lines[currentLineIndex].moves && lines[currentLineIndex].moves.length > 0) {
@@ -2892,6 +2896,10 @@
                         console.log('🚨 AUTO-FIX: Turn after fix:', game.turn());
                     }
                     board.position(game.fen());
+                }
+            } else if (orientation === 'black' && game.turn() === 'b') {
+                if (!('ontouchstart' in window)) {
+                    console.log('🚨 AUTO-FIX: Defense setup correct - black to play');
                 }
             }
             
