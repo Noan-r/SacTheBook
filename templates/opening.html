@@ -2442,16 +2442,15 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <script>
-        console.log('🚨🚨🚨 SCRIPT STARTING - JavaScript is running! 🚨🚨🚨');
-        console.log('🚨 User Agent:', navigator.userAgent);
-        console.log('🚨 Touch support:', 'ontouchstart' in window);
-        console.log('🚨 Document ready state:', document.readyState);
+        // OPTIMISATION MOBILE - Logs réduits
+        if (!('ontouchstart' in window)) {
+            console.log('🚀 SCRIPT STARTING - JavaScript is running!');
+        }
         
-        // SCRIPT RADICAL POUR MOBILE - FORCER L'ORIENTATION IMMÉDIATEMENT
+        // SCRIPT OPTIMISÉ POUR MOBILE - FORCER L'ORIENTATION IMMÉDIATEMENT
         (function() {
-            console.log('🚨🚨🚨 RADICAL SCRIPT STARTING 🚨🚨🚨');
             if ('ontouchstart' in window) {
-                console.log('🚨🚨🚨 MOBILE DETECTED - Applying radical orientation fix 🚨🚨🚨');
+                console.log('🚀 MOBILE DETECTED - Applying optimized orientation fix');
                 
                 // Attendre que le DOM soit prêt
                 if (document.readyState === 'loading') {
@@ -2461,8 +2460,6 @@
                 }
                 
                 function forceMobileOrientation() {
-                    console.log('🚨🚨🚨 forceMobileOrientation called 🚨🚨🚨');
-                    
                     // Détecter l'orientation basée sur l'URL
                     const urlPath = window.location.pathname;
                     const urlOpeningName = decodeURIComponent(urlPath.split('/').pop());
@@ -2470,39 +2467,23 @@
                     const isDefense = defenseOpenings.some(defense => urlOpeningName.includes(defense));
                     const forcedOrientation = isDefense ? 'black' : 'white';
                     
-                    console.log('🚨 URL path:', urlPath);
-                    console.log('🚨 URL opening name:', urlOpeningName);
-                    console.log('🚨 Is defense:', isDefense);
-                    console.log('🚨 Forced orientation:', forcedOrientation);
-                    
-                    console.log('MOBILE RADICAL FIX: URL path:', urlPath);
-                    console.log('MOBILE RADICAL FIX: URL opening name:', urlOpeningName);
-                    console.log('MOBILE RADICAL FIX: Is defense:', isDefense);
-                    console.log('MOBILE RADICAL FIX: Forcing orientation to', forcedOrientation);
-                    
                     // Créer une variable globale pour l'orientation
                     window.MOBILE_ORIENTATION = forcedOrientation;
                     
-                    // Forcer l'orientation toutes les 500ms pendant 5 secondes
+                    // OPTIMISATION: Forcer l'orientation seulement 3 fois, plus rapide
                     let attempts = 0;
-                    const maxAttempts = 10;
+                    const maxAttempts = 3;
                     const interval = setInterval(() => {
                         attempts++;
-                        console.log('MOBILE RADICAL FIX: Attempt', attempts, '- Board exists:', !!window.board);
                         
                         if (window.board && window.board.orientation) {
-                            const currentOrientation = window.board.orientation();
                             window.board.orientation(forcedOrientation);
-                            console.log('MOBILE RADICAL FIX: Attempt', attempts, 'orientation changed from', currentOrientation, 'to', forcedOrientation);
-                        } else {
-                            console.log('MOBILE RADICAL FIX: Attempt', attempts, '- Board not ready yet');
                         }
                         
                         if (attempts >= maxAttempts) {
                             clearInterval(interval);
-                            console.log('MOBILE RADICAL FIX: Completed');
                         }
-                    }, 500);
+                    }, 200); // Plus rapide: 200ms au lieu de 500ms
                 }
             }
         })();
@@ -2543,63 +2524,26 @@
         var soundEnabled = true;
         var audioFiles = {};
         
-        // === FONCTION AGGRESSIVE POUR DÉFINIR L'ORIENTATION ===
+        // === FONCTION OPTIMISÉE POUR DÉFINIR L'ORIENTATION ===
         function setBoardOrientation() {
             if (board && orientation) {
-                console.log('🚀 setBoardOrientation called with orientation:', orientation);
-                
-                // FORCER L'ORIENTATION MULTIPLES FOIS
-                board.orientation(orientation);
-                board.orientation(orientation);
-                board.orientation(orientation);
-                
-                console.log('🚀 Board orientation FORCED to:', orientation);
-                console.log('🚀 Actual board orientation:', board.orientation());
-                
-                // Force agressive sur mobile
-                if ('ontouchstart' in window) {
-                    console.log('🚀 Mobile detected - applying aggressive fixes');
-                    
-                    // Vérifications multiples avec logs détaillés
-                    setTimeout(() => {
-                        if (board && board.orientation() !== orientation) {
-                            console.log('🚀 Mobile: Fix 1 - orientation was', board.orientation(), 'forcing to', orientation);
-                            board.orientation(orientation);
-                        } else {
-                            console.log('🚀 Mobile: Fix 1 - orientation already correct:', board.orientation());
-                        }
-                    }, 50);
-                    
-                    setTimeout(() => {
-                        if (board && board.orientation() !== orientation) {
-                            console.log('🚀 Mobile: Fix 2 - orientation was', board.orientation(), 'forcing to', orientation);
-                            board.orientation(orientation);
-                        } else {
-                            console.log('🚀 Mobile: Fix 2 - orientation already correct:', board.orientation());
-                        }
-                    }, 150);
-                    
-                    setTimeout(() => {
-                        if (board && board.orientation() !== orientation) {
-                            console.log('🚀 Mobile: Fix 3 - orientation was', board.orientation(), 'forcing to', orientation);
-                            board.orientation(orientation);
-                        } else {
-                            console.log('🚀 Mobile: Fix 3 - orientation already correct:', board.orientation());
-                        }
-                    }, 300);
-                    
-                    setTimeout(() => {
-                        if (board && board.orientation() !== orientation) {
-                            console.log('🚀 Mobile: Fix 4 - orientation was', board.orientation(), 'forcing to', orientation);
-                            board.orientation(orientation);
-                        } else {
-                            console.log('🚀 Mobile: Fix 4 - orientation already correct:', board.orientation());
-                        }
-                    }, 500);
+                // OPTIMISATION: Logs réduits sur mobile
+                if (!('ontouchstart' in window)) {
+                    console.log('🚀 setBoardOrientation called with orientation:', orientation);
                 }
-            } else {
-                console.log('🚀 setBoardOrientation: board or orientation not available');
-                console.log('🚀 board:', !!board, 'orientation:', orientation);
+                
+                // FORCER L'ORIENTATION
+                board.orientation(orientation);
+                
+                // OPTIMISATION: Force simplifiée sur mobile
+                if ('ontouchstart' in window) {
+                    // Une seule vérification rapide
+                    setTimeout(() => {
+                        if (board && board.orientation() !== orientation) {
+                            board.orientation(orientation);
+                        }
+                    }, 100);
+                }
             }
         }
         
@@ -2609,7 +2553,10 @@
             const finalOrientation = ('ontouchstart' in window && window.MOBILE_ORIENTATION) ? 
                 window.MOBILE_ORIENTATION : orientation;
             
-            console.log('🚀 Creating board with orientation:', finalOrientation);
+            // OPTIMISATION: Logs réduits sur mobile
+            if (!('ontouchstart' in window)) {
+                console.log('🚀 Creating board with orientation:', finalOrientation);
+            }
             
             // FORCER L'ORIENTATION DANS LA CONFIG
             config.orientation = finalOrientation;
@@ -2617,51 +2564,35 @@
             // FORCER LE DRAG & DROP SUR MOBILE
             if ('ontouchstart' in window) {
                 config.draggable = true;
-                console.log('🚀 Mobile: Forcing draggable = true');
             }
             
             const newBoard = Chessboard('myBoard', config);
             if (newBoard) {
-                console.log('🚀 Board created successfully');
+                // OPTIMISATION: Logs réduits sur mobile
+                if (!('ontouchstart' in window)) {
+                    console.log('🚀 Board created successfully');
+                }
                 
                 // FORCER L'ORIENTATION IMMÉDIATEMENT APRÈS CRÉATION
                 newBoard.orientation(finalOrientation);
-                console.log('🚀 Orientation forced immediately to:', finalOrientation);
                 
                 // FORCER LE DRAG & DROP IMMÉDIATEMENT SUR MOBILE
                 if ('ontouchstart' in window) {
                     newBoard.draggable = true;
-                    console.log('🚀 Mobile: Board draggable forced to true');
                 }
                 
-                // Vérification immédiate et correction si nécessaire
+                // OPTIMISATION: Vérification simplifiée
                 const actualOrientation = newBoard.orientation();
                 if (actualOrientation !== finalOrientation) {
-                    console.log('🚀 CRITICAL: Orientation mismatch detected!');
-                    console.log('🚀 Expected:', finalOrientation, 'Got:', actualOrientation);
                     newBoard.orientation(finalOrientation);
-                    console.log('🚀 Orientation corrected to:', newBoard.orientation());
-                } else {
-                    console.log('🚀 Orientation is correct:', actualOrientation);
                 }
                 
-                // Force supplémentaire sur mobile avec délais multiples
+                // OPTIMISATION: Une seule vérification rapide sur mobile
                 if ('ontouchstart' in window) {
                     setTimeout(() => {
                         newBoard.orientation(finalOrientation);
                         newBoard.draggable = true;
-                        console.log('🚀 Mobile: 50ms delay - orientation forced to:', finalOrientation);
-                    }, 50);
-                    
-                    setTimeout(() => {
-                        newBoard.orientation(finalOrientation);
-                        console.log('🚀 Mobile: 100ms delay - orientation forced to:', finalOrientation);
                     }, 100);
-                    
-                    setTimeout(() => {
-                        newBoard.orientation(finalOrientation);
-                        console.log('🚀 Mobile: 200ms delay - orientation forced to:', finalOrientation);
-                    }, 200);
                 }
             }
             return newBoard;
@@ -2804,10 +2735,13 @@
         
         // Fonctions globales critiques
         function setupLine() {
-            console.log('🚀🚀🚀 SETUP LINE START 🚀🚀🚀');
-            console.log('🚀 Orientation at setup:', orientation);
-            console.log('🚀 Board exists:', !!board);
-            console.log('🚀 Lines available:', lines ? lines.length : 'null');
+            // OPTIMISATION: Logs réduits sur mobile
+            if (!('ontouchstart' in window)) {
+                console.log('🚀 SETUP LINE START');
+                console.log('🚀 Orientation at setup:', orientation);
+                console.log('🚀 Board exists:', !!board);
+                console.log('🚀 Lines available:', lines ? lines.length : 'null');
+            }
             isLineComplete = false;
             game.reset();
             currentMoveIndex = 0;
@@ -2822,25 +2756,19 @@
             
             if (orientation === 'black') {
                 // Pour les noirs, on doit jouer le premier coup des blancs pour être en défense
-                console.log('🚀🚀🚀 BLACK ORIENTATION DETECTED 🚀🚀🚀');
-                console.log('🚀 Lines available:', lines ? lines.length : 'null');
-                console.log('🚀 Current line index:', currentLineIndex);
-                console.log('🚀 Current line:', lines ? lines[currentLineIndex] : 'null');
-                console.log('🚀 Current line moves:', lines && lines[currentLineIndex] ? lines[currentLineIndex].moves : 'null');
-                console.log('🚀 Current move index:', currentMoveIndex);
+                if (!('ontouchstart' in window)) {
+                    console.log('🚀 BLACK ORIENTATION DETECTED');
+                }
                 
                 if (lines && lines[currentLineIndex] && lines[currentLineIndex].moves && lines[currentLineIndex].moves.length > 0) {
                     const move = lines[currentLineIndex].moves[currentMoveIndex];
-                    console.log('🚀🚀🚀 PLAYING FIRST WHITE MOVE 🚀🚀🚀');
-                    console.log('🚀 Move object:', move);
-                    console.log('🚀 Move SAN:', move.san);
+                    if (!('ontouchstart' in window)) {
+                        console.log('🚀 PLAYING FIRST WHITE MOVE:', move.san);
+                    }
                     game.move(move.san);
                     currentMoveIndex++;
-                    console.log('🚀 FIRST MOVE PLAYED, current move index:', currentMoveIndex);
-                    console.log('🚀 Game FEN after move:', game.fen());
-                    console.log('🚀 Game turn after move:', game.turn());
                 } else {
-                    console.error('🚀🚀🚀 NO MOVES AVAILABLE FOR DEFENSE SETUP! 🚀🚀🚀');
+                    console.error('🚀 NO MOVES AVAILABLE FOR DEFENSE SETUP!');
                 }
             } else if (orientation === 'white') {
                 // Pour les blancs, on commence avec la position initiale
@@ -3952,7 +3880,7 @@
                 if (game.game_over()) {
                     return false;
                 }
-
+                
                 // PREMOVE: Si ce n'est pas le tour du joueur, activer le mode pre-move
                 if ((orientation === 'black' && game.turn() === 'w') || (orientation === 'white' && game.turn() === 'b')) {
                     console.log('Activating premove mode - orientation:', orientation, 'turn:', game.turn());
