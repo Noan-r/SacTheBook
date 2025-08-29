@@ -2733,6 +2733,64 @@
           window.playGameEndSound = function() { playAudioFile('game-end'); };
           window.playNotifySound = function() { playSyntheticSound('notify'); };
         
+        // === FONCTION RADICALE POUR FORCER LE COMPORTEMENT EN DÉFENSE ===
+        function forceDefenseBehavior() {
+            if (orientation !== 'black') return;
+            
+            // Vérifier si le premier coup blanc a été joué
+            if (game.turn() === 'w') {
+                if (!('ontouchstart' in window)) {
+                    console.log('🚨 RADICAL FIX: White to play in defense - forcing first move');
+                }
+                
+                // Forcer le premier coup blanc
+                if (lines && lines[currentLineIndex] && lines[currentLineIndex].moves && lines[currentLineIndex].moves.length > 0) {
+                    const move = lines[currentLineIndex].moves[0];
+                    game.move(move.san);
+                    board.position(game.fen());
+                    
+                    if (!('ontouchstart' in window)) {
+                        console.log('🚨 RADICAL FIX: First white move forced:', move.san);
+                        console.log('🚨 RADICAL FIX: Turn after force:', game.turn());
+                    }
+                }
+            }
+            
+            // Forcer l'orientation noire
+            if (board && board.orientation() !== 'black') {
+                board.orientation('black');
+                if (!('ontouchstart' in window)) {
+                    console.log('🚨 RADICAL FIX: Orientation forced to black');
+                }
+            }
+            
+            // Forcer le drag & drop
+            if (board) {
+                board.draggable = true;
+            }
+            
+            // Vérification finale
+            if (!('ontouchstart' in window)) {
+                console.log('🚨 RADICAL FIX: Final check - Turn:', game.turn(), 'Orientation:', board ? board.orientation() : 'no board');
+            }
+        }
+        
+        // === SOLUTION RADICALE: Forcer le comportement à chaque interaction ===
+        function addDefenseClickHandler() {
+            if (orientation === 'black' && board) {
+                // Ajouter un event listener sur le plateau
+                const boardElement = document.getElementById('myBoard');
+                if (boardElement) {
+                    boardElement.addEventListener('click', function() {
+                        // Forcer le comportement correct à chaque clic
+                        setTimeout(() => {
+                            forceDefenseBehavior();
+                        }, 50);
+                    });
+                }
+            }
+        }
+        
         // Fonctions globales critiques
         function setupLine() {
             // OPTIMISATION: Logs réduits sur mobile
@@ -2830,6 +2888,34 @@
                     }
                     board.position(game.fen());
                 }
+            }
+            
+            // SOLUTION RADICALE: Forcer le comportement correct en défense
+            if (orientation === 'black') {
+                // Attendre que tout soit chargé puis forcer le comportement
+                setTimeout(() => {
+                    forceDefenseBehavior();
+                }, 200);
+                
+                // Forcer à nouveau après un délai plus long
+                setTimeout(() => {
+                    forceDefenseBehavior();
+                }, 500);
+                
+                // Forcer à nouveau après 1 seconde
+                setTimeout(() => {
+                    forceDefenseBehavior();
+                }, 1000);
+                
+                // Forcer à nouveau après 2 secondes
+                setTimeout(() => {
+                    forceDefenseBehavior();
+                }, 2000);
+                
+                // Ajouter le handler de clic
+                setTimeout(() => {
+                    addDefenseClickHandler();
+                }, 1000);
             }
             
             // CORRECTION MOBILE: Forcer l'orientation et le drag sur mobile
@@ -3902,6 +3988,14 @@
             // Event handling functions
             function onDragStart(source, piece) {
                 console.log('Drag start:', source, piece, 'drillMode:', drillMode);
+
+                // SOLUTION RADICALE: Empêcher le drag des pièces blanches en défense
+                if (orientation === 'black' && piece && piece.charAt(0) === 'w') {
+                    if (!('ontouchstart' in window)) {
+                        console.log('🚨 RADICAL BLOCK: Preventing white piece drag in defense');
+                    }
+                    return false;
+                }
 
                 // Empêcher le drag avec le clic droit
                 if (event && event.button === 2) {
