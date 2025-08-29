@@ -1291,7 +1291,7 @@ def test_orientation(opening_name):
     lines, category = trainer.get_opening_details(opening_name)
     
     if category is None:
-    return jsonify({'error': 'Opening not found'}), 404
+        return jsonify({'error': 'Opening not found'}), 404
     
     orientation = 'black' if category == 'Defense' else 'white'
     
@@ -1921,7 +1921,7 @@ if __name__ == '__main__':
     print("=" * 50)
     
     try:
-    app.run(host=config.HOST, port=config.PORT, debug=config.DEBUG) 
+        app.run(host=config.HOST, port=config.PORT, debug=config.DEBUG) 
     except Exception as e:
         print(f"❌ Erreur lors du démarrage: {e}")
         input("Appuyez sur Entrée pour continuer...")
