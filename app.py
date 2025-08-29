@@ -937,7 +937,7 @@ def delete_variation():
 def delete_opening():
     # Accepte JSON ou form classique
     if request.is_json:
-    data = request.get_json()
+        data = request.get_json()
         category = data.get("category")
         name = data.get("name")
     else:
@@ -1291,7 +1291,7 @@ def test_orientation(opening_name):
     lines, category = trainer.get_opening_details(opening_name)
     
     if category is None:
-    return jsonify({'error': 'Opening not found'}), 404
+        return jsonify({'error': 'Opening not found'}), 404
     
     orientation = 'black' if category == 'Defense' else 'white'
     
