@@ -1921,7 +1921,7 @@ if __name__ == '__main__':
     print("=" * 50)
     
     try:
-    app.run(host=config.HOST, port=config.PORT, debug=config.DEBUG) 
+        app.run(host=config.HOST, port=config.PORT, debug=config.DEBUG) 
     except Exception as e:
         print(f"❌ Erreur lors du démarrage: {e}")
         input("Appuyez sur Entrée pour continuer...")
