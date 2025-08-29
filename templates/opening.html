@@ -2778,27 +2778,58 @@
             }
             
             // CRITIQUE: Appliquer la position APRÈS avoir joué le premier coup
-            console.log('🔧 APPLYING BOARD POSITION with FEN:', game.fen());
-            console.log('🔧 Game turn after setup:', game.turn());
-            console.log('🔧 Expected turn for orientation', orientation, ':', orientation === 'black' ? 'b' : 'w');
+            if (!('ontouchstart' in window)) {
+                console.log('🔧 APPLYING BOARD POSITION with FEN:', game.fen());
+                console.log('🔧 Game turn after setup:', game.turn());
+                console.log('🔧 Expected turn for orientation', orientation, ':', orientation === 'black' ? 'b' : 'w');
+            }
             board.position(game.fen());
+            
+            // CRITIQUE: Vérifier que le tour est correct pour l'orientation
+            const currentTurn = game.turn();
+            const expectedTurn = orientation === 'black' ? 'b' : 'w';
+            if (currentTurn !== expectedTurn) {
+                if (!('ontouchstart' in window)) {
+                    console.log('🚨 CRITICAL: Turn mismatch! Current:', currentTurn, 'Expected:', expectedTurn);
+                }
+                // Si on est en défense (noir) mais que c'est aux blancs de jouer, on a un problème
+                if (orientation === 'black' && currentTurn === 'w') {
+                    if (!('ontouchstart' in window)) {
+                        console.log('🚨 DEFENSE SETUP FAILED: White to play instead of black');
+                    }
+                }
+            }
             
             // CRITIQUE: S'assurer que l'orientation est correcte AVANT de continuer
             if (board.orientation() !== orientation) {
-                console.log('CRITICAL: Fixing board orientation from', board.orientation(), 'to', orientation);
+                if (!('ontouchstart' in window)) {
+                    console.log('CRITICAL: Fixing board orientation from', board.orientation(), 'to', orientation);
+                }
                 board.orientation(orientation);
-                console.log('Board orientation after fix:', board.orientation());
+                if (!('ontouchstart' in window)) {
+                    console.log('Board orientation after fix:', board.orientation());
+                }
             } else {
-                console.log('Board orientation already correct:', board.orientation());
+                if (!('ontouchstart' in window)) {
+                    console.log('Board orientation already correct:', board.orientation());
+                }
             }
             
-            // CRITIQUE: Vérifier que le tour est correct
-            const expectedTurn = orientation === 'black' ? 'b' : 'w';
-            if (game.turn() !== expectedTurn) {
-                console.log('🔧 CRITICAL: Turn mismatch! Expected:', expectedTurn, 'Got:', game.turn());
-                console.log('🔧 This means the first move was not played correctly');
-            } else {
-                console.log('🔧 Turn is correct:', game.turn());
+            // CRITIQUE: Correction automatique si le tour est incorrect
+            if (orientation === 'black' && game.turn() === 'w') {
+                if (!('ontouchstart' in window)) {
+                    console.log('🚨 AUTO-FIX: Playing first white move for defense');
+                }
+                // Rejouer le premier coup blanc si nécessaire
+                if (lines && lines[currentLineIndex] && lines[currentLineIndex].moves && lines[currentLineIndex].moves.length > 0) {
+                    const move = lines[currentLineIndex].moves[0]; // Premier coup
+                    game.move(move.san);
+                    if (!('ontouchstart' in window)) {
+                        console.log('🚨 AUTO-FIX: First white move played:', move.san);
+                        console.log('🚨 AUTO-FIX: Turn after fix:', game.turn());
+                    }
+                    board.position(game.fen());
+                }
             }
             
             // CORRECTION MOBILE: Forcer l'orientation et le drag sur mobile
