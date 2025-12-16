@@ -2389,6 +2389,10 @@
                             <button class="btn" id="next-line-btn">
                                 <img src="/static/img/button/arrow.png" alt="Suivant" class="pgn-icon">
                             </button>
+                            
+                            <button class="btn" id="diagnostic-btn" title="Diagnostic d'orientation" style="background: #17a2b8; font-size: 0.8em; padding: 8px 12px;">
+                                🔍
+                            </button>
                 </div>
 
                 <div class="switch-container">
@@ -2460,15 +2464,33 @@
                 }
                 
                 function forceMobileOrientation() {
-                    // Détecter l'orientation basée sur l'URL
+                    // Détecter l'orientation basée sur l'URL et le nom de l'ouverture
                     const urlPath = window.location.pathname;
                     const urlOpeningName = decodeURIComponent(urlPath.split('/').pop());
-                    const defenseOpenings = ['Albin Countergambit', 'Sicilian Defense', 'French Defense', 'Caro-Kann Defense'];
-                    const isDefense = defenseOpenings.some(defense => urlOpeningName.includes(defense));
+                    
+                    // Liste complète et exacte des ouvertures de défense
+                    const defenseOpenings = [
+                        'Sicilian Defense',
+                        'French Defense',
+                        'Stafford Gambit'
+                    ];
+                    
+                    // Détection plus précise : vérifier si le nom exact est dans la liste
+                    const isDefense = defenseOpenings.some(defense => 
+                        urlOpeningName === defense || openingName === defense
+                    );
+                    
                     const forcedOrientation = isDefense ? 'black' : 'white';
                     
                     // Créer une variable globale pour l'orientation
                     window.MOBILE_ORIENTATION = forcedOrientation;
+                    
+                    console.log('MOBILE ORIENTATION DETECTION:', {
+                        urlOpeningName: urlOpeningName,
+                        openingName: openingName,
+                        isDefense: isDefense,
+                        forcedOrientation: forcedOrientation
+                    });
                     
                     // OPTIMISATION: Forcer l'orientation seulement 3 fois, plus rapide
                     let attempts = 0;
@@ -2535,14 +2557,24 @@
                 // FORCER L'ORIENTATION
                 board.orientation(orientation);
                 
-                // OPTIMISATION: Force simplifiée sur mobile
+                // OPTIMISATION: Force renforcée sur mobile
                 if ('ontouchstart' in window) {
-                    // Une seule vérification rapide
-                    setTimeout(() => {
+                    // Vérification multiple sur mobile pour garantir l'orientation
+                    let attempts = 0;
+                    const maxAttempts = 5;
+                    const checkMobileOrientation = () => {
+                        attempts++;
                         if (board && board.orientation() !== orientation) {
                             board.orientation(orientation);
+                            console.log(`MOBILE: Orientation fix attempt ${attempts}/${maxAttempts}`);
                         }
-                    }, 100);
+                        
+                        if (attempts < maxAttempts) {
+                            setTimeout(checkMobileOrientation, 150);
+                        }
+                    };
+                    
+                    setTimeout(checkMobileOrientation, 100);
                 }
             }
         }
@@ -2556,6 +2588,13 @@
             // OPTIMISATION: Logs réduits sur mobile
             if (!('ontouchstart' in window)) {
                 console.log('🚀 Creating board with orientation:', finalOrientation);
+            }
+            
+            // Garantir que l'orientation est correcte sur mobile
+            if ('ontouchstart' in window) {
+                console.log('🚀 MOBILE: Creating board with forced orientation:', finalOrientation);
+                // Forcer l'orientation dans la config
+                config.orientation = finalOrientation;
             }
             
             // FORCER L'ORIENTATION DANS LA CONFIG
@@ -2596,6 +2635,33 @@
                 }
             }
             return newBoard;
+        }
+        
+        // === FONCTION DE DIAGNOSTIC D'ORIENTATION ===
+        function diagnoseOrientation() {
+            if (!board) {
+                console.log('🔍 DIAGNOSTIC: No board available');
+                return;
+            }
+            
+            const defenseOpenings = [
+                'Sicilian Defense',
+                'French Defense',
+                'Stafford Gambit'
+            ];
+            
+            console.log('🔍 DIAGNOSTIC ORIENTATION:', {
+                expectedOrientation: orientation,
+                actualBoardOrientation: board.orientation(),
+                isMobile: 'ontouchstart' in window,
+                mobileOrientation: window.MOBILE_ORIENTATION,
+                openingName: openingName,
+                isDefense: defenseOpenings.some(defense => 
+                    openingName === defense
+                ),
+                gameTurn: game.turn(),
+                gameFen: game.fen()
+            });
         }
           
           // Initialiser l'API Web Audio
@@ -3848,9 +3914,13 @@
             const urlOpeningName = decodeURIComponent(urlPath.split('/').pop());
             
             // DÉFINITION DÉFINITIVE DE L'ORIENTATION
-            const defenseOpenings = ['Albin Countergambit', 'Sicilian Defense', 'French Defense', 'Caro-Kann Defense'];
+            const defenseOpenings = [
+                'Sicilian Defense',
+                'French Defense',
+                'Stafford Gambit'
+            ];
             const isDefense = defenseOpenings.some(defense => 
-                urlOpeningName.includes(defense) || openingName.includes(defense)
+                urlOpeningName === defense || openingName === defense
             );
             
             // FORCER L'ORIENTATION DÉFINITIVEMENT
@@ -3868,7 +3938,7 @@
 
             
             // Vérification périodique de l'orientation (très agressive sur mobile)
-            const checkInterval = 'ontouchstart' in window ? 1000 : 5000;
+            const checkInterval = 'ontouchstart' in window ? 500 : 2000; // Plus fréquent sur mobile
             setInterval(function() {
                 if (board && orientation) {
                     if (board.orientation() !== orientation) {
@@ -3879,6 +3949,13 @@
                     // Force supplémentaire sur mobile
                     if ('ontouchstart' in window) {
                         board.orientation(orientation);
+                        // Double vérification sur mobile
+                        setTimeout(() => {
+                            if (board && board.orientation() !== orientation) {
+                                board.orientation(orientation);
+                                console.log('MOBILE: Double orientation fix applied');
+                            }
+                        }, 100);
                     }
                 }
             }, checkInterval);
@@ -3928,10 +4005,21 @@
                 console.log('🚨 PRE-BOARD SETUP: Playing first white move for defense');
                 if (lines && lines[currentLineIndex] && lines[currentLineIndex].moves && lines[currentLineIndex].moves.length > 0) {
                     const move = lines[currentLineIndex].moves[0];
-                    game.move(move.san);
-                    currentMoveIndex++;
-                    console.log('🚨 PRE-BOARD SETUP: First white move played:', move.san);
-                    console.log('🚨 PRE-BOARD SETUP: Turn after move:', game.turn());
+                    try {
+                        const result = game.move(move.san);
+                        if (result) {
+                            currentMoveIndex++;
+                            console.log('🚨 PRE-BOARD SETUP: First white move played:', move.san);
+                            console.log('🚨 PRE-BOARD SETUP: Turn after move:', game.turn());
+                            console.log('🚨 PRE-BOARD SETUP: Game position:', game.fen());
+                        } else {
+                            console.error('🚨 PRE-BOARD SETUP: Failed to play first white move:', move.san);
+                        }
+                    } catch (error) {
+                        console.error('🚨 PRE-BOARD SETUP: Error playing first white move:', error);
+                    }
+                } else {
+                    console.error('🚨 PRE-BOARD SETUP: No moves available for first white move');
                 }
             }
             
@@ -3941,6 +4029,29 @@
                 if (board) {
                     console.log('🚀 Board created successfully');
                     console.log('🚀 Board orientation after creation:', board.orientation());
+                    
+                    // Vérification et correction immédiate de l'orientation
+                    if (board.orientation() !== orientation) {
+                        console.log('🚨 CRITICAL: Board orientation mismatch after creation');
+                        board.orientation(orientation);
+                        console.log('🚨 CRITICAL: Orientation corrected to:', orientation);
+                    }
+                    
+                    // Vérification supplémentaire sur mobile
+                    if ('ontouchstart' in window) {
+                        setTimeout(() => {
+                            if (board && board.orientation() !== orientation) {
+                                console.log('🚨 MOBILE CRITICAL: Orientation still wrong after correction');
+                                board.orientation(orientation);
+                                console.log('🚨 MOBILE CRITICAL: Final orientation correction applied');
+                            }
+                        }, 200);
+                    }
+                    
+                    // Diagnostic d'orientation pour débogage
+                    setTimeout(() => {
+                        diagnoseOrientation();
+                    }, 500);
                     
                     // Initialisation de l'affichage après que le plateau soit créé
                     initializeDisplay();
@@ -4683,6 +4794,41 @@
                     // Déjà à la première ligne
                 }
             });
+            
+            // Bouton de diagnostic d'orientation
+            $('#diagnostic-btn').on('click', function() {
+                window.playButtonSound();
+                diagnoseOrientation();
+                // Afficher un message informatif
+                const diagnosticInfo = document.createElement('div');
+                diagnosticInfo.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: #17a2b8;
+                    color: white;
+                    padding: 15px;
+                    border-radius: 8px;
+                    z-index: 10000;
+                    font-size: 14px;
+                    max-width: 300px;
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                `;
+                diagnosticInfo.innerHTML = `
+                    <strong>🔍 Diagnostic d'orientation</strong><br>
+                    Vérifiez la console pour les détails.<br>
+                    <small>Cliquez pour fermer</small>
+                `;
+                diagnosticInfo.onclick = () => diagnosticInfo.remove();
+                document.body.appendChild(diagnosticInfo);
+                
+                // Auto-remove après 5 secondes
+                setTimeout(() => {
+                    if (diagnosticInfo.parentNode) {
+                        diagnosticInfo.remove();
+                    }
+                }, 5000);
+            });
 
             // Ajouter le son au bouton back
             $('.backbtn').on('click', function(e) {
@@ -4711,6 +4857,16 @@
                         console.log('Mobile: Delayed startup orientation fix');
                     }
                 }, 1000);
+                
+                // Force finale après 3 secondes pour garantir l'orientation
+                setTimeout(() => {
+                    if (board && board.orientation() !== orientation) {
+                        board.orientation(orientation);
+                        console.log('Mobile: Final startup orientation fix');
+                        // Diagnostic automatique après la correction
+                        diagnoseOrientation();
+                    }
+                }, 3000);
             }
             
             // Initialiser le compteur Drill si on est en mode Drill au démarrage

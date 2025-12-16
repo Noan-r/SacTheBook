@@ -1917,7 +1917,7 @@ if __name__ == '__main__':
     if github_client:
         print(f"📦 Repo GitHub: {GITHUB_REPO}")
     print("=" * 50)
-    print("🌐 Application accessible sur: http://localhost:5000")
+    print(f"🌐 Application accessible sur: http://localhost:{config.PORT}")
     print("=" * 50)
     
     try:
