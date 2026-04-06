@@ -75,15 +75,6 @@
                 }
             ],
             "best_score": 1
-        },
-        {
-            "name": "Catoche prime",
-            "variations": [
-                {
-                    "name": "#1 caca",
-                    "pgn": "1. e4 e5 2. Qh5 Nc6 3. Bc4 Nf6 4. Qxf7"
-                }
-            ]
         }
     ],
     "Defense": [
